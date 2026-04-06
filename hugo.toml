@@ -26,6 +26,6 @@ capitalizeListTitles = false
 
 [outputs]
   home = ['html']
-  section = ['html', 'rss']
+  section = ['html', 'rss', 'json']
   taxonomy = ['html']
   term = ['html']
