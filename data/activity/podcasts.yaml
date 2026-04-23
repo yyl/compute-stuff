@@ -3,199 +3,239 @@
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 0
+  minutes_listened: 0
 
 - month: "2020-08"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 0
+  minutes_listened: 0
 
 - month: "2020-09"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 0
+  minutes_listened: 0
 
 - month: "2023-01"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 0
+  minutes_listened: 0
 
 - month: "2023-04"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 1
+  minutes_listened: 24
 
 - month: "2023-06"
   feeds_added: 3
   feeds_removed: 0
   episodes_played: 7
+  minutes_listened: 45
 
 - month: "2023-07"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 8
+  minutes_listened: 155
 
 - month: "2023-08"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 17
+  minutes_listened: 717
 
 - month: "2023-09"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 15
+  minutes_listened: 368
 
 - month: "2023-10"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 2
+  minutes_listened: 214
 
 - month: "2023-11"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 13
+  minutes_listened: 506
 
 - month: "2023-12"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 34
+  minutes_listened: 753
 
 - month: "2024-01"
   feeds_added: 2
   feeds_removed: 0
   episodes_played: 39
+  minutes_listened: 670
 
 - month: "2024-02"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 28
+  minutes_listened: 374
 
 - month: "2024-03"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 28
+  minutes_listened: 647
 
 - month: "2024-04"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 33
+  minutes_listened: 745
 
 - month: "2024-05"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 34
+  minutes_listened: 980
 
 - month: "2024-06"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 31
+  minutes_listened: 1018
 
 - month: "2024-07"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 19
+  minutes_listened: 780
 
 - month: "2024-08"
   feeds_added: 2
   feeds_removed: 0
   episodes_played: 15
+  minutes_listened: 753
 
 - month: "2024-09"
   feeds_added: 2
   feeds_removed: 0
   episodes_played: 21
+  minutes_listened: 797
 
 - month: "2024-10"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 2
+  minutes_listened: 100
 
 - month: "2024-11"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 9
+  minutes_listened: 384
 
 - month: "2024-12"
   feeds_added: 1
   feeds_removed: 0
   episodes_played: 10
+  minutes_listened: 471
 
 - month: "2025-01"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 9
+  minutes_listened: 646
 
 - month: "2025-02"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 3
+  minutes_listened: 170
 
 - month: "2025-03"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 2
+  minutes_listened: 111
 
 - month: "2025-04"
   feeds_added: 2
   feeds_removed: 0
   episodes_played: 10
+  minutes_listened: 603
 
 - month: "2025-05"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 2
+  minutes_listened: 115
 
 - month: "2025-06"
   feeds_added: 4
   feeds_removed: 0
   episodes_played: 25
+  minutes_listened: 1165
 
 - month: "2025-07"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 30
+  minutes_listened: 1545
 
 - month: "2025-08"
   feeds_added: 0
   feeds_removed: 0
-  episodes_played: 64
+  episodes_played: 63
+  minutes_listened: 2958
 
 - month: "2025-09"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 62
+  minutes_listened: 3346
 
 - month: "2025-10"
   feeds_added: 1
   feeds_removed: 0
-  episodes_played: 46
+  episodes_played: 45
+  minutes_listened: 2360
 
 - month: "2025-11"
   feeds_added: 0
   feeds_removed: 0
   episodes_played: 41
+  minutes_listened: 2362
 
 - month: "2025-12"
   feeds_added: 4
   feeds_removed: 0
   episodes_played: 38
+  minutes_listened: 1456
 
 - month: "2026-01"
   feeds_added: 1
   feeds_removed: 0
-  episodes_played: 31
+  episodes_played: 30
+  minutes_listened: 1732
 
 - month: "2026-02"
   feeds_added: 2
   feeds_removed: 0
-  episodes_played: 55
+  episodes_played: 52
+  minutes_listened: 3146
 
 - month: "2026-03"
   feeds_added: 2
   feeds_removed: 0
-  episodes_played: 54
+  episodes_played: 52
+  minutes_listened: 3354
 
 - month: "2026-04"
-  feeds_added: 0
+  feeds_added: 1
   feeds_removed: 1
-  episodes_played: 3
+  episodes_played: 29
+  minutes_listened: 2093
 

@@ -116,3 +116,12 @@
   median_words_per_article: 1596
   min_words_per_article: 109
 
+- month: "2026-04"
+  articles_archived: 39
+  total_words: 99164
+  time_spent_minutes: 333
+  avg_reading_speed: 298
+  max_words_per_article: 16742
+  median_words_per_article: 1697
+  min_words_per_article: 30
+

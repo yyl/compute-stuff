@@ -1,0 +1,76 @@
+# Monthly writing activity data
+- month: "2025-02"
+  posts: 6
+  total_words: 2413
+  unique_tags: 11
+
+- month: "2025-03"
+  posts: 7
+  total_words: 3306
+  unique_tags: 26
+
+- month: "2025-04"
+  posts: 3
+  total_words: 472
+  unique_tags: 13
+
+- month: "2025-05"
+  posts: 3
+  total_words: 995
+  unique_tags: 18
+
+- month: "2025-06"
+  posts: 4
+  total_words: 1260
+  unique_tags: 28
+
+- month: "2025-07"
+  posts: 4
+  total_words: 1200
+  unique_tags: 24
+
+- month: "2025-08"
+  posts: 7
+  total_words: 3145
+  unique_tags: 20
+
+- month: "2025-09"
+  posts: 8
+  total_words: 3016
+  unique_tags: 27
+
+- month: "2025-10"
+  posts: 7
+  total_words: 3037
+  unique_tags: 23
+
+- month: "2025-11"
+  posts: 5
+  total_words: 1579
+  unique_tags: 4
+
+- month: "2025-12"
+  posts: 5
+  total_words: 1990
+  unique_tags: 11
+
+- month: "2026-01"
+  posts: 5
+  total_words: 1660
+  unique_tags: 10
+
+- month: "2026-02"
+  posts: 2
+  total_words: 309
+  unique_tags: 15
+
+- month: "2026-03"
+  posts: 3
+  total_words: 986
+  unique_tags: 20
+
+- month: "2026-04"
+  posts: 3
+  total_words: 5006
+  unique_tags: 25
+

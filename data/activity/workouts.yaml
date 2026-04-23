@@ -1,79 +1,246 @@
 # Monthly workout activity data
-- month: "2025-03"
+- month: "2019-06"
+  workouts: 3
+  total_minutes: 143
+  total_calories: 315.00
+
+- month: "2019-10"
+  workouts: 4
+  total_minutes: 100
+  total_calories: 900.00
+
+- month: "2019-11"
+  workouts: 3
+  total_minutes: 430
+  total_calories: 0.00
+
+- month: "2019-12"
+  workouts: 2
+  total_minutes: 122
+  total_calories: 0.00
+
+- month: "2020-01"
+  workouts: 6
+  total_minutes: 741
+  total_calories: 0.00
+
+- month: "2020-02"
+  workouts: 6
+  total_minutes: 452
+  total_calories: 0.00
+
+- month: "2020-03"
+  workouts: 5
+  total_minutes: 1025
+  total_calories: 0.00
+
+- month: "2020-04"
+  workouts: 17
+  total_minutes: 1434
+  total_calories: 409.00
+
+- month: "2020-05"
+  workouts: 14
+  total_minutes: 1263
+  total_calories: 350.00
+
+- month: "2020-06"
+  workouts: 9
+  total_minutes: 1541
+  total_calories: 0.00
+
+- month: "2020-07"
+  workouts: 8
+  total_minutes: 913
+  total_calories: 0.00
+
+- month: "2020-10"
+  workouts: 5
+  total_minutes: 1004
+  total_calories: 0.00
+
+- month: "2020-12"
+  workouts: 5
+  total_minutes: 815
+  total_calories: 0.00
+
+- month: "2022-08"
+  workouts: 4
+  total_minutes: 92
+  total_calories: 319.81
+
+- month: "2022-09"
+  workouts: 4
+  total_minutes: 119
+  total_calories: 672.98
+
+- month: "2022-10"
+  workouts: 2
+  total_minutes: 42
+  total_calories: 79.60
+
+- month: "2023-02"
   workouts: 1
-  total_minutes: 55
-  unique_exercises: 7
-  total_sets: 20
+  total_minutes: 16
+  total_calories: 27.17
+
+- month: "2023-09"
+  workouts: 6
+  total_minutes: 142
+  total_calories: 969.72
+
+- month: "2023-10"
+  workouts: 52
+  total_minutes: 1342
+  total_calories: 8468.13
+
+- month: "2023-11"
+  workouts: 68
+  total_minutes: 1456
+  total_calories: 9576.06
+
+- month: "2023-12"
+  workouts: 65
+  total_minutes: 1165
+  total_calories: 7967.61
+
+- month: "2024-01"
+  workouts: 43
+  total_minutes: 1235
+  total_calories: 9078.26
+
+- month: "2024-02"
+  workouts: 39
+  total_minutes: 959
+  total_calories: 7520.36
+
+- month: "2024-03"
+  workouts: 37
+  total_minutes: 972
+  total_calories: 7085.05
+
+- month: "2024-04"
+  workouts: 19
+  total_minutes: 509
+  total_calories: 3863.88
+
+- month: "2024-05"
+  workouts: 25
+  total_minutes: 449
+  total_calories: 3066.50
+
+- month: "2024-06"
+  workouts: 21
+  total_minutes: 352
+  total_calories: 2422.19
+
+- month: "2024-07"
+  workouts: 17
+  total_minutes: 313
+  total_calories: 2381.15
+
+- month: "2024-08"
+  workouts: 15
+  total_minutes: 338
+  total_calories: 2288.41
+
+- month: "2024-09"
+  workouts: 30
+  total_minutes: 534
+  total_calories: 2814.29
+
+- month: "2024-10"
+  workouts: 15
+  total_minutes: 248
+  total_calories: 1924.91
+
+- month: "2024-11"
+  workouts: 16
+  total_minutes: 328
+  total_calories: 2895.19
+
+- month: "2024-12"
+  workouts: 17
+  total_minutes: 373
+  total_calories: 3433.02
+
+- month: "2025-01"
+  workouts: 17
+  total_minutes: 493
+  total_calories: 4421.80
+
+- month: "2025-02"
+  workouts: 12
+  total_minutes: 487
+  total_calories: 4554.71
+
+- month: "2025-03"
+  workouts: 13
+  total_minutes: 226
+  total_calories: 1659.62
 
 - month: "2025-04"
-  workouts: 9
-  total_minutes: 461
-  unique_exercises: 17
-  total_sets: 137
+  workouts: 16
+  total_minutes: 276
+  total_calories: 2242.41
 
 - month: "2025-05"
-  workouts: 5
-  total_minutes: 222
-  unique_exercises: 17
-  total_sets: 81
+  workouts: 13
+  total_minutes: 230
+  total_calories: 1935.18
 
 - month: "2025-06"
-  workouts: 3
-  total_minutes: 216
-  unique_exercises: 14
-  total_sets: 61
+  workouts: 17
+  total_minutes: 375
+  total_calories: 3505.99
 
 - month: "2025-07"
-  workouts: 4
-  total_minutes: 268
-  unique_exercises: 15
-  total_sets: 81
+  workouts: 18
+  total_minutes: 289
+  total_calories: 2269.47
 
 - month: "2025-08"
-  workouts: 4
-  total_minutes: 263
-  unique_exercises: 14
-  total_sets: 82
+  workouts: 9
+  total_minutes: 433
+  total_calories: 3413.43
 
 - month: "2025-09"
-  workouts: 4
-  total_minutes: 259
-  unique_exercises: 14
-  total_sets: 79
+  workouts: 13
+  total_minutes: 315
+  total_calories: 2636.35
 
 - month: "2025-10"
-  workouts: 5
-  total_minutes: 318
-  unique_exercises: 13
-  total_sets: 94
+  workouts: 23
+  total_minutes: 429
+  total_calories: 3469.71
 
 - month: "2025-11"
-  workouts: 4
-  total_minutes: 234
-  unique_exercises: 13
-  total_sets: 78
+  workouts: 12
+  total_minutes: 379
+  total_calories: 3001.24
 
 - month: "2025-12"
-  workouts: 4
-  total_minutes: 221
-  unique_exercises: 13
-  total_sets: 67
+  workouts: 11
+  total_minutes: 242
+  total_calories: 2158.26
 
 - month: "2026-01"
-  workouts: 2
-  total_minutes: 97
-  unique_exercises: 9
-  total_sets: 34
+  workouts: 8
+  total_minutes: 181
+  total_calories: 1361.51
 
 - month: "2026-02"
-  workouts: 5
-  total_minutes: 246
-  unique_exercises: 7
-  total_sets: 82
+  workouts: 14
+  total_minutes: 293
+  total_calories: 1998.13
 
 - month: "2026-03"
-  workouts: 3
-  total_minutes: 219
-  unique_exercises: 7
-  total_sets: 61
+  workouts: 10
+  total_minutes: 349
+  total_calories: 2517.22
+
+- month: "2026-04"
+  workouts: 1
+  total_minutes: 53
+  total_calories: 472.39
 
