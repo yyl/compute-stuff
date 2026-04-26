@@ -4,6 +4,15 @@
     <h1 class="my-0! pb-2.5">{{- .Title -}}</h1>
   </header>
 
+  <section class="activity-section">
+    <h2>Hours spent (YTD)</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <canvas id="chart-ytd-hours"></canvas>
+      </div>
+    </div>
+  </section>
+
   <!-- 📚 Reading -->
   <section class="activity-section">
     <h2>&#128218; Reading</h2>
@@ -41,10 +50,6 @@
         <h3>Articles Read</h3>
         <canvas id="chart-total-words"></canvas>
       </div>
-      <div class="chart-container">
-        <h3>Books Finished</h3>
-        <canvas id="chart-books-finished"></canvas>
-      </div>
     </div>
   </section>
 
@@ -59,28 +64,13 @@
     </div>
   </section>
 
-  <!-- 🎬 Movies -->
-  <section class="activity-section">
-    <h2>🎬 Movies</h2>
-    <div class="charts-grid">
-      <div class="chart-container">
-        <h3>Movies Watched &amp; Rating</h3>
-        <canvas id="chart-movies-combo"></canvas>
-      </div>
-    </div>
-  </section>
-
   <!-- 🎧 Podcasts -->
   <section class="activity-section">
     <h2>🎧 Podcasts</h2>
     <div class="charts-grid">
       <div class="chart-container">
-        <h3>Episodes Played</h3>
-        <canvas id="chart-episodes-played"></canvas>
-      </div>
-      <div class="chart-container">
-        <h3>Feed Changes</h3>
-        <canvas id="chart-feed-changes"></canvas>
+        <h3>Hours Listened</h3>
+        <canvas id="chart-hours-listened"></canvas>
       </div>
     </div>
   </section>
@@ -90,7 +80,7 @@
     <h2>🏋️ Workout</h2>
     <div class="charts-grid">
       <div class="chart-container">
-        <h3>Workouts &amp; Minutes</h3>
+        <h3>Workouts &amp; Hours</h3>
         <canvas id="chart-workout-combo"></canvas>
       </div>
     </div>
@@ -123,7 +113,6 @@
     const travelData = {{ .Site.Data.activity.travel | jsonify | safeJS }};
     const moviesData = {{ .Site.Data.activity.movies | jsonify | safeJS }};
     const podcastsData = {{ .Site.Data.activity.podcasts | jsonify | safeJS }};
-    const booksData = {{ .Site.Data.activity.books | jsonify | safeJS }};
     const workoutsData = {{ .Site.Data.activity.workouts | jsonify | safeJS }};
     const codeData = {{ .Site.Data.activity.code | jsonify | safeJS }};
 
@@ -136,7 +125,9 @@
       bar: isDarkMode ? 'rgba(209, 213, 219, 0.8)' : 'rgba(55, 65, 81, 0.8)',
       barHover: isDarkMode ? 'rgba(209, 213, 219, 1)' : 'rgba(55, 65, 81, 1)',
       grid: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-      text: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)'
+      text: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+      surface: isDarkMode ? 'rgba(17, 24, 39, 1)' : 'rgba(255, 255, 255, 1)',
+      surfaceEdge: isDarkMode ? 'rgba(148, 163, 184, 0.45)' : 'rgba(148, 163, 184, 0.55)'
     });
 
     // Chart defaults
@@ -180,55 +171,112 @@
       });
     };
 
-    // Diverging bar chart (positive + negative)
-    const createDualChart = (ctx, labels, addedData, removedData) => {
+    const createBrokenHorizontalChart = (ctx, items, label) => {
       const colors = getColors();
+      const sortedItems = [...items].sort((a, b) => b.hours - a.hours);
+      const maxValue = Math.max(...sortedItems.map(item => item.hours), 0);
+      const breakStart = 30;
+      const breakResume = 120;
+      const breakSize = Math.max(0, breakResume - breakStart);
+      const scaleValue = (value) => {
+        if (breakSize <= 0 || value <= breakStart) return value;
+        if (value <= breakResume) return breakStart;
+        return breakStart + (value - breakResume) * 0.35;
+      };
+      const ticks = [0, 10, 20, 30, 120, 140, 160, 180, 200].filter(v => v < maxValue);
+      if (!ticks.includes(0)) ticks.unshift(0);
+      if (maxValue > 0 && !ticks.includes(maxValue)) ticks.push(maxValue);
+      const scaledTicks = [...new Set(ticks.map(scaleValue))].sort((a, b) => a - b);
+      const breakX = scaleValue(breakResume);
+      const scaledData = sortedItems.map(item => scaleValue(item.hours));
+      const breakBandWidth = 18;
+
+      const breakPlugin = {
+        id: 'brokenAxisMarker',
+        afterDatasetsDraw(chart) {
+          if (breakSize <= 0) return;
+          const { ctx: chartCtx, chartArea, scales } = chart;
+          const x = scales.x.getPixelForValue(breakX);
+          if (!Number.isFinite(x) || x <= chartArea.left || x >= chartArea.right) return;
+
+          chartCtx.save();
+          chartCtx.fillStyle = colors.surface;
+          chartCtx.strokeStyle = colors.surfaceEdge;
+          chartCtx.lineWidth = 1.5;
+
+          const drawSlashPair = (centerX, centerY, size = 7, gap = 6) => {
+            [-gap / 2, gap / 2].forEach(offset => {
+              chartCtx.beginPath();
+              chartCtx.moveTo(centerX + offset - size / 2, centerY + size / 2);
+              chartCtx.lineTo(centerX + offset + size / 2, centerY - size / 2);
+              chartCtx.stroke();
+            });
+          };
+
+          const meta = chart.getDatasetMeta(0);
+          meta.data.forEach((bar, index) => {
+            if (!bar || sortedItems[index].hours <= breakResume) return;
+            const bandTop = bar.y - (bar.height / 2) - 2;
+            const bandHeight = bar.height + 4;
+            chartCtx.fillRect(x - breakBandWidth / 2, bandTop, breakBandWidth, bandHeight);
+            chartCtx.strokeRect(x - breakBandWidth / 2, bandTop, breakBandWidth, bandHeight);
+            drawSlashPair(x, bar.y, 9, 8);
+          });
+
+          const axisTop = chartArea.bottom - 2;
+          const axisBottom = scales.x.bottom + 10;
+          chartCtx.fillRect(x - breakBandWidth / 2, axisTop, breakBandWidth, axisBottom - axisTop);
+          chartCtx.strokeRect(x - breakBandWidth / 2, axisTop, breakBandWidth, axisBottom - axisTop);
+          drawSlashPair(x, chartArea.bottom + 8, 9, 8);
+
+          chartCtx.restore();
+        }
+      };
+
       return new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Added',
-              data: addedData,
-              backgroundColor: isDarkMode ? 'rgba(134, 239, 172, 0.7)' : 'rgba(34, 197, 94, 0.7)',
-              hoverBackgroundColor: isDarkMode ? 'rgba(134, 239, 172, 1)' : 'rgba(34, 197, 94, 1)',
-              borderRadius: 4,
-              borderSkipped: false
-            },
-            {
-              label: 'Removed',
-              data: removedData.map(v => -v),
-              backgroundColor: isDarkMode ? 'rgba(252, 165, 165, 0.7)' : 'rgba(239, 68, 68, 0.7)',
-              hoverBackgroundColor: isDarkMode ? 'rgba(252, 165, 165, 1)' : 'rgba(239, 68, 68, 1)',
-              borderRadius: 4,
-              borderSkipped: false
-            }
-          ]
+          labels: sortedItems.map(item => item.label),
+          datasets: [{
+            label: label,
+            data: scaledData,
+            backgroundColor: colors.bar,
+            hoverBackgroundColor: colors.barHover,
+            borderRadius: 4,
+            borderSkipped: false
+          }]
         },
+        plugins: [breakPlugin],
         options: {
           responsive: true,
           maintainAspectRatio: true,
+          indexAxis: 'y',
           plugins: {
-            legend: { display: true, labels: { color: colors.text } },
+            legend: { display: false },
             tooltip: {
               callbacks: {
-                label: (ctx) => ctx.dataset.label + ': ' + Math.abs(ctx.raw)
+                label: (ctx) => `${label}: ${sortedItems[ctx.dataIndex].hours}h`
               }
             }
           },
           scales: {
             x: {
-              stacked: true,
-              grid: { display: false },
-              ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
-            },
-            y: {
+              beginAtZero: true,
               grid: { color: colors.grid },
               ticks: {
                 color: colors.text,
-                callback: (v) => Math.abs(v)
+                callback: (v) => {
+                  const original = ticks.find(tick => Math.abs(scaleValue(tick) - v) < 0.001);
+                  return original === undefined ? '' : `${original}h`;
+                }
+              },
+              afterBuildTicks: (axis) => {
+                axis.ticks = scaledTicks.map(value => ({ value }));
               }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: colors.text }
             }
           }
         }
@@ -265,7 +313,16 @@
 
     // Exclude current (incomplete) month
     const now = new Date();
+    const currentYear = String(now.getFullYear());
     const currentMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
+    const sumYtdHours = (data, field) => {
+      if (!Array.isArray(data) || data.length === 0) return 0;
+      const totalMinutes = data
+        .filter(d => d.month && d.month.startsWith(currentYear) && d.month !== currentMonth)
+        .reduce((sum, d) => sum + (Number(d[field]) || 0), 0);
+      return Number((totalMinutes / 60).toFixed(1));
+    };
 
     // Safely initialize charts with data validation
     const initCharts = (data, chartConfigs, gapFields) => {
@@ -278,12 +335,35 @@
       const recent = gapped.slice(-12);
       const labels = formatLabels(recent);
       chartConfigs.forEach(config => {
-        createChart(document.getElementById(config.id), labels, recent.map(d => d[config.field]), config.label);
+        const values = recent.map(d => config.transform ? config.transform(d[config.field]) : d[config.field]);
+        const chart = createChart(document.getElementById(config.id), labels, values, config.label);
+        if (config.yTickCallback) {
+          chart.options.scales.y.ticks.callback = config.yTickCallback;
+        }
+        if (config.tooltipLabel) {
+          chart.options.plugins.tooltip = {
+            callbacks: {
+              label: (ctx) => `${config.label}: ${config.tooltipLabel(ctx.raw)}`
+            }
+          };
+        }
+        chart.update();
       });
     };
 
     // Initialize charts
     document.addEventListener('DOMContentLoaded', () => {
+      createBrokenHorizontalChart(
+        document.getElementById('chart-ytd-hours'),
+        [
+          { label: 'Articles', hours: sumYtdHours(readingData, 'time_spent_minutes') },
+          { label: 'Podcasts', hours: sumYtdHours(podcastsData, 'minutes_listened') },
+          { label: 'Workouts', hours: sumYtdHours(workoutsData, 'total_minutes') },
+          { label: 'Movies', hours: sumYtdHours(moviesData, 'minutes_watched') }
+        ],
+        'Hours'
+      );
+
       // Reading combo chart (bar: total words, line: avg reading speed)
       if (readingData && Array.isArray(readingData) && readingData.length > 0) {
         const completedReading = fillMonthGaps(readingData.filter(d => d.month !== currentMonth), ['total_words', 'time_spent_minutes']);
@@ -308,8 +388,8 @@
               },
               {
                 type: 'line',
-                label: 'Minutes Read',
-                data: recentReading.map(d => d.time_spent_minutes),
+                label: 'Hours Read',
+                data: recentReading.map(d => Number(((d.time_spent_minutes || 0) / 60).toFixed(1))),
                 borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
                 backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
                 borderWidth: 3,
@@ -327,7 +407,14 @@
             maintainAspectRatio: true,
             interaction: { mode: 'index', intersect: false },
             plugins: {
-              legend: { display: true, labels: { color: colors.text } }
+              legend: { display: true, labels: { color: colors.text } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ctx.dataset.yAxisID === 'y1'
+                    ? `${ctx.dataset.label}: ${ctx.raw}h`
+                    : `${ctx.dataset.label}: ${ctx.raw}`
+                }
+              }
             },
             scales: {
               x: {
@@ -348,8 +435,11 @@
                 beginAtZero: true,
                 position: 'right',
                 grid: { drawOnChartArea: false },
-                ticks: { color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' },
-                title: { display: true, text: 'Minutes', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+                ticks: {
+                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  callback: (v) => `${v}h`
+                },
+                title: { display: true, text: 'Hours', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
               }
             }
           }
@@ -357,11 +447,6 @@
       } else {
         showNoData('chart-total-words');
       }
-
-      // Books chart
-      initCharts(booksData, [
-        { id: 'chart-books-finished', field: 'books_finished', label: 'Books' }
-      ], ['books_finished']);
 
       // Workout combo chart (bar + line with dual y-axes)
       if (workoutsData && Array.isArray(workoutsData) && workoutsData.length > 0) {
@@ -387,8 +472,8 @@
               },
               {
                 type: 'line',
-                label: 'Minutes',
-                data: recentWorkouts.map(d => d.total_minutes),
+                label: 'Hours',
+                data: recentWorkouts.map(d => Number(((d.total_minutes || 0) / 60).toFixed(1))),
                 borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
                 backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
                 borderWidth: 3,
@@ -406,7 +491,14 @@
             maintainAspectRatio: true,
             interaction: { mode: 'index', intersect: false },
             plugins: {
-              legend: { display: true, labels: { color: colors.text } }
+              legend: { display: true, labels: { color: colors.text } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ctx.dataset.yAxisID === 'y1'
+                    ? `${ctx.dataset.label}: ${ctx.raw}h`
+                    : `${ctx.dataset.label}: ${ctx.raw}`
+                }
+              }
             },
             scales: {
               x: {
@@ -424,8 +516,11 @@
                 beginAtZero: true,
                 position: 'right',
                 grid: { drawOnChartArea: false },
-                ticks: { color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' },
-                title: { display: true, text: 'Minutes', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+                ticks: {
+                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  callback: (v) => `${v}h`
+                },
+                title: { display: true, text: 'Hours', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
               }
             }
           }
@@ -536,95 +631,17 @@
         showNoData('chart-travel-combo');
       }
 
-      // Movies combo chart (bar + line with dual y-axes)
-      if (moviesData && Array.isArray(moviesData) && moviesData.length > 0) {
-        const recentMovies = fillMonthGaps(moviesData.filter(d => d.month !== currentMonth), ['movies_watched', 'avg_rating']).slice(-12);
-        const moviesLabels = formatLabels(recentMovies);
-        const colors = getColors();
-        new Chart(document.getElementById('chart-movies-combo'), {
-          type: 'bar',
-          data: {
-            labels: moviesLabels,
-            datasets: [
-              {
-                type: 'bar',
-                label: 'Movies Watched',
-                data: recentMovies.map(d => d.movies_watched),
-                backgroundColor: colors.bar,
-                hoverBackgroundColor: colors.barHover,
-                borderRadius: 4,
-                borderSkipped: false,
-                yAxisID: 'y',
-                order: 1
-              },
-              {
-                type: 'line',
-                label: 'Avg Rating',
-                data: recentMovies.map(d => d.avg_rating),
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
-                backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
-                borderWidth: 3,
-                pointRadius: 4,
-                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
-                tension: 0.3,
-                fill: false,
-                yAxisID: 'y1',
-                order: 0
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-              legend: { display: true, labels: { color: colors.text } }
-            },
-            scales: {
-              x: {
-                grid: { display: false },
-                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
-              },
-              y: {
-                beginAtZero: true,
-                position: 'left',
-                grid: { color: colors.grid },
-                ticks: { color: colors.text },
-                title: { display: true, text: 'Movies', color: colors.text }
-              },
-              y1: {
-                beginAtZero: true,
-                position: 'right',
-                grid: { drawOnChartArea: false },
-                ticks: { color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' },
-                title: { display: true, text: 'Rating', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' },
-                max: 5
-              }
-            }
-          }
-        });
-      } else {
-        showNoData('chart-movies-combo');
-      }
-
       // Podcasts charts
       initCharts(podcastsData, [
-        { id: 'chart-episodes-played', field: 'episodes_played', label: 'Episodes' }
-      ], ['episodes_played', 'feeds_added', 'feeds_removed']);
-
-      // Feed changes (dual chart)
-      if (podcastsData && Array.isArray(podcastsData) && podcastsData.length > 0) {
-        const recentPodcasts = fillMonthGaps(podcastsData.filter(d => d.month !== currentMonth), ['feeds_added', 'feeds_removed']).slice(-12);
-        const feedLabels = formatLabels(recentPodcasts);
-        createDualChart(
-          document.getElementById('chart-feed-changes'),
-          feedLabels,
-          recentPodcasts.map(d => d.feeds_added),
-          recentPodcasts.map(d => d.feeds_removed)
-        );
-      } else {
-        showNoData('chart-feed-changes');
-      }
+        {
+          id: 'chart-hours-listened',
+          field: 'minutes_listened',
+          label: 'Hours',
+          transform: (minutes) => Number(((minutes || 0) / 60).toFixed(1)),
+          yTickCallback: (v) => `${v}h`,
+          tooltipLabel: (hours) => `${hours}h`
+        }
+      ], ['minutes_listened']);
 
       // Code charts
       initCharts(codeData, [

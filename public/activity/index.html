@@ -140,6 +140,15 @@
     <h1 class="my-0! pb-2.5">My Activity</h1>
   </header>
 
+  <section class="activity-section">
+    <h2>Hours spent (YTD)</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <canvas id="chart-ytd-hours"></canvas>
+      </div>
+    </div>
+  </section>
+
   
   <section class="activity-section">
     <h2>&#128218; Reading</h2>
@@ -190,10 +199,6 @@
         <h3>Articles Read</h3>
         <canvas id="chart-total-words"></canvas>
       </div>
-      <div class="chart-container">
-        <h3>Books Finished</h3>
-        <canvas id="chart-books-finished"></canvas>
-      </div>
     </div>
   </section>
 
@@ -210,26 +215,11 @@
 
   
   <section class="activity-section">
-    <h2>🎬 Movies</h2>
-    <div class="charts-grid">
-      <div class="chart-container">
-        <h3>Movies Watched &amp; Rating</h3>
-        <canvas id="chart-movies-combo"></canvas>
-      </div>
-    </div>
-  </section>
-
-  
-  <section class="activity-section">
     <h2>🎧 Podcasts</h2>
     <div class="charts-grid">
       <div class="chart-container">
-        <h3>Episodes Played</h3>
-        <canvas id="chart-episodes-played"></canvas>
-      </div>
-      <div class="chart-container">
-        <h3>Feed Changes</h3>
-        <canvas id="chart-feed-changes"></canvas>
+        <h3>Hours Listened</h3>
+        <canvas id="chart-hours-listened"></canvas>
       </div>
     </div>
   </section>
@@ -239,7 +229,7 @@
     <h2>🏋️ Workout</h2>
     <div class="charts-grid">
       <div class="chart-container">
-        <h3>Workouts &amp; Minutes</h3>
+        <h3>Workouts &amp; Hours</h3>
         <canvas id="chart-workout-combo"></canvas>
       </div>
     </div>
@@ -266,13 +256,12 @@
 
   <script>
     
-    const readingData = [{"articles_archived":78,"avg_reading_speed":245,"max_words_per_article":12536,"median_words_per_article":926,"min_words_per_article":85,"month":"2025-01","time_spent_minutes":474,"total_words":116126},{"articles_archived":3,"avg_reading_speed":244,"max_words_per_article":2006,"median_words_per_article":2003,"min_words_per_article":629,"month":"2025-02","time_spent_minutes":19,"total_words":4638},{"articles_archived":12,"avg_reading_speed":249,"max_words_per_article":5983,"median_words_per_article":1309,"min_words_per_article":402,"month":"2025-05","time_spent_minutes":99,"total_words":24661},{"articles_archived":28,"avg_reading_speed":246,"max_words_per_article":6918,"median_words_per_article":1419,"min_words_per_article":727,"month":"2025-06","time_spent_minutes":216,"total_words":53067},{"articles_archived":35,"avg_reading_speed":244,"max_words_per_article":4670,"median_words_per_article":1312,"min_words_per_article":66,"month":"2025-07","time_spent_minutes":233,"total_words":56750},{"articles_archived":53,"avg_reading_speed":250,"max_words_per_article":6646,"median_words_per_article":1652,"min_words_per_article":365,"month":"2025-08","time_spent_minutes":404,"total_words":101183},{"articles_archived":62,"avg_reading_speed":248,"max_words_per_article":12611,"median_words_per_article":1325,"min_words_per_article":160,"month":"2025-09","time_spent_minutes":440,"total_words":109154},{"articles_archived":56,"avg_reading_speed":251,"max_words_per_article":14724,"median_words_per_article":1274,"min_words_per_article":25,"month":"2025-10","time_spent_minutes":440,"total_words":110313},{"articles_archived":53,"avg_reading_speed":249,"max_words_per_article":12740,"median_words_per_article":1596,"min_words_per_article":121,"month":"2025-11","time_spent_minutes":477,"total_words":118631},{"articles_archived":54,"avg_reading_speed":249,"max_words_per_article":12025,"median_words_per_article":1638,"min_words_per_article":288,"month":"2025-12","time_spent_minutes":466,"total_words":116037},{"articles_archived":26,"avg_reading_speed":250,"max_words_per_article":14786,"median_words_per_article":1203,"min_words_per_article":175,"month":"2026-01","time_spent_minutes":218,"total_words":54428},{"articles_archived":35,"avg_reading_speed":311,"max_words_per_article":16687,"median_words_per_article":1522,"min_words_per_article":153,"month":"2026-02","time_spent_minutes":256,"total_words":79639},{"articles_archived":58,"avg_reading_speed":248,"max_words_per_article":12756,"median_words_per_article":1596,"min_words_per_article":109,"month":"2026-03","time_spent_minutes":467,"total_words":115905}];
-    const travelData = [{"checkins":10,"month":"2010-11","unique_places":7},{"checkins":13,"month":"2010-12","unique_places":9},{"checkins":13,"month":"2011-01","unique_places":12},{"checkins":20,"month":"2011-02","unique_places":18},{"checkins":3,"month":"2011-06","unique_places":3},{"checkins":16,"month":"2011-07","unique_places":12},{"checkins":11,"month":"2011-08","unique_places":11},{"checkins":4,"month":"2011-09","unique_places":4},{"checkins":6,"month":"2011-10","unique_places":6},{"checkins":8,"month":"2011-11","unique_places":7},{"checkins":9,"month":"2011-12","unique_places":9},{"checkins":14,"month":"2012-01","unique_places":14},{"checkins":2,"month":"2012-02","unique_places":2},{"checkins":25,"month":"2012-03","unique_places":24},{"checkins":4,"month":"2012-04","unique_places":4},{"checkins":2,"month":"2012-05","unique_places":2},{"checkins":3,"month":"2012-06","unique_places":3},{"checkins":17,"month":"2012-07","unique_places":15},{"checkins":18,"month":"2012-08","unique_places":15},{"checkins":14,"month":"2012-09","unique_places":13},{"checkins":17,"month":"2012-11","unique_places":17},{"checkins":21,"month":"2012-12","unique_places":21},{"checkins":36,"month":"2013-01","unique_places":34},{"checkins":12,"month":"2013-02","unique_places":11},{"checkins":7,"month":"2013-03","unique_places":5},{"checkins":17,"month":"2013-04","unique_places":17},{"checkins":10,"month":"2013-05","unique_places":10},{"checkins":27,"month":"2013-06","unique_places":25},{"checkins":32,"month":"2013-07","unique_places":29},{"checkins":12,"month":"2013-08","unique_places":8},{"checkins":15,"month":"2013-09","unique_places":12},{"checkins":15,"month":"2013-10","unique_places":15},{"checkins":15,"month":"2013-11","unique_places":9},{"checkins":20,"month":"2013-12","unique_places":20},{"checkins":16,"month":"2014-01","unique_places":15},{"checkins":2,"month":"2014-02","unique_places":2},{"checkins":9,"month":"2014-03","unique_places":8},{"checkins":16,"month":"2014-04","unique_places":15},{"checkins":48,"month":"2014-05","unique_places":47},{"checkins":13,"month":"2014-06","unique_places":13},{"checkins":5,"month":"2014-07","unique_places":4},{"checkins":8,"month":"2014-08","unique_places":8},{"checkins":2,"month":"2014-09","unique_places":2},{"checkins":31,"month":"2014-10","unique_places":27},{"checkins":7,"month":"2014-11","unique_places":6},{"checkins":23,"month":"2014-12","unique_places":23},{"checkins":59,"month":"2015-01","unique_places":55},{"checkins":7,"month":"2015-02","unique_places":7},{"checkins":34,"month":"2015-03","unique_places":33},{"checkins":11,"month":"2015-04","unique_places":11},{"checkins":35,"month":"2015-05","unique_places":33},{"checkins":50,"month":"2015-06","unique_places":45},{"checkins":57,"month":"2015-07","unique_places":46},{"checkins":56,"month":"2015-08","unique_places":52},{"checkins":51,"month":"2015-09","unique_places":51},{"checkins":27,"month":"2015-10","unique_places":23},{"checkins":38,"month":"2015-11","unique_places":37},{"checkins":116,"month":"2015-12","unique_places":116},{"checkins":159,"month":"2016-01","unique_places":147},{"checkins":40,"month":"2016-02","unique_places":34},{"checkins":68,"month":"2016-03","unique_places":56},{"checkins":34,"month":"2016-04","unique_places":31},{"checkins":24,"month":"2016-05","unique_places":22},{"checkins":24,"month":"2016-06","unique_places":24},{"checkins":44,"month":"2016-07","unique_places":42},{"checkins":38,"month":"2016-08","unique_places":37},{"checkins":63,"month":"2016-09","unique_places":60},{"checkins":29,"month":"2016-10","unique_places":24},{"checkins":54,"month":"2016-11","unique_places":49},{"checkins":89,"month":"2016-12","unique_places":81},{"checkins":41,"month":"2017-01","unique_places":38},{"checkins":23,"month":"2017-02","unique_places":21},{"checkins":32,"month":"2017-03","unique_places":29},{"checkins":38,"month":"2017-04","unique_places":36},{"checkins":29,"month":"2017-05","unique_places":27},{"checkins":30,"month":"2017-06","unique_places":30},{"checkins":40,"month":"2017-07","unique_places":37},{"checkins":46,"month":"2017-08","unique_places":43},{"checkins":27,"month":"2017-09","unique_places":27},{"checkins":78,"month":"2017-10","unique_places":70},{"checkins":46,"month":"2017-11","unique_places":41},{"checkins":71,"month":"2017-12","unique_places":70},{"checkins":38,"month":"2018-01","unique_places":35},{"checkins":24,"month":"2018-02","unique_places":23},{"checkins":30,"month":"2018-03","unique_places":30},{"checkins":74,"month":"2018-04","unique_places":70},{"checkins":66,"month":"2018-05","unique_places":59},{"checkins":52,"month":"2018-06","unique_places":47},{"checkins":58,"month":"2018-07","unique_places":51},{"checkins":152,"month":"2018-08","unique_places":144},{"checkins":43,"month":"2018-09","unique_places":42},{"checkins":29,"month":"2018-10","unique_places":26},{"checkins":95,"month":"2018-11","unique_places":89},{"checkins":215,"month":"2018-12","unique_places":208},{"checkins":92,"month":"2019-01","unique_places":85},{"checkins":51,"month":"2019-02","unique_places":48},{"checkins":49,"month":"2019-03","unique_places":45},{"checkins":24,"month":"2019-04","unique_places":24},{"checkins":54,"month":"2019-05","unique_places":52},{"checkins":74,"month":"2019-06","unique_places":73},{"checkins":80,"month":"2019-07","unique_places":75},{"checkins":43,"month":"2019-08","unique_places":39},{"checkins":27,"month":"2019-09","unique_places":25},{"checkins":13,"month":"2019-10","unique_places":11},{"checkins":29,"month":"2019-11","unique_places":28},{"checkins":99,"month":"2019-12","unique_places":96},{"checkins":15,"month":"2020-01","unique_places":12},{"checkins":18,"month":"2020-02","unique_places":17},{"checkins":1,"month":"2020-04","unique_places":1},{"checkins":9,"month":"2020-05","unique_places":9},{"checkins":28,"month":"2020-06","unique_places":25},{"checkins":15,"month":"2020-07","unique_places":13},{"checkins":25,"month":"2020-08","unique_places":24},{"checkins":15,"month":"2020-09","unique_places":15},{"checkins":14,"month":"2020-10","unique_places":13},{"checkins":8,"month":"2020-11","unique_places":8},{"checkins":1,"month":"2020-12","unique_places":1},{"checkins":4,"month":"2021-01","unique_places":4},{"checkins":9,"month":"2021-02","unique_places":9},{"checkins":6,"month":"2021-03","unique_places":6},{"checkins":13,"month":"2021-04","unique_places":11},{"checkins":26,"month":"2021-05","unique_places":26},{"checkins":74,"month":"2021-06","unique_places":66},{"checkins":13,"month":"2021-07","unique_places":13},{"checkins":2,"month":"2021-08","unique_places":1},{"checkins":11,"month":"2021-09","unique_places":9},{"checkins":16,"month":"2021-10","unique_places":11},{"checkins":17,"month":"2021-11","unique_places":14},{"checkins":16,"month":"2021-12","unique_places":12},{"checkins":21,"month":"2022-01","unique_places":19},{"checkins":17,"month":"2022-02","unique_places":17},{"checkins":23,"month":"2022-03","unique_places":19},{"checkins":26,"month":"2022-04","unique_places":24},{"checkins":35,"month":"2022-05","unique_places":30},{"checkins":36,"month":"2022-06","unique_places":33},{"checkins":28,"month":"2022-07","unique_places":24},{"checkins":53,"month":"2022-08","unique_places":50},{"checkins":29,"month":"2022-09","unique_places":24},{"checkins":30,"month":"2022-10","unique_places":21},{"checkins":44,"month":"2022-11","unique_places":36},{"checkins":87,"month":"2022-12","unique_places":79},{"checkins":21,"month":"2023-01","unique_places":17},{"checkins":11,"month":"2023-02","unique_places":9},{"checkins":29,"month":"2023-03","unique_places":22},{"checkins":36,"month":"2023-04","unique_places":30},{"checkins":49,"month":"2023-05","unique_places":40},{"checkins":194,"month":"2023-06","unique_places":183},{"checkins":38,"month":"2023-07","unique_places":35},{"checkins":43,"month":"2023-08","unique_places":38},{"checkins":47,"month":"2023-09","unique_places":39},{"checkins":41,"month":"2023-10","unique_places":28},{"checkins":29,"month":"2023-11","unique_places":20},{"checkins":40,"month":"2023-12","unique_places":30},{"checkins":21,"month":"2024-01","unique_places":18},{"checkins":30,"month":"2024-02","unique_places":23},{"checkins":21,"month":"2024-03","unique_places":20},{"checkins":21,"month":"2024-04","unique_places":19},{"checkins":33,"month":"2024-05","unique_places":26},{"checkins":29,"month":"2024-06","unique_places":27},{"checkins":10,"month":"2024-07","unique_places":9},{"checkins":11,"month":"2024-08","unique_places":8},{"checkins":9,"month":"2024-09","unique_places":8},{"checkins":23,"month":"2024-10","unique_places":22},{"checkins":18,"month":"2024-11","unique_places":17},{"checkins":48,"month":"2024-12","unique_places":42},{"checkins":23,"month":"2025-01","unique_places":22},{"checkins":34,"month":"2025-02","unique_places":27},{"checkins":14,"month":"2025-03","unique_places":13},{"checkins":29,"month":"2025-04","unique_places":21},{"checkins":27,"month":"2025-05","unique_places":24},{"checkins":33,"month":"2025-06","unique_places":28},{"checkins":60,"month":"2025-07","unique_places":54},{"checkins":31,"month":"2025-08","unique_places":23},{"checkins":16,"month":"2025-09","unique_places":14},{"checkins":44,"month":"2025-10","unique_places":38},{"checkins":43,"month":"2025-11","unique_places":41},{"checkins":28,"month":"2025-12","unique_places":26},{"checkins":107,"month":"2026-01","unique_places":101},{"checkins":29,"month":"2026-02","unique_places":24},{"checkins":30,"month":"2026-03","unique_places":25}];
-    const moviesData = [{"avg_rating":2.86,"month":"2025-07","movies_watched":7},{"avg_rating":3.25,"month":"2025-08","movies_watched":2},{"avg_rating":4,"month":"2025-09","movies_watched":2},{"avg_rating":3,"month":"2025-10","movies_watched":1},{"avg_rating":2.67,"month":"2025-11","movies_watched":3},{"avg_rating":3.5,"month":"2025-12","movies_watched":5},{"avg_rating":4.5,"month":"2026-01","movies_watched":1},{"avg_rating":2.75,"month":"2026-02","movies_watched":2},{"avg_rating":2,"month":"2026-03","movies_watched":2}];
-    const podcastsData = [{"episodes_played":0,"feeds_added":1,"feeds_removed":0,"month":"2020-02"},{"episodes_played":0,"feeds_added":1,"feeds_removed":0,"month":"2020-08"},{"episodes_played":0,"feeds_added":1,"feeds_removed":0,"month":"2020-09"},{"episodes_played":0,"feeds_added":1,"feeds_removed":0,"month":"2023-01"},{"episodes_played":1,"feeds_added":0,"feeds_removed":0,"month":"2023-04"},{"episodes_played":7,"feeds_added":3,"feeds_removed":0,"month":"2023-06"},{"episodes_played":8,"feeds_added":0,"feeds_removed":0,"month":"2023-07"},{"episodes_played":17,"feeds_added":1,"feeds_removed":0,"month":"2023-08"},{"episodes_played":15,"feeds_added":0,"feeds_removed":0,"month":"2023-09"},{"episodes_played":2,"feeds_added":0,"feeds_removed":0,"month":"2023-10"},{"episodes_played":13,"feeds_added":0,"feeds_removed":0,"month":"2023-11"},{"episodes_played":34,"feeds_added":1,"feeds_removed":0,"month":"2023-12"},{"episodes_played":39,"feeds_added":2,"feeds_removed":0,"month":"2024-01"},{"episodes_played":28,"feeds_added":0,"feeds_removed":0,"month":"2024-02"},{"episodes_played":28,"feeds_added":1,"feeds_removed":0,"month":"2024-03"},{"episodes_played":33,"feeds_added":1,"feeds_removed":0,"month":"2024-04"},{"episodes_played":34,"feeds_added":1,"feeds_removed":0,"month":"2024-05"},{"episodes_played":31,"feeds_added":0,"feeds_removed":0,"month":"2024-06"},{"episodes_played":19,"feeds_added":1,"feeds_removed":0,"month":"2024-07"},{"episodes_played":15,"feeds_added":2,"feeds_removed":0,"month":"2024-08"},{"episodes_played":21,"feeds_added":2,"feeds_removed":0,"month":"2024-09"},{"episodes_played":2,"feeds_added":1,"feeds_removed":0,"month":"2024-10"},{"episodes_played":9,"feeds_added":1,"feeds_removed":0,"month":"2024-11"},{"episodes_played":10,"feeds_added":1,"feeds_removed":0,"month":"2024-12"},{"episodes_played":9,"feeds_added":0,"feeds_removed":0,"month":"2025-01"},{"episodes_played":3,"feeds_added":0,"feeds_removed":0,"month":"2025-02"},{"episodes_played":2,"feeds_added":0,"feeds_removed":0,"month":"2025-03"},{"episodes_played":10,"feeds_added":2,"feeds_removed":0,"month":"2025-04"},{"episodes_played":2,"feeds_added":0,"feeds_removed":0,"month":"2025-05"},{"episodes_played":25,"feeds_added":4,"feeds_removed":0,"month":"2025-06"},{"episodes_played":30,"feeds_added":0,"feeds_removed":0,"month":"2025-07"},{"episodes_played":64,"feeds_added":0,"feeds_removed":0,"month":"2025-08"},{"episodes_played":62,"feeds_added":0,"feeds_removed":0,"month":"2025-09"},{"episodes_played":46,"feeds_added":1,"feeds_removed":0,"month":"2025-10"},{"episodes_played":41,"feeds_added":0,"feeds_removed":0,"month":"2025-11"},{"episodes_played":38,"feeds_added":4,"feeds_removed":0,"month":"2025-12"},{"episodes_played":31,"feeds_added":1,"feeds_removed":0,"month":"2026-01"},{"episodes_played":55,"feeds_added":2,"feeds_removed":0,"month":"2026-02"},{"episodes_played":54,"feeds_added":2,"feeds_removed":0,"month":"2026-03"},{"episodes_played":3,"feeds_added":0,"feeds_removed":1,"month":"2026-04"}];
-    const booksData = [{"avg_rating":4,"books_finished":2,"month":"2023-03"},{"avg_rating":"None","books_finished":1,"month":"2024-11"},{"avg_rating":4,"books_finished":1,"month":"2025-07"},{"avg_rating":5,"books_finished":1,"month":"2025-09"},{"avg_rating":"None","books_finished":1,"month":"2025-10"},{"avg_rating":5,"books_finished":1,"month":"2025-11"},{"avg_rating":4.5,"books_finished":2,"month":"2026-01"}];
-    const workoutsData = [{"month":"2025-03","total_minutes":55,"total_sets":20,"unique_exercises":7,"workouts":1},{"month":"2025-04","total_minutes":461,"total_sets":137,"unique_exercises":17,"workouts":9},{"month":"2025-05","total_minutes":222,"total_sets":81,"unique_exercises":17,"workouts":5},{"month":"2025-06","total_minutes":216,"total_sets":61,"unique_exercises":14,"workouts":3},{"month":"2025-07","total_minutes":268,"total_sets":81,"unique_exercises":15,"workouts":4},{"month":"2025-08","total_minutes":263,"total_sets":82,"unique_exercises":14,"workouts":4},{"month":"2025-09","total_minutes":259,"total_sets":79,"unique_exercises":14,"workouts":4},{"month":"2025-10","total_minutes":318,"total_sets":94,"unique_exercises":13,"workouts":5},{"month":"2025-11","total_minutes":234,"total_sets":78,"unique_exercises":13,"workouts":4},{"month":"2025-12","total_minutes":221,"total_sets":67,"unique_exercises":13,"workouts":4},{"month":"2026-01","total_minutes":97,"total_sets":34,"unique_exercises":9,"workouts":2},{"month":"2026-02","total_minutes":246,"total_sets":82,"unique_exercises":7,"workouts":5},{"month":"2026-03","total_minutes":219,"total_sets":61,"unique_exercises":7,"workouts":3}];
-    const codeData = [{"commits":55,"month":"2012-06","repos_touched":5},{"commits":93,"month":"2012-07","repos_touched":4},{"commits":12,"month":"2012-08","repos_touched":1},{"commits":20,"month":"2012-09","repos_touched":1},{"commits":24,"month":"2012-10","repos_touched":1},{"commits":8,"month":"2012-11","repos_touched":3},{"commits":7,"month":"2012-12","repos_touched":1},{"commits":1,"month":"2013-02","repos_touched":1},{"commits":89,"month":"2014-03","repos_touched":5},{"commits":76,"month":"2014-04","repos_touched":6},{"commits":2,"month":"2014-05","repos_touched":1},{"commits":13,"month":"2014-06","repos_touched":2},{"commits":8,"month":"2014-07","repos_touched":2},{"commits":1,"month":"2014-08","repos_touched":1},{"commits":5,"month":"2014-10","repos_touched":1},{"commits":25,"month":"2014-12","repos_touched":4},{"commits":13,"month":"2015-01","repos_touched":3},{"commits":22,"month":"2015-02","repos_touched":4},{"commits":39,"month":"2015-03","repos_touched":3},{"commits":33,"month":"2015-04","repos_touched":2},{"commits":1,"month":"2015-05","repos_touched":1},{"commits":1,"month":"2019-04","repos_touched":1},{"commits":18,"month":"2019-05","repos_touched":1},{"commits":3,"month":"2020-02","repos_touched":1},{"commits":38,"month":"2025-02","repos_touched":1},{"commits":17,"month":"2025-03","repos_touched":1},{"commits":13,"month":"2025-04","repos_touched":3},{"commits":3,"month":"2025-05","repos_touched":1},{"commits":5,"month":"2025-06","repos_touched":1},{"commits":4,"month":"2025-07","repos_touched":1},{"commits":22,"month":"2025-08","repos_touched":3},{"commits":14,"month":"2025-09","repos_touched":3},{"commits":22,"month":"2025-10","repos_touched":2},{"commits":6,"month":"2025-11","repos_touched":2},{"commits":23,"month":"2025-12","repos_touched":5},{"commits":19,"month":"2026-01","repos_touched":3},{"commits":83,"month":"2026-02","repos_touched":3},{"commits":81,"month":"2026-03","repos_touched":6},{"commits":5,"month":"2026-04","repos_touched":2}];
+    const readingData = [{"articles_archived":78,"avg_reading_speed":245,"max_words_per_article":12536,"median_words_per_article":926,"min_words_per_article":85,"month":"2025-01","time_spent_minutes":474,"total_words":116126},{"articles_archived":3,"avg_reading_speed":244,"max_words_per_article":2006,"median_words_per_article":2003,"min_words_per_article":629,"month":"2025-02","time_spent_minutes":19,"total_words":4638},{"articles_archived":12,"avg_reading_speed":249,"max_words_per_article":5983,"median_words_per_article":1309,"min_words_per_article":402,"month":"2025-05","time_spent_minutes":99,"total_words":24661},{"articles_archived":28,"avg_reading_speed":246,"max_words_per_article":6918,"median_words_per_article":1419,"min_words_per_article":727,"month":"2025-06","time_spent_minutes":216,"total_words":53067},{"articles_archived":35,"avg_reading_speed":244,"max_words_per_article":4670,"median_words_per_article":1312,"min_words_per_article":66,"month":"2025-07","time_spent_minutes":233,"total_words":56750},{"articles_archived":53,"avg_reading_speed":250,"max_words_per_article":6646,"median_words_per_article":1652,"min_words_per_article":365,"month":"2025-08","time_spent_minutes":404,"total_words":101183},{"articles_archived":62,"avg_reading_speed":248,"max_words_per_article":12611,"median_words_per_article":1325,"min_words_per_article":160,"month":"2025-09","time_spent_minutes":440,"total_words":109154},{"articles_archived":56,"avg_reading_speed":251,"max_words_per_article":14724,"median_words_per_article":1274,"min_words_per_article":25,"month":"2025-10","time_spent_minutes":440,"total_words":110313},{"articles_archived":53,"avg_reading_speed":249,"max_words_per_article":12740,"median_words_per_article":1596,"min_words_per_article":121,"month":"2025-11","time_spent_minutes":477,"total_words":118631},{"articles_archived":54,"avg_reading_speed":249,"max_words_per_article":12025,"median_words_per_article":1638,"min_words_per_article":288,"month":"2025-12","time_spent_minutes":466,"total_words":116037},{"articles_archived":26,"avg_reading_speed":250,"max_words_per_article":14786,"median_words_per_article":1203,"min_words_per_article":175,"month":"2026-01","time_spent_minutes":218,"total_words":54428},{"articles_archived":35,"avg_reading_speed":311,"max_words_per_article":16687,"median_words_per_article":1522,"min_words_per_article":153,"month":"2026-02","time_spent_minutes":256,"total_words":79639},{"articles_archived":58,"avg_reading_speed":248,"max_words_per_article":12756,"median_words_per_article":1596,"min_words_per_article":109,"month":"2026-03","time_spent_minutes":467,"total_words":115905},{"articles_archived":40,"avg_reading_speed":296,"max_words_per_article":16742,"median_words_per_article":1705,"min_words_per_article":30,"month":"2026-04","time_spent_minutes":343,"total_words":101604}];
+    const travelData = [{"checkins":10,"month":"2010-11","unique_places":7},{"checkins":13,"month":"2010-12","unique_places":9},{"checkins":13,"month":"2011-01","unique_places":12},{"checkins":20,"month":"2011-02","unique_places":18},{"checkins":3,"month":"2011-06","unique_places":3},{"checkins":16,"month":"2011-07","unique_places":12},{"checkins":11,"month":"2011-08","unique_places":11},{"checkins":4,"month":"2011-09","unique_places":4},{"checkins":6,"month":"2011-10","unique_places":6},{"checkins":8,"month":"2011-11","unique_places":7},{"checkins":9,"month":"2011-12","unique_places":9},{"checkins":14,"month":"2012-01","unique_places":14},{"checkins":2,"month":"2012-02","unique_places":2},{"checkins":25,"month":"2012-03","unique_places":24},{"checkins":4,"month":"2012-04","unique_places":4},{"checkins":2,"month":"2012-05","unique_places":2},{"checkins":3,"month":"2012-06","unique_places":3},{"checkins":17,"month":"2012-07","unique_places":15},{"checkins":18,"month":"2012-08","unique_places":15},{"checkins":14,"month":"2012-09","unique_places":13},{"checkins":17,"month":"2012-11","unique_places":17},{"checkins":21,"month":"2012-12","unique_places":21},{"checkins":36,"month":"2013-01","unique_places":34},{"checkins":12,"month":"2013-02","unique_places":11},{"checkins":7,"month":"2013-03","unique_places":5},{"checkins":17,"month":"2013-04","unique_places":17},{"checkins":10,"month":"2013-05","unique_places":10},{"checkins":27,"month":"2013-06","unique_places":25},{"checkins":32,"month":"2013-07","unique_places":29},{"checkins":12,"month":"2013-08","unique_places":8},{"checkins":15,"month":"2013-09","unique_places":12},{"checkins":15,"month":"2013-10","unique_places":15},{"checkins":15,"month":"2013-11","unique_places":9},{"checkins":20,"month":"2013-12","unique_places":20},{"checkins":16,"month":"2014-01","unique_places":15},{"checkins":2,"month":"2014-02","unique_places":2},{"checkins":9,"month":"2014-03","unique_places":8},{"checkins":16,"month":"2014-04","unique_places":15},{"checkins":48,"month":"2014-05","unique_places":47},{"checkins":13,"month":"2014-06","unique_places":13},{"checkins":5,"month":"2014-07","unique_places":4},{"checkins":8,"month":"2014-08","unique_places":8},{"checkins":2,"month":"2014-09","unique_places":2},{"checkins":31,"month":"2014-10","unique_places":27},{"checkins":7,"month":"2014-11","unique_places":6},{"checkins":23,"month":"2014-12","unique_places":23},{"checkins":59,"month":"2015-01","unique_places":55},{"checkins":7,"month":"2015-02","unique_places":7},{"checkins":34,"month":"2015-03","unique_places":33},{"checkins":11,"month":"2015-04","unique_places":11},{"checkins":35,"month":"2015-05","unique_places":33},{"checkins":50,"month":"2015-06","unique_places":45},{"checkins":57,"month":"2015-07","unique_places":46},{"checkins":56,"month":"2015-08","unique_places":52},{"checkins":51,"month":"2015-09","unique_places":51},{"checkins":27,"month":"2015-10","unique_places":23},{"checkins":38,"month":"2015-11","unique_places":37},{"checkins":116,"month":"2015-12","unique_places":116},{"checkins":159,"month":"2016-01","unique_places":147},{"checkins":40,"month":"2016-02","unique_places":34},{"checkins":68,"month":"2016-03","unique_places":56},{"checkins":34,"month":"2016-04","unique_places":31},{"checkins":24,"month":"2016-05","unique_places":22},{"checkins":24,"month":"2016-06","unique_places":24},{"checkins":44,"month":"2016-07","unique_places":42},{"checkins":38,"month":"2016-08","unique_places":37},{"checkins":63,"month":"2016-09","unique_places":60},{"checkins":29,"month":"2016-10","unique_places":24},{"checkins":54,"month":"2016-11","unique_places":49},{"checkins":89,"month":"2016-12","unique_places":81},{"checkins":41,"month":"2017-01","unique_places":38},{"checkins":23,"month":"2017-02","unique_places":21},{"checkins":32,"month":"2017-03","unique_places":29},{"checkins":38,"month":"2017-04","unique_places":36},{"checkins":29,"month":"2017-05","unique_places":27},{"checkins":30,"month":"2017-06","unique_places":30},{"checkins":40,"month":"2017-07","unique_places":37},{"checkins":46,"month":"2017-08","unique_places":43},{"checkins":27,"month":"2017-09","unique_places":27},{"checkins":78,"month":"2017-10","unique_places":70},{"checkins":46,"month":"2017-11","unique_places":41},{"checkins":71,"month":"2017-12","unique_places":70},{"checkins":38,"month":"2018-01","unique_places":35},{"checkins":24,"month":"2018-02","unique_places":23},{"checkins":30,"month":"2018-03","unique_places":30},{"checkins":74,"month":"2018-04","unique_places":70},{"checkins":66,"month":"2018-05","unique_places":59},{"checkins":52,"month":"2018-06","unique_places":47},{"checkins":58,"month":"2018-07","unique_places":51},{"checkins":152,"month":"2018-08","unique_places":144},{"checkins":43,"month":"2018-09","unique_places":42},{"checkins":29,"month":"2018-10","unique_places":26},{"checkins":95,"month":"2018-11","unique_places":89},{"checkins":215,"month":"2018-12","unique_places":208},{"checkins":92,"month":"2019-01","unique_places":85},{"checkins":51,"month":"2019-02","unique_places":48},{"checkins":49,"month":"2019-03","unique_places":45},{"checkins":24,"month":"2019-04","unique_places":24},{"checkins":54,"month":"2019-05","unique_places":52},{"checkins":74,"month":"2019-06","unique_places":73},{"checkins":80,"month":"2019-07","unique_places":75},{"checkins":43,"month":"2019-08","unique_places":39},{"checkins":27,"month":"2019-09","unique_places":25},{"checkins":13,"month":"2019-10","unique_places":11},{"checkins":29,"month":"2019-11","unique_places":28},{"checkins":99,"month":"2019-12","unique_places":96},{"checkins":15,"month":"2020-01","unique_places":12},{"checkins":18,"month":"2020-02","unique_places":17},{"checkins":1,"month":"2020-04","unique_places":1},{"checkins":9,"month":"2020-05","unique_places":9},{"checkins":28,"month":"2020-06","unique_places":25},{"checkins":15,"month":"2020-07","unique_places":13},{"checkins":25,"month":"2020-08","unique_places":24},{"checkins":15,"month":"2020-09","unique_places":15},{"checkins":14,"month":"2020-10","unique_places":13},{"checkins":8,"month":"2020-11","unique_places":8},{"checkins":1,"month":"2020-12","unique_places":1},{"checkins":4,"month":"2021-01","unique_places":4},{"checkins":9,"month":"2021-02","unique_places":9},{"checkins":6,"month":"2021-03","unique_places":6},{"checkins":13,"month":"2021-04","unique_places":11},{"checkins":26,"month":"2021-05","unique_places":26},{"checkins":74,"month":"2021-06","unique_places":66},{"checkins":13,"month":"2021-07","unique_places":13},{"checkins":2,"month":"2021-08","unique_places":1},{"checkins":11,"month":"2021-09","unique_places":9},{"checkins":16,"month":"2021-10","unique_places":11},{"checkins":17,"month":"2021-11","unique_places":14},{"checkins":16,"month":"2021-12","unique_places":12},{"checkins":21,"month":"2022-01","unique_places":19},{"checkins":17,"month":"2022-02","unique_places":17},{"checkins":23,"month":"2022-03","unique_places":19},{"checkins":26,"month":"2022-04","unique_places":24},{"checkins":35,"month":"2022-05","unique_places":30},{"checkins":36,"month":"2022-06","unique_places":33},{"checkins":28,"month":"2022-07","unique_places":24},{"checkins":53,"month":"2022-08","unique_places":50},{"checkins":29,"month":"2022-09","unique_places":24},{"checkins":30,"month":"2022-10","unique_places":21},{"checkins":44,"month":"2022-11","unique_places":36},{"checkins":87,"month":"2022-12","unique_places":79},{"checkins":21,"month":"2023-01","unique_places":17},{"checkins":11,"month":"2023-02","unique_places":9},{"checkins":29,"month":"2023-03","unique_places":22},{"checkins":36,"month":"2023-04","unique_places":30},{"checkins":49,"month":"2023-05","unique_places":40},{"checkins":194,"month":"2023-06","unique_places":183},{"checkins":38,"month":"2023-07","unique_places":35},{"checkins":43,"month":"2023-08","unique_places":38},{"checkins":47,"month":"2023-09","unique_places":39},{"checkins":41,"month":"2023-10","unique_places":28},{"checkins":29,"month":"2023-11","unique_places":20},{"checkins":40,"month":"2023-12","unique_places":30},{"checkins":21,"month":"2024-01","unique_places":18},{"checkins":30,"month":"2024-02","unique_places":23},{"checkins":21,"month":"2024-03","unique_places":20},{"checkins":21,"month":"2024-04","unique_places":19},{"checkins":33,"month":"2024-05","unique_places":26},{"checkins":29,"month":"2024-06","unique_places":27},{"checkins":10,"month":"2024-07","unique_places":9},{"checkins":11,"month":"2024-08","unique_places":8},{"checkins":9,"month":"2024-09","unique_places":8},{"checkins":23,"month":"2024-10","unique_places":22},{"checkins":18,"month":"2024-11","unique_places":17},{"checkins":48,"month":"2024-12","unique_places":42},{"checkins":23,"month":"2025-01","unique_places":22},{"checkins":34,"month":"2025-02","unique_places":27},{"checkins":14,"month":"2025-03","unique_places":13},{"checkins":29,"month":"2025-04","unique_places":21},{"checkins":27,"month":"2025-05","unique_places":24},{"checkins":33,"month":"2025-06","unique_places":28},{"checkins":60,"month":"2025-07","unique_places":54},{"checkins":31,"month":"2025-08","unique_places":23},{"checkins":16,"month":"2025-09","unique_places":14},{"checkins":44,"month":"2025-10","unique_places":38},{"checkins":43,"month":"2025-11","unique_places":41},{"checkins":28,"month":"2025-12","unique_places":26},{"checkins":107,"month":"2026-01","unique_places":101},{"checkins":29,"month":"2026-02","unique_places":24},{"checkins":30,"month":"2026-03","unique_places":25},{"checkins":14,"month":"2026-04","unique_places":13}];
+    const moviesData = [{"avg_rating":2.86,"minutes_watched":749,"month":"2025-07","movies_watched":7},{"avg_rating":3.25,"minutes_watched":212,"month":"2025-08","movies_watched":2},{"avg_rating":4,"minutes_watched":201,"month":"2025-09","movies_watched":2},{"avg_rating":3,"minutes_watched":112,"month":"2025-10","movies_watched":1},{"avg_rating":2.67,"minutes_watched":350,"month":"2025-11","movies_watched":3},{"avg_rating":3.5,"minutes_watched":502,"month":"2025-12","movies_watched":5},{"avg_rating":4.5,"minutes_watched":149,"month":"2026-01","movies_watched":1},{"avg_rating":2.75,"minutes_watched":268,"month":"2026-02","movies_watched":2},{"avg_rating":2,"minutes_watched":251,"month":"2026-03","movies_watched":2}];
+    const podcastsData = [{"episodes_played":0,"feeds_added":1,"feeds_removed":0,"minutes_listened":0,"month":"2020-02"},{"episodes_played":0,"feeds_added":1,"feeds_removed":0,"minutes_listened":0,"month":"2020-08"},{"episodes_played":0,"feeds_added":1,"feeds_removed":0,"minutes_listened":0,"month":"2020-09"},{"episodes_played":0,"feeds_added":1,"feeds_removed":0,"minutes_listened":0,"month":"2023-01"},{"episodes_played":1,"feeds_added":0,"feeds_removed":0,"minutes_listened":24,"month":"2023-04"},{"episodes_played":7,"feeds_added":3,"feeds_removed":0,"minutes_listened":45,"month":"2023-06"},{"episodes_played":8,"feeds_added":0,"feeds_removed":0,"minutes_listened":155,"month":"2023-07"},{"episodes_played":17,"feeds_added":1,"feeds_removed":0,"minutes_listened":717,"month":"2023-08"},{"episodes_played":15,"feeds_added":0,"feeds_removed":0,"minutes_listened":368,"month":"2023-09"},{"episodes_played":2,"feeds_added":0,"feeds_removed":0,"minutes_listened":214,"month":"2023-10"},{"episodes_played":13,"feeds_added":0,"feeds_removed":0,"minutes_listened":506,"month":"2023-11"},{"episodes_played":34,"feeds_added":1,"feeds_removed":0,"minutes_listened":753,"month":"2023-12"},{"episodes_played":39,"feeds_added":2,"feeds_removed":0,"minutes_listened":670,"month":"2024-01"},{"episodes_played":28,"feeds_added":0,"feeds_removed":0,"minutes_listened":374,"month":"2024-02"},{"episodes_played":28,"feeds_added":1,"feeds_removed":0,"minutes_listened":647,"month":"2024-03"},{"episodes_played":33,"feeds_added":1,"feeds_removed":0,"minutes_listened":745,"month":"2024-04"},{"episodes_played":34,"feeds_added":1,"feeds_removed":0,"minutes_listened":980,"month":"2024-05"},{"episodes_played":31,"feeds_added":0,"feeds_removed":0,"minutes_listened":1018,"month":"2024-06"},{"episodes_played":19,"feeds_added":1,"feeds_removed":0,"minutes_listened":780,"month":"2024-07"},{"episodes_played":15,"feeds_added":2,"feeds_removed":0,"minutes_listened":753,"month":"2024-08"},{"episodes_played":21,"feeds_added":2,"feeds_removed":0,"minutes_listened":797,"month":"2024-09"},{"episodes_played":2,"feeds_added":1,"feeds_removed":0,"minutes_listened":100,"month":"2024-10"},{"episodes_played":9,"feeds_added":1,"feeds_removed":0,"minutes_listened":384,"month":"2024-11"},{"episodes_played":10,"feeds_added":1,"feeds_removed":0,"minutes_listened":471,"month":"2024-12"},{"episodes_played":9,"feeds_added":0,"feeds_removed":0,"minutes_listened":646,"month":"2025-01"},{"episodes_played":3,"feeds_added":0,"feeds_removed":0,"minutes_listened":170,"month":"2025-02"},{"episodes_played":2,"feeds_added":0,"feeds_removed":0,"minutes_listened":111,"month":"2025-03"},{"episodes_played":10,"feeds_added":2,"feeds_removed":0,"minutes_listened":603,"month":"2025-04"},{"episodes_played":2,"feeds_added":0,"feeds_removed":0,"minutes_listened":115,"month":"2025-05"},{"episodes_played":25,"feeds_added":4,"feeds_removed":0,"minutes_listened":1165,"month":"2025-06"},{"episodes_played":30,"feeds_added":0,"feeds_removed":0,"minutes_listened":1545,"month":"2025-07"},{"episodes_played":63,"feeds_added":0,"feeds_removed":0,"minutes_listened":2958,"month":"2025-08"},{"episodes_played":62,"feeds_added":0,"feeds_removed":0,"minutes_listened":3346,"month":"2025-09"},{"episodes_played":45,"feeds_added":1,"feeds_removed":0,"minutes_listened":2360,"month":"2025-10"},{"episodes_played":41,"feeds_added":0,"feeds_removed":0,"minutes_listened":2362,"month":"2025-11"},{"episodes_played":38,"feeds_added":4,"feeds_removed":0,"minutes_listened":1456,"month":"2025-12"},{"episodes_played":30,"feeds_added":1,"feeds_removed":0,"minutes_listened":1732,"month":"2026-01"},{"episodes_played":52,"feeds_added":2,"feeds_removed":0,"minutes_listened":3146,"month":"2026-02"},{"episodes_played":52,"feeds_added":2,"feeds_removed":0,"minutes_listened":3354,"month":"2026-03"},{"episodes_played":29,"feeds_added":1,"feeds_removed":1,"minutes_listened":2093,"month":"2026-04"}];
+    const workoutsData = [{"month":"2019-06","total_calories":315,"total_minutes":143,"workouts":3},{"month":"2019-10","total_calories":900,"total_minutes":100,"workouts":4},{"month":"2019-11","total_calories":0,"total_minutes":430,"workouts":3},{"month":"2019-12","total_calories":0,"total_minutes":122,"workouts":2},{"month":"2020-01","total_calories":0,"total_minutes":741,"workouts":6},{"month":"2020-02","total_calories":0,"total_minutes":452,"workouts":6},{"month":"2020-03","total_calories":0,"total_minutes":1025,"workouts":5},{"month":"2020-04","total_calories":409,"total_minutes":1434,"workouts":17},{"month":"2020-05","total_calories":350,"total_minutes":1263,"workouts":14},{"month":"2020-06","total_calories":0,"total_minutes":1541,"workouts":9},{"month":"2020-07","total_calories":0,"total_minutes":913,"workouts":8},{"month":"2020-10","total_calories":0,"total_minutes":1004,"workouts":5},{"month":"2020-12","total_calories":0,"total_minutes":815,"workouts":5},{"month":"2022-08","total_calories":319.81,"total_minutes":92,"workouts":4},{"month":"2022-09","total_calories":672.98,"total_minutes":119,"workouts":4},{"month":"2022-10","total_calories":79.6,"total_minutes":42,"workouts":2},{"month":"2023-02","total_calories":27.17,"total_minutes":16,"workouts":1},{"month":"2023-09","total_calories":969.72,"total_minutes":142,"workouts":6},{"month":"2023-10","total_calories":8468.13,"total_minutes":1342,"workouts":52},{"month":"2023-11","total_calories":9576.06,"total_minutes":1456,"workouts":68},{"month":"2023-12","total_calories":7967.61,"total_minutes":1165,"workouts":65},{"month":"2024-01","total_calories":9078.26,"total_minutes":1235,"workouts":43},{"month":"2024-02","total_calories":7520.36,"total_minutes":959,"workouts":39},{"month":"2024-03","total_calories":7085.05,"total_minutes":972,"workouts":37},{"month":"2024-04","total_calories":3863.88,"total_minutes":509,"workouts":19},{"month":"2024-05","total_calories":3066.5,"total_minutes":449,"workouts":25},{"month":"2024-06","total_calories":2422.19,"total_minutes":352,"workouts":21},{"month":"2024-07","total_calories":2381.15,"total_minutes":313,"workouts":17},{"month":"2024-08","total_calories":2288.41,"total_minutes":338,"workouts":15},{"month":"2024-09","total_calories":2814.29,"total_minutes":534,"workouts":30},{"month":"2024-10","total_calories":1924.91,"total_minutes":248,"workouts":15},{"month":"2024-11","total_calories":2895.19,"total_minutes":328,"workouts":16},{"month":"2024-12","total_calories":3433.02,"total_minutes":373,"workouts":17},{"month":"2025-01","total_calories":4421.8,"total_minutes":493,"workouts":17},{"month":"2025-02","total_calories":4554.71,"total_minutes":487,"workouts":12},{"month":"2025-03","total_calories":1659.62,"total_minutes":226,"workouts":13},{"month":"2025-04","total_calories":2242.41,"total_minutes":276,"workouts":16},{"month":"2025-05","total_calories":1935.18,"total_minutes":230,"workouts":13},{"month":"2025-06","total_calories":3505.99,"total_minutes":375,"workouts":17},{"month":"2025-07","total_calories":2269.47,"total_minutes":289,"workouts":18},{"month":"2025-08","total_calories":3413.43,"total_minutes":433,"workouts":9},{"month":"2025-09","total_calories":2636.35,"total_minutes":315,"workouts":13},{"month":"2025-10","total_calories":3469.71,"total_minutes":429,"workouts":23},{"month":"2025-11","total_calories":3001.24,"total_minutes":379,"workouts":12},{"month":"2025-12","total_calories":2158.26,"total_minutes":242,"workouts":11},{"month":"2026-01","total_calories":1361.51,"total_minutes":181,"workouts":8},{"month":"2026-02","total_calories":1998.13,"total_minutes":293,"workouts":14},{"month":"2026-03","total_calories":2517.22,"total_minutes":349,"workouts":10},{"month":"2026-04","total_calories":472.39,"total_minutes":53,"workouts":1}];
+    const codeData = [{"commits":55,"month":"2012-06","repos_touched":5},{"commits":93,"month":"2012-07","repos_touched":4},{"commits":12,"month":"2012-08","repos_touched":1},{"commits":20,"month":"2012-09","repos_touched":1},{"commits":24,"month":"2012-10","repos_touched":1},{"commits":8,"month":"2012-11","repos_touched":3},{"commits":7,"month":"2012-12","repos_touched":1},{"commits":1,"month":"2013-02","repos_touched":1},{"commits":89,"month":"2014-03","repos_touched":5},{"commits":76,"month":"2014-04","repos_touched":6},{"commits":2,"month":"2014-05","repos_touched":1},{"commits":13,"month":"2014-06","repos_touched":2},{"commits":8,"month":"2014-07","repos_touched":2},{"commits":1,"month":"2014-08","repos_touched":1},{"commits":5,"month":"2014-10","repos_touched":1},{"commits":25,"month":"2014-12","repos_touched":4},{"commits":13,"month":"2015-01","repos_touched":3},{"commits":22,"month":"2015-02","repos_touched":4},{"commits":39,"month":"2015-03","repos_touched":3},{"commits":33,"month":"2015-04","repos_touched":2},{"commits":1,"month":"2015-05","repos_touched":1},{"commits":1,"month":"2019-04","repos_touched":1},{"commits":18,"month":"2019-05","repos_touched":1},{"commits":3,"month":"2020-02","repos_touched":1},{"commits":38,"month":"2025-02","repos_touched":1},{"commits":17,"month":"2025-03","repos_touched":1},{"commits":13,"month":"2025-04","repos_touched":3},{"commits":3,"month":"2025-05","repos_touched":1},{"commits":5,"month":"2025-06","repos_touched":1},{"commits":4,"month":"2025-07","repos_touched":1},{"commits":22,"month":"2025-08","repos_touched":3},{"commits":14,"month":"2025-09","repos_touched":3},{"commits":22,"month":"2025-10","repos_touched":2},{"commits":6,"month":"2025-11","repos_touched":2},{"commits":23,"month":"2025-12","repos_touched":5},{"commits":19,"month":"2026-01","repos_touched":3},{"commits":83,"month":"2026-02","repos_touched":3},{"commits":81,"month":"2026-03","repos_touched":6},{"commits":69,"month":"2026-04","repos_touched":6}];
 
     
     const isDark = () => document.documentElement.classList.contains('dark');
@@ -283,7 +272,9 @@
       bar: isDarkMode ? 'rgba(209, 213, 219, 0.8)' : 'rgba(55, 65, 81, 0.8)',
       barHover: isDarkMode ? 'rgba(209, 213, 219, 1)' : 'rgba(55, 65, 81, 1)',
       grid: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-      text: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)'
+      text: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
+      surface: isDarkMode ? 'rgba(17, 24, 39, 1)' : 'rgba(255, 255, 255, 1)',
+      surfaceEdge: isDarkMode ? 'rgba(148, 163, 184, 0.45)' : 'rgba(148, 163, 184, 0.55)'
     });
 
     
@@ -327,55 +318,112 @@
       });
     };
 
-    
-    const createDualChart = (ctx, labels, addedData, removedData) => {
+    const createBrokenHorizontalChart = (ctx, items, label) => {
       const colors = getColors();
+      const sortedItems = [...items].sort((a, b) => b.hours - a.hours);
+      const maxValue = Math.max(...sortedItems.map(item => item.hours), 0);
+      const breakStart = 30;
+      const breakResume = 120;
+      const breakSize = Math.max(0, breakResume - breakStart);
+      const scaleValue = (value) => {
+        if (breakSize <= 0 || value <= breakStart) return value;
+        if (value <= breakResume) return breakStart;
+        return breakStart + (value - breakResume) * 0.35;
+      };
+      const ticks = [0, 10, 20, 30, 120, 140, 160, 180, 200].filter(v => v < maxValue);
+      if (!ticks.includes(0)) ticks.unshift(0);
+      if (maxValue > 0 && !ticks.includes(maxValue)) ticks.push(maxValue);
+      const scaledTicks = [...new Set(ticks.map(scaleValue))].sort((a, b) => a - b);
+      const breakX = scaleValue(breakResume);
+      const scaledData = sortedItems.map(item => scaleValue(item.hours));
+      const breakBandWidth = 18;
+
+      const breakPlugin = {
+        id: 'brokenAxisMarker',
+        afterDatasetsDraw(chart) {
+          if (breakSize <= 0) return;
+          const { ctx: chartCtx, chartArea, scales } = chart;
+          const x = scales.x.getPixelForValue(breakX);
+          if (!Number.isFinite(x) || x <= chartArea.left || x >= chartArea.right) return;
+
+          chartCtx.save();
+          chartCtx.fillStyle = colors.surface;
+          chartCtx.strokeStyle = colors.surfaceEdge;
+          chartCtx.lineWidth = 1.5;
+
+          const drawSlashPair = (centerX, centerY, size = 7, gap = 6) => {
+            [-gap / 2, gap / 2].forEach(offset => {
+              chartCtx.beginPath();
+              chartCtx.moveTo(centerX + offset - size / 2, centerY + size / 2);
+              chartCtx.lineTo(centerX + offset + size / 2, centerY - size / 2);
+              chartCtx.stroke();
+            });
+          };
+
+          const meta = chart.getDatasetMeta(0);
+          meta.data.forEach((bar, index) => {
+            if (!bar || sortedItems[index].hours <= breakResume) return;
+            const bandTop = bar.y - (bar.height / 2) - 2;
+            const bandHeight = bar.height + 4;
+            chartCtx.fillRect(x - breakBandWidth / 2, bandTop, breakBandWidth, bandHeight);
+            chartCtx.strokeRect(x - breakBandWidth / 2, bandTop, breakBandWidth, bandHeight);
+            drawSlashPair(x, bar.y, 9, 8);
+          });
+
+          const axisTop = chartArea.bottom - 2;
+          const axisBottom = scales.x.bottom + 10;
+          chartCtx.fillRect(x - breakBandWidth / 2, axisTop, breakBandWidth, axisBottom - axisTop);
+          chartCtx.strokeRect(x - breakBandWidth / 2, axisTop, breakBandWidth, axisBottom - axisTop);
+          drawSlashPair(x, chartArea.bottom + 8, 9, 8);
+
+          chartCtx.restore();
+        }
+      };
+
       return new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Added',
-              data: addedData,
-              backgroundColor: isDarkMode ? 'rgba(134, 239, 172, 0.7)' : 'rgba(34, 197, 94, 0.7)',
-              hoverBackgroundColor: isDarkMode ? 'rgba(134, 239, 172, 1)' : 'rgba(34, 197, 94, 1)',
-              borderRadius: 4,
-              borderSkipped: false
-            },
-            {
-              label: 'Removed',
-              data: removedData.map(v => -v),
-              backgroundColor: isDarkMode ? 'rgba(252, 165, 165, 0.7)' : 'rgba(239, 68, 68, 0.7)',
-              hoverBackgroundColor: isDarkMode ? 'rgba(252, 165, 165, 1)' : 'rgba(239, 68, 68, 1)',
-              borderRadius: 4,
-              borderSkipped: false
-            }
-          ]
+          labels: sortedItems.map(item => item.label),
+          datasets: [{
+            label: label,
+            data: scaledData,
+            backgroundColor: colors.bar,
+            hoverBackgroundColor: colors.barHover,
+            borderRadius: 4,
+            borderSkipped: false
+          }]
         },
+        plugins: [breakPlugin],
         options: {
           responsive: true,
           maintainAspectRatio: true,
+          indexAxis: 'y',
           plugins: {
-            legend: { display: true, labels: { color: colors.text } },
+            legend: { display: false },
             tooltip: {
               callbacks: {
-                label: (ctx) => ctx.dataset.label + ': ' + Math.abs(ctx.raw)
+                label: (ctx) => `${label}: ${sortedItems[ctx.dataIndex].hours}h`
               }
             }
           },
           scales: {
             x: {
-              stacked: true,
-              grid: { display: false },
-              ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
-            },
-            y: {
+              beginAtZero: true,
               grid: { color: colors.grid },
               ticks: {
                 color: colors.text,
-                callback: (v) => Math.abs(v)
+                callback: (v) => {
+                  const original = ticks.find(tick => Math.abs(scaleValue(tick) - v) < 0.001);
+                  return original === undefined ? '' : `${original}h`;
+                }
+              },
+              afterBuildTicks: (axis) => {
+                axis.ticks = scaledTicks.map(value => ({ value }));
               }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: colors.text }
             }
           }
         }
@@ -412,7 +460,16 @@
 
     
     const now = new Date();
+    const currentYear = String(now.getFullYear());
     const currentMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+
+    const sumYtdHours = (data, field) => {
+      if (!Array.isArray(data) || data.length === 0) return 0;
+      const totalMinutes = data
+        .filter(d => d.month && d.month.startsWith(currentYear) && d.month !== currentMonth)
+        .reduce((sum, d) => sum + (Number(d[field]) || 0), 0);
+      return Number((totalMinutes / 60).toFixed(1));
+    };
 
     
     const initCharts = (data, chartConfigs, gapFields) => {
@@ -425,12 +482,35 @@
       const recent = gapped.slice(-12);
       const labels = formatLabels(recent);
       chartConfigs.forEach(config => {
-        createChart(document.getElementById(config.id), labels, recent.map(d => d[config.field]), config.label);
+        const values = recent.map(d => config.transform ? config.transform(d[config.field]) : d[config.field]);
+        const chart = createChart(document.getElementById(config.id), labels, values, config.label);
+        if (config.yTickCallback) {
+          chart.options.scales.y.ticks.callback = config.yTickCallback;
+        }
+        if (config.tooltipLabel) {
+          chart.options.plugins.tooltip = {
+            callbacks: {
+              label: (ctx) => `${config.label}: ${config.tooltipLabel(ctx.raw)}`
+            }
+          };
+        }
+        chart.update();
       });
     };
 
     
     document.addEventListener('DOMContentLoaded', () => {
+      createBrokenHorizontalChart(
+        document.getElementById('chart-ytd-hours'),
+        [
+          { label: 'Articles', hours: sumYtdHours(readingData, 'time_spent_minutes') },
+          { label: 'Podcasts', hours: sumYtdHours(podcastsData, 'minutes_listened') },
+          { label: 'Workouts', hours: sumYtdHours(workoutsData, 'total_minutes') },
+          { label: 'Movies', hours: sumYtdHours(moviesData, 'minutes_watched') }
+        ],
+        'Hours'
+      );
+
       
       if (readingData && Array.isArray(readingData) && readingData.length > 0) {
         const completedReading = fillMonthGaps(readingData.filter(d => d.month !== currentMonth), ['total_words', 'time_spent_minutes']);
@@ -455,8 +535,8 @@
               },
               {
                 type: 'line',
-                label: 'Minutes Read',
-                data: recentReading.map(d => d.time_spent_minutes),
+                label: 'Hours Read',
+                data: recentReading.map(d => Number(((d.time_spent_minutes || 0) / 60).toFixed(1))),
                 borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
                 backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
                 borderWidth: 3,
@@ -474,7 +554,14 @@
             maintainAspectRatio: true,
             interaction: { mode: 'index', intersect: false },
             plugins: {
-              legend: { display: true, labels: { color: colors.text } }
+              legend: { display: true, labels: { color: colors.text } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ctx.dataset.yAxisID === 'y1'
+                    ? `${ctx.dataset.label}: ${ctx.raw}h`
+                    : `${ctx.dataset.label}: ${ctx.raw}`
+                }
+              }
             },
             scales: {
               x: {
@@ -495,8 +582,11 @@
                 beginAtZero: true,
                 position: 'right',
                 grid: { drawOnChartArea: false },
-                ticks: { color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' },
-                title: { display: true, text: 'Minutes', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+                ticks: {
+                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  callback: (v) => `${v}h`
+                },
+                title: { display: true, text: 'Hours', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
               }
             }
           }
@@ -504,11 +594,6 @@
       } else {
         showNoData('chart-total-words');
       }
-
-      
-      initCharts(booksData, [
-        { id: 'chart-books-finished', field: 'books_finished', label: 'Books' }
-      ], ['books_finished']);
 
       
       if (workoutsData && Array.isArray(workoutsData) && workoutsData.length > 0) {
@@ -534,8 +619,8 @@
               },
               {
                 type: 'line',
-                label: 'Minutes',
-                data: recentWorkouts.map(d => d.total_minutes),
+                label: 'Hours',
+                data: recentWorkouts.map(d => Number(((d.total_minutes || 0) / 60).toFixed(1))),
                 borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
                 backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
                 borderWidth: 3,
@@ -553,7 +638,14 @@
             maintainAspectRatio: true,
             interaction: { mode: 'index', intersect: false },
             plugins: {
-              legend: { display: true, labels: { color: colors.text } }
+              legend: { display: true, labels: { color: colors.text } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ctx.dataset.yAxisID === 'y1'
+                    ? `${ctx.dataset.label}: ${ctx.raw}h`
+                    : `${ctx.dataset.label}: ${ctx.raw}`
+                }
+              }
             },
             scales: {
               x: {
@@ -571,8 +663,11 @@
                 beginAtZero: true,
                 position: 'right',
                 grid: { drawOnChartArea: false },
-                ticks: { color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' },
-                title: { display: true, text: 'Minutes', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+                ticks: {
+                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  callback: (v) => `${v}h`
+                },
+                title: { display: true, text: 'Hours', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
               }
             }
           }
@@ -684,94 +779,16 @@
       }
 
       
-      if (moviesData && Array.isArray(moviesData) && moviesData.length > 0) {
-        const recentMovies = fillMonthGaps(moviesData.filter(d => d.month !== currentMonth), ['movies_watched', 'avg_rating']).slice(-12);
-        const moviesLabels = formatLabels(recentMovies);
-        const colors = getColors();
-        new Chart(document.getElementById('chart-movies-combo'), {
-          type: 'bar',
-          data: {
-            labels: moviesLabels,
-            datasets: [
-              {
-                type: 'bar',
-                label: 'Movies Watched',
-                data: recentMovies.map(d => d.movies_watched),
-                backgroundColor: colors.bar,
-                hoverBackgroundColor: colors.barHover,
-                borderRadius: 4,
-                borderSkipped: false,
-                yAxisID: 'y',
-                order: 1
-              },
-              {
-                type: 'line',
-                label: 'Avg Rating',
-                data: recentMovies.map(d => d.avg_rating),
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
-                backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
-                borderWidth: 3,
-                pointRadius: 4,
-                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
-                tension: 0.3,
-                fill: false,
-                yAxisID: 'y1',
-                order: 0
-              }
-            ]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: true,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-              legend: { display: true, labels: { color: colors.text } }
-            },
-            scales: {
-              x: {
-                grid: { display: false },
-                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
-              },
-              y: {
-                beginAtZero: true,
-                position: 'left',
-                grid: { color: colors.grid },
-                ticks: { color: colors.text },
-                title: { display: true, text: 'Movies', color: colors.text }
-              },
-              y1: {
-                beginAtZero: true,
-                position: 'right',
-                grid: { drawOnChartArea: false },
-                ticks: { color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' },
-                title: { display: true, text: 'Rating', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' },
-                max: 5
-              }
-            }
-          }
-        });
-      } else {
-        showNoData('chart-movies-combo');
-      }
-
-      
       initCharts(podcastsData, [
-        { id: 'chart-episodes-played', field: 'episodes_played', label: 'Episodes' }
-      ], ['episodes_played', 'feeds_added', 'feeds_removed']);
-
-      
-      if (podcastsData && Array.isArray(podcastsData) && podcastsData.length > 0) {
-        const recentPodcasts = fillMonthGaps(podcastsData.filter(d => d.month !== currentMonth), ['feeds_added', 'feeds_removed']).slice(-12);
-        const feedLabels = formatLabels(recentPodcasts);
-        createDualChart(
-          document.getElementById('chart-feed-changes'),
-          feedLabels,
-          recentPodcasts.map(d => d.feeds_added),
-          recentPodcasts.map(d => d.feeds_removed)
-        );
-      } else {
-        showNoData('chart-feed-changes');
-      }
+        {
+          id: 'chart-hours-listened',
+          field: 'minutes_listened',
+          label: 'Hours',
+          transform: (minutes) => Number(((minutes || 0) / 60).toFixed(1)),
+          yTickCallback: (v) => `${v}h`,
+          tooltipLabel: (hours) => `${hours}h`
+        }
+      ], ['minutes_listened']);
 
       
       initCharts(codeData, [
