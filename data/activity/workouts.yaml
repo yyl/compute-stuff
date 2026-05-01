@@ -1,9 +1,4 @@
 # Monthly workout activity data
-- month: "2025-04"
-  workouts: 16
-  total_minutes: 276
-  total_calories: 2242.41
-
 - month: "2025-05"
   workouts: 13
   total_minutes: 230
@@ -60,7 +55,7 @@
   total_calories: 2517.22
 
 - month: "2026-04"
-  workouts: 1
-  total_minutes: 53
-  total_calories: 472.39
+  workouts: 8
+  total_minutes: 236
+  total_calories: 1713.99
 

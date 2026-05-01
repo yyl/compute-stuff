@@ -1,8 +1,4 @@
 # Monthly travel activity data
-- month: "2025-04"
-  checkins: 29
-  unique_places: 21
-
 - month: "2025-05"
   checkins: 27
   unique_places: 24
