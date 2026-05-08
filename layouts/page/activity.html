@@ -130,6 +130,36 @@
       surfaceEdge: isDarkMode ? 'rgba(148, 163, 184, 0.45)' : 'rgba(148, 163, 184, 0.55)'
     });
 
+    const parseRgb = (color) => {
+      const match = color.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/);
+      if (!match) return null;
+      return {
+        r: Number(match[1]),
+        g: Number(match[2]),
+        b: Number(match[3]),
+        a: match[4] === undefined ? 1 : Number(match[4])
+      };
+    };
+
+    const flattenColor = (foreground, background) => {
+      if (!foreground) return background || { r: 255, g: 255, b: 255, a: 1 };
+      if (!background || foreground.a >= 1) return foreground;
+      return {
+        r: Math.round(foreground.r * foreground.a + background.r * (1 - foreground.a)),
+        g: Math.round(foreground.g * foreground.a + background.g * (1 - foreground.a)),
+        b: Math.round(foreground.b * foreground.a + background.b * (1 - foreground.a)),
+        a: 1
+      };
+    };
+
+    const getChartSurfaceColor = (canvas) => {
+      const container = canvas.closest('.chart-container');
+      const containerColor = parseRgb(getComputedStyle(container).backgroundColor);
+      const bodyColor = parseRgb(getComputedStyle(document.body).backgroundColor) || { r: 255, g: 255, b: 255, a: 1 };
+      const color = flattenColor(containerColor, bodyColor);
+      return `rgb(${color.r}, ${color.g}, ${color.b})`;
+    };
+
     // Chart defaults
     const createChart = (ctx, labels, data, label) => {
       const colors = getColors();
@@ -173,42 +203,62 @@
 
     const createBrokenHorizontalChart = (ctx, items, label) => {
       const colors = getColors();
+      const chartSurface = getChartSurfaceColor(ctx);
       const sortedItems = [...items].sort((a, b) => b.hours - a.hours);
       const maxValue = Math.max(...sortedItems.map(item => item.hours), 0);
       const breakStart = 30;
       const breakResume = 120;
+      const breakGapUnits = 4;
       const breakSize = Math.max(0, breakResume - breakStart);
       const scaleValue = (value) => {
         if (breakSize <= 0 || value <= breakStart) return value;
-        if (value <= breakResume) return breakStart;
-        return breakStart + (value - breakResume) * 0.35;
+        if (value <= breakResume) return breakStart + breakGapUnits;
+        return breakStart + breakGapUnits + (value - breakResume) * 0.35;
       };
       const ticks = [0, 10, 20, 30, 120, 140, 160, 180, 200].filter(v => v < maxValue);
       if (!ticks.includes(0)) ticks.unshift(0);
       if (maxValue > 0 && !ticks.includes(maxValue)) ticks.push(maxValue);
       const scaledTicks = [...new Set(ticks.map(scaleValue))].sort((a, b) => a - b);
-      const breakX = scaleValue(breakResume);
+      const breakStartX = scaleValue(breakStart);
+      const breakResumeX = scaleValue(breakResume);
       const scaledData = sortedItems.map(item => scaleValue(item.hours));
-      const breakBandWidth = 18;
 
       const breakPlugin = {
         id: 'brokenAxisMarker',
         afterDatasetsDraw(chart) {
           if (breakSize <= 0) return;
           const { ctx: chartCtx, chartArea, scales } = chart;
-          const x = scales.x.getPixelForValue(breakX);
-          if (!Number.isFinite(x) || x <= chartArea.left || x >= chartArea.right) return;
+          const breakLeft = scales.x.getPixelForValue(breakStartX);
+          const breakRight = scales.x.getPixelForValue(breakResumeX);
+          const breakWidth = breakRight - breakLeft;
+          if (
+            !Number.isFinite(breakLeft) ||
+            !Number.isFinite(breakRight) ||
+            breakWidth <= 0 ||
+            breakLeft <= chartArea.left ||
+            breakRight >= chartArea.right
+          ) return;
 
           chartCtx.save();
-          chartCtx.fillStyle = colors.surface;
-          chartCtx.strokeStyle = colors.surfaceEdge;
-          chartCtx.lineWidth = 1.5;
+          chartCtx.lineCap = 'round';
+          chartCtx.lineJoin = 'round';
 
-          const drawSlashPair = (centerX, centerY, size = 7, gap = 6) => {
-            [-gap / 2, gap / 2].forEach(offset => {
+          const drawCutEdge = (x, centerY, direction = 1, size = 10) => {
+            chartCtx.strokeStyle = colors.surfaceEdge;
+            chartCtx.lineWidth = 1.75;
+            [-2.5, 2.5].forEach(offset => {
+              chartCtx.strokeStyle = chartSurface;
+              chartCtx.lineWidth = 4;
               chartCtx.beginPath();
-              chartCtx.moveTo(centerX + offset - size / 2, centerY + size / 2);
-              chartCtx.lineTo(centerX + offset + size / 2, centerY - size / 2);
+              chartCtx.moveTo(x + direction * -size / 2, centerY + offset + size / 2);
+              chartCtx.lineTo(x + direction * size / 2, centerY + offset - size / 2);
+              chartCtx.stroke();
+
+              chartCtx.strokeStyle = colors.surfaceEdge;
+              chartCtx.lineWidth = 1.75;
+              chartCtx.beginPath();
+              chartCtx.moveTo(x + direction * -size / 2, centerY + offset + size / 2);
+              chartCtx.lineTo(x + direction * size / 2, centerY + offset - size / 2);
               chartCtx.stroke();
             });
           };
@@ -216,18 +266,22 @@
           const meta = chart.getDatasetMeta(0);
           meta.data.forEach((bar, index) => {
             if (!bar || sortedItems[index].hours <= breakResume) return;
-            const bandTop = bar.y - (bar.height / 2) - 2;
-            const bandHeight = bar.height + 4;
-            chartCtx.fillRect(x - breakBandWidth / 2, bandTop, breakBandWidth, bandHeight);
-            chartCtx.strokeRect(x - breakBandWidth / 2, bandTop, breakBandWidth, bandHeight);
-            drawSlashPair(x, bar.y, 9, 8);
+            chartCtx.fillStyle = chartSurface;
+            const barMaskBleed = 2;
+            chartCtx.fillRect(
+              breakLeft - barMaskBleed,
+              bar.y - bar.height / 2 - barMaskBleed,
+              breakWidth + barMaskBleed * 2,
+              bar.height + barMaskBleed * 2
+            );
+            drawCutEdge(breakLeft, bar.y, -1, 10);
+            drawCutEdge(breakRight, bar.y, 1, 10);
           });
 
-          const axisTop = chartArea.bottom - 2;
-          const axisBottom = scales.x.bottom + 10;
-          chartCtx.fillRect(x - breakBandWidth / 2, axisTop, breakBandWidth, axisBottom - axisTop);
-          chartCtx.strokeRect(x - breakBandWidth / 2, axisTop, breakBandWidth, axisBottom - axisTop);
-          drawSlashPair(x, chartArea.bottom + 8, 9, 8);
+          chartCtx.fillStyle = chartSurface;
+          chartCtx.fillRect(breakLeft, chartArea.bottom - 2, breakWidth, 4);
+          drawCutEdge(breakLeft, chartArea.bottom, -1, 9);
+          drawCutEdge(breakRight, chartArea.bottom, 1, 9);
 
           chartCtx.restore();
         }
@@ -262,9 +316,19 @@
           scales: {
             x: {
               beginAtZero: true,
-              grid: { color: colors.grid },
+              grid: {
+                color: (ctx) => {
+                  if (
+                    Math.abs(ctx.tick.value - breakStartX) < 0.001 ||
+                    Math.abs(ctx.tick.value - breakResumeX) < 0.001
+                  ) return 'transparent';
+                  return colors.grid;
+                }
+              },
               ticks: {
                 color: colors.text,
+                autoSkip: false,
+                maxRotation: 0,
                 callback: (v) => {
                   const original = ticks.find(tick => Math.abs(scaleValue(tick) - v) < 0.001);
                   return original === undefined ? '' : `${original}h`;
