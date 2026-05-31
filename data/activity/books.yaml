@@ -19,3 +19,7 @@
   books_finished: 2
   avg_rating: 4.50
 
+- month: "2026-05"
+  books_finished: 1
+  avg_rating: None
+
