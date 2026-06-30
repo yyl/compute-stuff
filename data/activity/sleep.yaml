@@ -1,0 +1,79 @@
+# Monthly sleep and readiness data
+- month: "2025-06"
+  median_readiness_score: 82.00
+  avg_readiness_score: 81.41
+  median_sleep_score: 78.00
+  avg_sleep_score: 78.14
+
+- month: "2025-07"
+  median_readiness_score: 84.00
+  avg_readiness_score: 83.81
+  median_sleep_score: 78.00
+  avg_sleep_score: 77.69
+
+- month: "2025-08"
+  median_readiness_score: 86.00
+  avg_readiness_score: 84.81
+  median_sleep_score: 78.00
+  avg_sleep_score: 78.29
+
+- month: "2025-09"
+  median_readiness_score: 83.00
+  avg_readiness_score: 82.30
+  median_sleep_score: 80.00
+  avg_sleep_score: 78.60
+
+- month: "2025-10"
+  median_readiness_score: 80.00
+  avg_readiness_score: 79.35
+  median_sleep_score: 78.50
+  avg_sleep_score: 77.46
+
+- month: "2025-11"
+  median_readiness_score: 76.00
+  avg_readiness_score: 76.27
+  median_sleep_score: 78.00
+  avg_sleep_score: 77.46
+
+- month: "2025-12"
+  median_readiness_score: 75.00
+  avg_readiness_score: 73.45
+  median_sleep_score: 77.00
+  avg_sleep_score: 76.10
+
+- month: "2026-01"
+  median_readiness_score: 82.00
+  avg_readiness_score: 81.59
+  median_sleep_score: 79.00
+  avg_sleep_score: 78.65
+
+- month: "2026-02"
+  median_readiness_score: 82.00
+  avg_readiness_score: 82.17
+  median_sleep_score: 79.00
+  avg_sleep_score: 79.04
+
+- month: "2026-03"
+  median_readiness_score: 77.00
+  avg_readiness_score: 76.77
+  median_sleep_score: 78.00
+  avg_sleep_score: 76.90
+
+- month: "2026-04"
+  median_readiness_score: 81.00
+  avg_readiness_score: 80.93
+  median_sleep_score: 78.00
+  avg_sleep_score: 78.24
+
+- month: "2026-05"
+  median_readiness_score: 81.00
+  avg_readiness_score: 80.13
+  median_sleep_score: 78.00
+  avg_sleep_score: 76.87
+
+- month: "2026-06"
+  median_readiness_score: 80.50
+  avg_readiness_score: 80.50
+  median_sleep_score: 78.50
+  avg_sleep_score: 77.73
+

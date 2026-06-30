@@ -49,3 +49,8 @@
   minutes_watched: 0
   avg_rating: 3.00
 
+- month: "2026-06"
+  movies_watched: 2.00
+  minutes_watched: 0
+  avg_rating: 2.50
+
