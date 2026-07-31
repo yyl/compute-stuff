@@ -1,10 +1,4 @@
 # Monthly sleep and readiness data
-- month: "2025-06"
-  median_readiness_score: 82.00
-  avg_readiness_score: 81.41
-  median_sleep_score: 78.00
-  avg_sleep_score: 78.14
-
 - month: "2025-07"
   median_readiness_score: 84.00
   avg_readiness_score: 83.81
@@ -76,4 +70,10 @@
   avg_readiness_score: 80.50
   median_sleep_score: 78.50
   avg_sleep_score: 77.73
+
+- month: "2026-07"
+  median_readiness_score: 81.00
+  avg_readiness_score: 81.20
+  median_sleep_score: 77.00
+  avg_sleep_score: 77.40
 
