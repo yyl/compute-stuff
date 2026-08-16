@@ -1,8 +1,4 @@
 # Monthly code activity data
-- month: "2025-06"
-  commits: 5
-  repos_touched: 1
-
 - month: "2025-07"
   commits: 4
   repos_touched: 1
@@ -48,6 +44,10 @@
   repos_touched: 4
 
 - month: "2026-06"
-  commits: 20
+  commits: 21
+  repos_touched: 3
+
+- month: "2026-07"
+  commits: 5
   repos_touched: 3
 
