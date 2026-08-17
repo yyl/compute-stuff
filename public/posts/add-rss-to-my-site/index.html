@@ -58,34 +58,34 @@ I could have lived with these limitations, but I prefer to give my readers the b
     href="https://www.mildlyjournaling.com/apple-touch-icon.png"
   />
 
-  <meta name="generator" content="Hugo 0.144.2">
-  <meta itemprop="name" content="Adding an RSS Feed to My Site">
-  <meta itemprop="description" content="I recently decided to add an RSS feed to my Hugo website. While it seemed straightforward at first, I ran into several gotchas that taught me more about Hugo’s RSS system than I expected to learn.
+  <meta name="generator" content="Hugo 0.165.0">
+	<meta itemprop="name" content="Adding an RSS Feed to My Site">
+	<meta itemprop="description" content="I recently decided to add an RSS feed to my Hugo website. While it seemed straightforward at first, I ran into several gotchas that taught me more about Hugo’s RSS system than I expected to learn.
 The simple solution that wasn’t quite right My Hugo theme, Paper, advertises built-in RSS support. I initially tried their default RSS configuration, but it had two problems:
 The feed only included snippets of each post instead of the full content. This meant subscribers had to click through to my site to read complete articles. The feed included everything from my website, including non-article pages like my About page. I wanted the feed to focus only on my blog posts. I could have lived with these limitations, but I prefer to give my readers the best possible experience. For me, that means allowing them to read full articles directly in their RSS reader.">
-  <meta itemprop="datePublished" content="2025-02-22T20:37:30-08:00">
-  <meta itemprop="dateModified" content="2025-02-22T20:37:30-08:00">
-  <meta itemprop="wordCount" content="671">
-  <meta itemprop="keywords" content="howto,blog-setup,cloudflare-pages,rss,hugo"><meta property="og:url" content="https://www.mildlyjournaling.com/posts/add-rss-to-my-site/">
-  <meta property="og:site_name" content="Mildly Journaling">
-  <meta property="og:title" content="Adding an RSS Feed to My Site">
-  <meta property="og:description" content="I recently decided to add an RSS feed to my Hugo website. While it seemed straightforward at first, I ran into several gotchas that taught me more about Hugo’s RSS system than I expected to learn.
+	<meta itemprop="datePublished" content="2025-02-22T20:37:30-08:00">
+	<meta itemprop="dateModified" content="2025-02-22T20:37:30-08:00">
+	<meta itemprop="wordCount" content="671">
+	<meta itemprop="keywords" content="howto,blog-setup,cloudflare-pages,rss,hugo"><meta property="og:url" content="https://www.mildlyjournaling.com/posts/add-rss-to-my-site/">
+	<meta property="og:site_name" content="Mildly Journaling">
+	<meta property="og:title" content="Adding an RSS Feed to My Site">
+	<meta property="og:description" content="I recently decided to add an RSS feed to my Hugo website. While it seemed straightforward at first, I ran into several gotchas that taught me more about Hugo’s RSS system than I expected to learn.
 The simple solution that wasn’t quite right My Hugo theme, Paper, advertises built-in RSS support. I initially tried their default RSS configuration, but it had two problems:
 The feed only included snippets of each post instead of the full content. This meant subscribers had to click through to my site to read complete articles. The feed included everything from my website, including non-article pages like my About page. I wanted the feed to focus only on my blog posts. I could have lived with these limitations, but I prefer to give my readers the best possible experience. For me, that means allowing them to read full articles directly in their RSS reader.">
-  <meta property="og:locale" content="en_us">
-  <meta property="og:type" content="article">
-    <meta property="article:section" content="posts">
-    <meta property="article:published_time" content="2025-02-22T20:37:30-08:00">
-    <meta property="article:modified_time" content="2025-02-22T20:37:30-08:00">
-    <meta property="article:tag" content="howto">
-    <meta property="article:tag" content="blog-setup">
-    <meta property="article:tag" content="cloudflare-pages">
-    <meta property="article:tag" content="rss">
-    <meta property="article:tag" content="hugo">
+	<meta property="og:locale" content="en_us">
+	<meta property="og:type" content="article">
+		<meta property="article:section" content="posts">
+		<meta property="article:published_time" content="2025-02-22T20:37:30-08:00">
+		<meta property="article:modified_time" content="2025-02-22T20:37:30-08:00">
+		<meta property="article:tag" content="howto">
+		<meta property="article:tag" content="blog-setup">
+		<meta property="article:tag" content="cloudflare-pages">
+		<meta property="article:tag" content="rss">
+		<meta property="article:tag" content="hugo">
 
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Adding an RSS Feed to My Site">
-  <meta name="twitter:description" content="I recently decided to add an RSS feed to my Hugo website. While it seemed straightforward at first, I ran into several gotchas that taught me more about Hugo’s RSS system than I expected to learn.
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:title" content="Adding an RSS Feed to My Site">
+	<meta name="twitter:description" content="I recently decided to add an RSS feed to my Hugo website. While it seemed straightforward at first, I ran into several gotchas that taught me more about Hugo’s RSS system than I expected to learn.
 The simple solution that wasn’t quite right My Hugo theme, Paper, advertises built-in RSS support. I initially tried their default RSS configuration, but it had two problems:
 The feed only included snippets of each post instead of the full content. This meant subscribers had to click through to my site to read complete articles. The feed included everything from my website, including non-article pages like my About page. I wanted the feed to focus only on my blog posts. I could have lived with these limitations, but I prefer to give my readers the best possible experience. For me, that means allowing them to read full articles directly in their RSS reader.">
 
@@ -176,7 +176,7 @@ The feed only included snippets of each post instead of the full content. This m
 <p>Here&rsquo;s where I learned something interesting about Hugo: it has two different types of RSS feeds. There&rsquo;s a &ldquo;home&rdquo; feed that includes all content and a &ldquo;section&rdquo; feed that only includes content from a specific section of your site.</p>
 <p>Since I wanted my feed to include only blog posts, I created a template called <code>section.rss.xml</code> rather than <code>home.rss.xml</code>. This tells Hugo to generate the feed only for my &ldquo;posts&rdquo; section.</p>
 <p>The modification to include full content instead of snippets was surprisingly simple. I just had to change one line in the template:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;description&gt;</span>{% raw %}{{ .Content | transform.XMLEscape | safeHTML }}{% endraw %}<span style="color:#f92672">&lt;/description&gt;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"><code class="language-xml" data-lang="xml"><span style="display:flex;"><span><span style="color:#f92672">&lt;description&gt;</span>{% raw %}{{ .Content | transform.XMLEscape | safeHTML }}{% endraw %}<span style="color:#f92672">&lt;/description&gt;</span>
 </span></span></code></pre></div><p>The key change was replacing <code>.Summary</code> with <code>.Content</code>. This tells Hugo to include the complete article text in the feed instead of just a preview.</p>
 <h2 id="an-unexpected-build-failure">An unexpected build failure</h2>
 <p>Just when I thought I was done, Cloudflare Pages refused to build my site. The error message was cryptic:</p>
