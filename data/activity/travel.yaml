@@ -1,8 +1,4 @@
 # Monthly travel activity data
-- month: "2025-07"
-  checkins: 60
-  unique_places: 54
-
 - month: "2025-08"
   checkins: 31
   unique_places: 23
@@ -48,6 +44,10 @@
   unique_places: 18
 
 - month: "2026-07"
-  checkins: 37
-  unique_places: 31
+  checkins: 38
+  unique_places: 32
+
+- month: "2026-08"
+  checkins: 22
+  unique_places: 17
 

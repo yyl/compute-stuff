@@ -1,8 +1,4 @@
 # Monthly books activity data
-- month: "2025-07"
-  books_finished: 1
-  avg_rating: 4.00
-
 - month: "2025-09"
   books_finished: 1
   avg_rating: 5.00

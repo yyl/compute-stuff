@@ -1,9 +1,4 @@
 # Monthly movies activity data
-- month: "2025-07"
-  movies_watched: 7.00
-  minutes_watched: 0
-  avg_rating: 2.86
-
 - month: "2025-08"
   movies_watched: 2.00
   minutes_watched: 0
@@ -58,4 +53,9 @@
   movies_watched: 1.00
   minutes_watched: 0
   avg_rating: 4.50
+
+- month: "2026-08"
+  movies_watched: 2.00
+  minutes_watched: 0
+  avg_rating: 3.25
 
