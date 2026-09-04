@@ -206,18 +206,45 @@
       const chartSurface = getChartSurfaceColor(ctx);
       const sortedItems = [...items].sort((a, b) => b.hours - a.hours);
       const maxValue = Math.max(...sortedItems.map(item => item.hours), 0);
-      const breakStart = 30;
-      const breakResume = 120;
-      const breakGapUnits = 4;
+      const regularValues = sortedItems.slice(1).map(item => item.hours);
+      const regularMax = Math.max(...regularValues, 0);
+      const niceStep = (value) => {
+        const magnitude = 10 ** Math.floor(Math.log10(Math.max(value, 1)));
+        const normalized = value / magnitude;
+        const fraction = [1, 2, 2.5, 5, 10].find(candidate => candidate >= normalized) || 10;
+        return fraction * magnitude;
+      };
+      const tickStep = niceStep(regularMax / 4);
+      // Only break an empty section of the scale. That keeps the smaller activities
+      // on a normal, directly comparable scale instead of flattening them together.
+      const shouldBreak = regularMax > 0 && maxValue > regularMax * 2.5;
+      const breakStart = shouldBreak ? tickStep * 4 : maxValue;
+      const breakResume = shouldBreak
+        ? Math.max(breakStart + tickStep * 2, Math.floor((maxValue - regularMax * 0.75) / tickStep) * tickStep)
+        : maxValue;
+      const breakGapUnits = Math.max(3, tickStep * 0.4);
+      const compressedTail = Math.max(tickStep, breakStart * 0.35);
+      const tailScale = maxValue > breakResume ? compressedTail / (maxValue - breakResume) : 1;
       const breakSize = Math.max(0, breakResume - breakStart);
       const scaleValue = (value) => {
-        if (breakSize <= 0 || value <= breakStart) return value;
+        if (!shouldBreak || value <= breakStart) return value;
         if (value <= breakResume) return breakStart + breakGapUnits;
-        return breakStart + breakGapUnits + (value - breakResume) * 0.35;
+        return breakStart + breakGapUnits + (value - breakResume) * tailScale;
       };
-      const ticks = [0, 10, 20, 30, 120, 140, 160, 180, 200].filter(v => v < maxValue);
-      if (!ticks.includes(0)) ticks.unshift(0);
-      if (maxValue > 0 && !ticks.includes(maxValue)) ticks.push(maxValue);
+      const regularTicks = Array.from(
+        { length: Math.floor(breakStart / tickStep) + 1 },
+        (_, index) => index * tickStep
+      );
+      const outlierTicks = shouldBreak
+        ? Array.from(
+          { length: Math.floor((maxValue - breakResume) / tickStep) + 1 },
+          (_, index) => breakResume + index * tickStep
+        )
+        : [];
+      const ticks = [...new Set([...regularTicks, ...outlierTicks].filter(v => v <= maxValue))];
+      // The value is already printed on its bar; avoid a near-duplicate final
+      // axis tick crowding the compressed end of the scale.
+      if (!ticks.some(tick => Math.abs(tick - maxValue) < tickStep * 0.5)) ticks.push(maxValue);
       const scaledTicks = [...new Set(ticks.map(scaleValue))].sort((a, b) => a - b);
       const breakStartX = scaleValue(breakStart);
       const breakResumeX = scaleValue(breakResume);
@@ -226,7 +253,7 @@
       const breakPlugin = {
         id: 'brokenAxisMarker',
         afterDatasetsDraw(chart) {
-          if (breakSize <= 0) return;
+          if (!shouldBreak || breakSize <= 0) return;
           const { ctx: chartCtx, chartArea, scales } = chart;
           const breakLeft = scales.x.getPixelForValue(breakStartX);
           const breakRight = scales.x.getPixelForValue(breakResumeX);
@@ -283,6 +310,16 @@
           drawCutEdge(breakLeft, chartArea.bottom, -1, 9);
           drawCutEdge(breakRight, chartArea.bottom, 1, 9);
 
+          chartCtx.font = '600 12px system-ui, sans-serif';
+          chartCtx.fillStyle = colors.text;
+          chartCtx.textBaseline = 'middle';
+          meta.data.forEach((bar, index) => {
+            const value = `${sortedItems[index].hours}h`;
+            const labelX = bar.x + 8;
+            chartCtx.textAlign = labelX > chartArea.right - 36 ? 'right' : 'left';
+            chartCtx.fillText(value, Math.min(labelX, chartArea.right - 4), bar.y);
+          });
+
           chartCtx.restore();
         }
       };
@@ -316,6 +353,7 @@
           scales: {
             x: {
               beginAtZero: true,
+              max: scaleValue(maxValue),
               grid: {
                 color: (ctx) => {
                   if (
