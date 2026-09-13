@@ -24,6 +24,7 @@
     </div>
   </section>
 
+
   <!-- 📚 Reading -->
   <section class="activity-section">
     <h2>&#128218; Reading</h2>
@@ -97,6 +98,17 @@
     </div>
   </section>
 
+  <!-- 😴 Sleep -->
+  <section class="activity-section">
+    <h2>😴 Sleep</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h3>Sleep Score</h3>
+        <canvas id="chart-sleep-scores"></canvas>
+      </div>
+    </div>
+  </section>
+
   <!-- 💻 Code -->
   <section class="activity-section">
     <h2>💻 Code</h2>
@@ -127,6 +139,7 @@
     const workoutsData = {{ .Site.Data.activity.workouts | jsonify | safeJS }};
     const codeData = {{ .Site.Data.activity.code | jsonify | safeJS }};
     const writingData = {{ .Site.Data.activity.writing | jsonify | safeJS }};
+    const sleepData = {{ .Site.Data.activity.sleep | jsonify | safeJS }};
 
     // Detect dark mode
     const isDark = () => document.documentElement.classList.contains('dark');
@@ -756,6 +769,74 @@
           tooltipLabel: (hours) => `${hours}h`
         }
       ], ['minutes_listened']);
+
+      // Sleep score chart (two dotted lines: median & avg)
+      if (sleepData && Array.isArray(sleepData) && sleepData.length > 0) {
+        const completedSleep = sleepData.filter(d => d.month !== currentMonth);
+        const recentSleep = completedSleep.slice(-12);
+        const sleepLabels = formatLabels(recentSleep);
+        const colors = getColors();
+        const allScores = recentSleep.flatMap(d => [d.median_sleep_score, d.avg_sleep_score]).filter(Boolean);
+        const minScore = Math.max(0, Math.floor(Math.min(...allScores)) - 3);
+        const maxScore = Math.min(100, Math.ceil(Math.max(...allScores)) + 3);
+        new Chart(document.getElementById('chart-sleep-scores'), {
+          type: 'line',
+          data: {
+            labels: sleepLabels,
+            datasets: [
+              {
+                label: 'Median',
+                data: recentSleep.map(d => d.median_sleep_score),
+                borderColor: isDarkMode ? 'rgba(209, 213, 219, 0.9)' : 'rgba(55, 65, 81, 0.9)',
+                backgroundColor: 'transparent',
+                borderWidth: 2.5,
+                pointRadius: 4,
+                pointBackgroundColor: isDarkMode ? 'rgba(209, 213, 219, 1)' : 'rgba(55, 65, 81, 1)',
+                tension: 0.3,
+                fill: false
+              },
+              {
+                label: 'Average',
+                data: recentSleep.map(d => Number((d.avg_sleep_score || 0).toFixed(1))),
+                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                backgroundColor: 'transparent',
+                borderWidth: 2.5,
+                pointRadius: 4,
+                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                tension: 0.3,
+                fill: false
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: true, labels: { color: colors.text } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
+              },
+              y: {
+                min: minScore,
+                max: maxScore,
+                grid: { color: colors.grid },
+                ticks: { color: colors.text }
+              }
+            }
+          }
+        });
+      } else {
+        showNoData('chart-sleep-scores');
+      }
 
       // Writing combo chart (bar: posts, line: total words)
       if (writingData && Array.isArray(writingData) && writingData.length > 0) {

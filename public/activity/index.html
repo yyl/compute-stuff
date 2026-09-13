@@ -160,6 +160,7 @@
     </div>
   </section>
 
+
   
   <section class="activity-section">
     <h2>&#128218; Reading</h2>
@@ -236,6 +237,17 @@
 
   
   <section class="activity-section">
+    <h2>😴 Sleep</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h3>Sleep Score</h3>
+        <canvas id="chart-sleep-scores"></canvas>
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="activity-section">
     <h2>💻 Code</h2>
     <div class="charts-grid">
       <div class="chart-container">
@@ -262,6 +274,7 @@
     const workoutsData = [{"month":"2025-08","total_calories":3413.43,"total_minutes":433,"workouts":9},{"month":"2025-09","total_calories":2533.39,"total_minutes":289,"workouts":12},{"month":"2025-10","total_calories":3469.71,"total_minutes":429,"workouts":23},{"month":"2025-11","total_calories":3001.24,"total_minutes":379,"workouts":12},{"month":"2025-12","total_calories":2158.26,"total_minutes":242,"workouts":11},{"month":"2026-01","total_calories":1361.51,"total_minutes":181,"workouts":8},{"month":"2026-02","total_calories":1898.12,"total_minutes":265,"workouts":13},{"month":"2026-03","total_calories":2414.5,"total_minutes":322,"workouts":9},{"month":"2026-04","total_calories":1713.99,"total_minutes":236,"workouts":8},{"month":"2026-05","total_calories":1431.32,"total_minutes":212,"workouts":9},{"month":"2026-06","total_calories":3665.62,"total_minutes":512,"workouts":15},{"month":"2026-07","total_calories":4927.14,"total_minutes":726,"workouts":20},{"month":"2026-08","total_calories":5551.51,"total_minutes":715,"workouts":13}];
     const codeData = [{"commits":22,"month":"2025-08","repos_touched":3},{"commits":14,"month":"2025-09","repos_touched":3},{"commits":22,"month":"2025-10","repos_touched":2},{"commits":6,"month":"2025-11","repos_touched":2},{"commits":23,"month":"2025-12","repos_touched":5},{"commits":19,"month":"2026-01","repos_touched":3},{"commits":83,"month":"2026-02","repos_touched":3},{"commits":81,"month":"2026-03","repos_touched":6},{"commits":78,"month":"2026-04","repos_touched":6},{"commits":16,"month":"2026-05","repos_touched":4},{"commits":21,"month":"2026-06","repos_touched":3},{"commits":8,"month":"2026-07","repos_touched":3},{"commits":11,"month":"2026-08","repos_touched":3}];
     const writingData = [{"month":"2025-08","posts":7,"total_words":3145,"unique_tags":20},{"month":"2025-09","posts":8,"total_words":3016,"unique_tags":27},{"month":"2025-10","posts":7,"total_words":3037,"unique_tags":23},{"month":"2025-11","posts":5,"total_words":1579,"unique_tags":4},{"month":"2025-12","posts":5,"total_words":1990,"unique_tags":11},{"month":"2026-01","posts":5,"total_words":1660,"unique_tags":10},{"month":"2026-02","posts":2,"total_words":309,"unique_tags":15},{"month":"2026-03","posts":3,"total_words":986,"unique_tags":20},{"month":"2026-04","posts":3,"total_words":5006,"unique_tags":25},{"month":"2026-05","posts":1,"total_words":1003,"unique_tags":12},{"month":"2026-06","posts":1,"total_words":398,"unique_tags":12},{"month":"2026-07","posts":1,"total_words":1021,"unique_tags":14},{"month":"2026-08","posts":2,"total_words":1794,"unique_tags":20}];
+    const sleepData = [{"avg_readiness_score":84.81,"avg_sleep_score":78.29,"median_readiness_score":86,"median_sleep_score":78,"month":"2025-08"},{"avg_readiness_score":82.3,"avg_sleep_score":78.6,"median_readiness_score":83,"median_sleep_score":80,"month":"2025-09"},{"avg_readiness_score":79.35,"avg_sleep_score":77.46,"median_readiness_score":80,"median_sleep_score":78.5,"month":"2025-10"},{"avg_readiness_score":76.27,"avg_sleep_score":77.46,"median_readiness_score":76,"median_sleep_score":78,"month":"2025-11"},{"avg_readiness_score":73.45,"avg_sleep_score":76.1,"median_readiness_score":75,"median_sleep_score":77,"month":"2025-12"},{"avg_readiness_score":81.59,"avg_sleep_score":78.65,"median_readiness_score":82,"median_sleep_score":79,"month":"2026-01"},{"avg_readiness_score":82.17,"avg_sleep_score":79.04,"median_readiness_score":82,"median_sleep_score":79,"month":"2026-02"},{"avg_readiness_score":76.77,"avg_sleep_score":76.9,"median_readiness_score":77,"median_sleep_score":78,"month":"2026-03"},{"avg_readiness_score":80.93,"avg_sleep_score":78.24,"median_readiness_score":81,"median_sleep_score":78,"month":"2026-04"},{"avg_readiness_score":80.13,"avg_sleep_score":76.87,"median_readiness_score":81,"median_sleep_score":78,"month":"2026-05"},{"avg_readiness_score":80.5,"avg_sleep_score":77.73,"median_readiness_score":80.5,"median_sleep_score":78.5,"month":"2026-06"},{"avg_readiness_score":81.2,"avg_sleep_score":77.4,"median_readiness_score":81,"median_sleep_score":77,"month":"2026-07"}];
 
     
     const isDark = () => document.documentElement.classList.contains('dark');
@@ -891,6 +904,74 @@
           tooltipLabel: (hours) => `${hours}h`
         }
       ], ['minutes_listened']);
+
+      
+      if (sleepData && Array.isArray(sleepData) && sleepData.length > 0) {
+        const completedSleep = sleepData.filter(d => d.month !== currentMonth);
+        const recentSleep = completedSleep.slice(-12);
+        const sleepLabels = formatLabels(recentSleep);
+        const colors = getColors();
+        const allScores = recentSleep.flatMap(d => [d.median_sleep_score, d.avg_sleep_score]).filter(Boolean);
+        const minScore = Math.max(0, Math.floor(Math.min(...allScores)) - 3);
+        const maxScore = Math.min(100, Math.ceil(Math.max(...allScores)) + 3);
+        new Chart(document.getElementById('chart-sleep-scores'), {
+          type: 'line',
+          data: {
+            labels: sleepLabels,
+            datasets: [
+              {
+                label: 'Median',
+                data: recentSleep.map(d => d.median_sleep_score),
+                borderColor: isDarkMode ? 'rgba(209, 213, 219, 0.9)' : 'rgba(55, 65, 81, 0.9)',
+                backgroundColor: 'transparent',
+                borderWidth: 2.5,
+                pointRadius: 4,
+                pointBackgroundColor: isDarkMode ? 'rgba(209, 213, 219, 1)' : 'rgba(55, 65, 81, 1)',
+                tension: 0.3,
+                fill: false
+              },
+              {
+                label: 'Average',
+                data: recentSleep.map(d => Number((d.avg_sleep_score || 0).toFixed(1))),
+                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                backgroundColor: 'transparent',
+                borderWidth: 2.5,
+                pointRadius: 4,
+                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                tension: 0.3,
+                fill: false
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: true, labels: { color: colors.text } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
+              },
+              y: {
+                min: minScore,
+                max: maxScore,
+                grid: { color: colors.grid },
+                ticks: { color: colors.text }
+              }
+            }
+          }
+        });
+      } else {
+        showNoData('chart-sleep-scores');
+      }
 
       
       if (writingData && Array.isArray(writingData) && writingData.length > 0) {
