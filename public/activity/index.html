@@ -151,6 +151,17 @@
 
   
   <section class="activity-section">
+    <h2>✍️ Writing</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h3>Posts &amp; Words</h3>
+        <canvas id="chart-writing-combo"></canvas>
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="activity-section">
     <h2>&#128218; Reading</h2>
 
     
@@ -173,12 +184,12 @@
         
         <li>
           <a href="https://hardcover.app/books/zen-and-the-art-of-motorcycle-maintenance" target="_blank" rel="noopener">Zen and the Art of Motorcycle Maintenance: An Inquiry into Values</a>
-          <span class="book-started">· started 6mo ago</span>
+          <span class="book-started">· started 7mo ago</span>
           <br><span class="book-author">Robert M. Pirsig</span>
         </li>
         
       </ul>
-      <p class="books-updated">Last updated 2026-08-30</p>
+      <p class="books-updated">Last updated 2026-09-13</p>
     </div>
     
 
@@ -250,6 +261,7 @@
     const podcastsData = [{"episodes_played":62,"feeds_added":0,"feeds_removed":0,"minutes_listened":2848,"month":"2025-08"},{"episodes_played":58,"feeds_added":0,"feeds_removed":0,"minutes_listened":2964,"month":"2025-09"},{"episodes_played":45,"feeds_added":1,"feeds_removed":0,"minutes_listened":2360,"month":"2025-10"},{"episodes_played":38,"feeds_added":0,"feeds_removed":0,"minutes_listened":2055,"month":"2025-11"},{"episodes_played":36,"feeds_added":4,"feeds_removed":0,"minutes_listened":1248,"month":"2025-12"},{"episodes_played":28,"feeds_added":1,"feeds_removed":0,"minutes_listened":1551,"month":"2026-01"},{"episodes_played":52,"feeds_added":2,"feeds_removed":0,"minutes_listened":3146,"month":"2026-02"},{"episodes_played":47,"feeds_added":2,"feeds_removed":0,"minutes_listened":2809,"month":"2026-03"},{"episodes_played":40,"feeds_added":2,"feeds_removed":1,"minutes_listened":2228,"month":"2026-04"},{"episodes_played":35,"feeds_added":0,"feeds_removed":0,"minutes_listened":1776,"month":"2026-05"},{"episodes_played":40,"feeds_added":1,"feeds_removed":0,"minutes_listened":2231,"month":"2026-06"},{"episodes_played":57,"feeds_added":2,"feeds_removed":0,"minutes_listened":3614,"month":"2026-07"},{"episodes_played":59,"feeds_added":0,"feeds_removed":0,"minutes_listened":3492,"month":"2026-08"}];
     const workoutsData = [{"month":"2025-08","total_calories":3413.43,"total_minutes":433,"workouts":9},{"month":"2025-09","total_calories":2533.39,"total_minutes":289,"workouts":12},{"month":"2025-10","total_calories":3469.71,"total_minutes":429,"workouts":23},{"month":"2025-11","total_calories":3001.24,"total_minutes":379,"workouts":12},{"month":"2025-12","total_calories":2158.26,"total_minutes":242,"workouts":11},{"month":"2026-01","total_calories":1361.51,"total_minutes":181,"workouts":8},{"month":"2026-02","total_calories":1898.12,"total_minutes":265,"workouts":13},{"month":"2026-03","total_calories":2414.5,"total_minutes":322,"workouts":9},{"month":"2026-04","total_calories":1713.99,"total_minutes":236,"workouts":8},{"month":"2026-05","total_calories":1431.32,"total_minutes":212,"workouts":9},{"month":"2026-06","total_calories":3665.62,"total_minutes":512,"workouts":15},{"month":"2026-07","total_calories":4927.14,"total_minutes":726,"workouts":20},{"month":"2026-08","total_calories":5551.51,"total_minutes":715,"workouts":13}];
     const codeData = [{"commits":22,"month":"2025-08","repos_touched":3},{"commits":14,"month":"2025-09","repos_touched":3},{"commits":22,"month":"2025-10","repos_touched":2},{"commits":6,"month":"2025-11","repos_touched":2},{"commits":23,"month":"2025-12","repos_touched":5},{"commits":19,"month":"2026-01","repos_touched":3},{"commits":83,"month":"2026-02","repos_touched":3},{"commits":81,"month":"2026-03","repos_touched":6},{"commits":78,"month":"2026-04","repos_touched":6},{"commits":16,"month":"2026-05","repos_touched":4},{"commits":21,"month":"2026-06","repos_touched":3},{"commits":8,"month":"2026-07","repos_touched":3},{"commits":11,"month":"2026-08","repos_touched":3}];
+    const writingData = [{"month":"2025-08","posts":7,"total_words":3145,"unique_tags":20},{"month":"2025-09","posts":8,"total_words":3016,"unique_tags":27},{"month":"2025-10","posts":7,"total_words":3037,"unique_tags":23},{"month":"2025-11","posts":5,"total_words":1579,"unique_tags":4},{"month":"2025-12","posts":5,"total_words":1990,"unique_tags":11},{"month":"2026-01","posts":5,"total_words":1660,"unique_tags":10},{"month":"2026-02","posts":2,"total_words":309,"unique_tags":15},{"month":"2026-03","posts":3,"total_words":986,"unique_tags":20},{"month":"2026-04","posts":3,"total_words":5006,"unique_tags":25},{"month":"2026-05","posts":1,"total_words":1003,"unique_tags":12},{"month":"2026-06","posts":1,"total_words":398,"unique_tags":12},{"month":"2026-07","posts":1,"total_words":1021,"unique_tags":14},{"month":"2026-08","posts":2,"total_words":1794,"unique_tags":20}];
 
     
     const isDark = () => document.documentElement.classList.contains('dark');
@@ -879,6 +891,87 @@
           tooltipLabel: (hours) => `${hours}h`
         }
       ], ['minutes_listened']);
+
+      
+      if (writingData && Array.isArray(writingData) && writingData.length > 0) {
+        const completedWriting = fillMonthGaps(writingData.filter(d => d.month !== currentMonth), ['posts', 'total_words']);
+        const recentWriting = completedWriting.slice(-12);
+        const writingLabels = formatLabels(recentWriting);
+        const colors = getColors();
+        new Chart(document.getElementById('chart-writing-combo'), {
+          type: 'bar',
+          data: {
+            labels: writingLabels,
+            datasets: [
+              {
+                type: 'bar',
+                label: 'Posts',
+                data: recentWriting.map(d => d.posts),
+                backgroundColor: colors.bar,
+                hoverBackgroundColor: colors.barHover,
+                borderRadius: 4,
+                borderSkipped: false,
+                yAxisID: 'y',
+                order: 1
+              },
+              {
+                type: 'line',
+                label: 'Words',
+                data: recentWriting.map(d => d.total_words),
+                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
+                borderWidth: 3,
+                pointRadius: 4,
+                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                tension: 0.3,
+                fill: false,
+                yAxisID: 'y1',
+                order: 0
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: true, labels: { color: colors.text } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ctx.dataset.yAxisID === 'y1'
+                    ? `${ctx.dataset.label}: ${ctx.raw}`
+                    : `${ctx.dataset.label}: ${ctx.raw}`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
+              },
+              y: {
+                beginAtZero: true,
+                position: 'left',
+                grid: { color: colors.grid },
+                ticks: { color: colors.text },
+                title: { display: true, text: 'Posts', color: colors.text }
+              },
+              y1: {
+                beginAtZero: true,
+                position: 'right',
+                grid: { drawOnChartArea: false },
+                ticks: {
+                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  callback: (v) => v >= 1000 ? (v / 1000) + 'k' : v
+                },
+                title: { display: true, text: 'Words', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+              }
+            }
+          }
+        });
+      } else {
+        showNoData('chart-writing-combo');
+      }
 
       
       initCharts(codeData, [

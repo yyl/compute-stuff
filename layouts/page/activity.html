@@ -13,6 +13,17 @@
     </div>
   </section>
 
+  <!-- ✍️ Writing -->
+  <section class="activity-section">
+    <h2>✍️ Writing</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h3>Posts &amp; Words</h3>
+        <canvas id="chart-writing-combo"></canvas>
+      </div>
+    </div>
+  </section>
+
   <!-- 📚 Reading -->
   <section class="activity-section">
     <h2>&#128218; Reading</h2>
@@ -115,6 +126,7 @@
     const podcastsData = {{ .Site.Data.activity.podcasts | jsonify | safeJS }};
     const workoutsData = {{ .Site.Data.activity.workouts | jsonify | safeJS }};
     const codeData = {{ .Site.Data.activity.code | jsonify | safeJS }};
+    const writingData = {{ .Site.Data.activity.writing | jsonify | safeJS }};
 
     // Detect dark mode
     const isDark = () => document.documentElement.classList.contains('dark');
@@ -744,6 +756,87 @@
           tooltipLabel: (hours) => `${hours}h`
         }
       ], ['minutes_listened']);
+
+      // Writing combo chart (bar: posts, line: total words)
+      if (writingData && Array.isArray(writingData) && writingData.length > 0) {
+        const completedWriting = fillMonthGaps(writingData.filter(d => d.month !== currentMonth), ['posts', 'total_words']);
+        const recentWriting = completedWriting.slice(-12);
+        const writingLabels = formatLabels(recentWriting);
+        const colors = getColors();
+        new Chart(document.getElementById('chart-writing-combo'), {
+          type: 'bar',
+          data: {
+            labels: writingLabels,
+            datasets: [
+              {
+                type: 'bar',
+                label: 'Posts',
+                data: recentWriting.map(d => d.posts),
+                backgroundColor: colors.bar,
+                hoverBackgroundColor: colors.barHover,
+                borderRadius: 4,
+                borderSkipped: false,
+                yAxisID: 'y',
+                order: 1
+              },
+              {
+                type: 'line',
+                label: 'Words',
+                data: recentWriting.map(d => d.total_words),
+                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
+                borderWidth: 3,
+                pointRadius: 4,
+                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                tension: 0.3,
+                fill: false,
+                yAxisID: 'y1',
+                order: 0
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: true, labels: { color: colors.text } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ctx.dataset.yAxisID === 'y1'
+                    ? `${ctx.dataset.label}: ${ctx.raw}`
+                    : `${ctx.dataset.label}: ${ctx.raw}`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
+              },
+              y: {
+                beginAtZero: true,
+                position: 'left',
+                grid: { color: colors.grid },
+                ticks: { color: colors.text },
+                title: { display: true, text: 'Posts', color: colors.text }
+              },
+              y1: {
+                beginAtZero: true,
+                position: 'right',
+                grid: { drawOnChartArea: false },
+                ticks: {
+                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  callback: (v) => v >= 1000 ? (v / 1000) + 'k' : v
+                },
+                title: { display: true, text: 'Words', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+              }
+            }
+          }
+        });
+      } else {
+        showNoData('chart-writing-combo');
+      }
 
       // Code charts
       initCharts(codeData, [
