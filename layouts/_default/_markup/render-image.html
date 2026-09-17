@@ -1,0 +1,61 @@
+{{- /*
+  render-image.html — Stage 2 Hugo image render hook
+  =====================================================
+  Intercepts standard Markdown image syntax and emits an optimised <img>
+  with a srcset of WebP variants at 800 / 1200 / 1600 px.
+*/ -}}
+
+{{- $src    := .Destination -}}
+{{- $alt    := .Text | safeHTML -}}
+{{- $title  := .Title -}}
+{{- $widths := slice 800 1200 1600 -}}
+{{- $quality := 80 -}}
+
+{{- /* Attempt to resolve the image as a page bundle resource. */ -}}
+{{- $res := $.Page.Resources.GetMatch $src -}}
+
+{{- if and $res (eq $res.ResourceType "image") -}}
+  {{- $srcW   := $res.Width -}}
+  {{- $variants := slice -}}
+
+  {{- range $widths -}}
+    {{- if le . $srcW -}}
+      {{- $spec := printf "%dx webp q%d" . $quality -}}
+      {{- $v    := $res.Resize $spec -}}
+      {{- $variants = $variants | append $v -}}
+    {{- end -}}
+  {{- end -}}
+
+  {{- /* If all requested widths exceed the source, produce one optimized WebP at source width */ -}}
+  {{- if eq (len $variants) 0 -}}
+    {{- $spec := printf "%dx webp q%d" $srcW $quality -}}
+    {{- $variants = $variants | append ($res.Resize $spec) -}}
+  {{- end -}}
+
+  {{- /* The largest available variant is the primary src. */ -}}
+  {{- $largest := index $variants (sub (len $variants) 1) -}}
+
+  {{- /* Build srcset string. */ -}}
+  {{- $srcset := slice -}}
+  {{- range $variants -}}
+    {{- $srcset = $srcset | append (printf "%s %dw" .RelPermalink .Width) -}}
+  {{- end -}}
+
+<img
+  src="{{ $largest.RelPermalink }}"
+  srcset="{{ delimit $srcset ", " }}"
+  sizes="(max-width: 800px) 100vw, (max-width: 1200px) 90vw, 1200px"
+  width="{{ $largest.Width }}"
+  height="{{ $largest.Height }}"
+  alt="{{ $alt }}"
+  {{- if $title }} title="{{ $title | safeHTMLAttr }}"{{ end }}
+  loading="lazy"
+  decoding="async">
+{{- else -}}
+<img
+  src="{{ $src | safeURL }}"
+  alt="{{ $alt }}"
+  {{- if $title }} title="{{ $title | safeHTMLAttr }}"{{ end }}
+  loading="lazy"
+  decoding="async">
+{{- end -}}
