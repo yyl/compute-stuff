@@ -155,7 +155,11 @@ In fact, Hugo has tags support by default. The system is called Taxonomies. It a
     <h1 class="my-0! pb-2.5">How I add tags to the posts</h1><div class="text-xs antialiased opacity-60"><time>Feb 17, 2025</time></div></header>
 
   <section><p>I added tags to my posts so that each post has its own set of tags to give you an idea what the content is about. It looks like this at the bottom of the post:</p>
-<p><img src="/tags_screenshot.png" alt="Tags in a post"></p>
+<p><img
+  src="/tags_screenshot.png"
+  alt="Tags in a post"
+  loading="lazy"
+  decoding="async"></p>
 <p>In fact, Hugo has tags support by default. The system is called <a href="https://gohugo.io/content-management/taxonomies/">Taxonomies</a>. It allows users to freely define categorizations that can be used to classify the content. For example, if my blog is movie reviews, then I can create a Taxonomy called genre, and label each post based on the type of the movie it reviews. The good news is Hugo creates a Taxonomy called <code>tags</code> already for users (as well as <code>categorization</code>). To add tags to a post, I just need to put them in the front matter of the post. The code below shows the front matter of this post with tags added:</p>
 <pre tabindex="0"><code>+++
 date = &#39;2025-02-16T20:00:01-08:00&#39;
@@ -164,10 +168,18 @@ title = &#39;I add tags to the posts&#39;
 tags = [&#39;howto&#39;, &#39;blog-setup&#39;, &#39;tags&#39;]
 +++
 </code></pre><p>With tags on each post, there are 2 more features I can add. The first one is to list all tags used in my blog, and it looks like this:</p>
-<p><img src="/taxonomy_list_screenshot.png" alt="A page showing all tags created"></p>
+<p><img
+  src="/taxonomy_list_screenshot.png"
+  alt="A page showing all tags created"
+  loading="lazy"
+  decoding="async"></p>
 <p>To enable this, I simply add <a href="https://gohugo.io/templates/taxonomy/">this template</a> provided by Hugo to my site at <code>my-hugo-site/layouts/_default/taxonomy.html</code>.</p>
 <p>Another one is to show all the posts that use a particular tag when someone clicks a tag in the post, and it looks like this:</p>
-<p><img src="/term_page_screenshot.png" alt="A page showing all posts use this tag"></p>
+<p><img
+  src="/term_page_screenshot.png"
+  alt="A page showing all posts use this tag"
+  loading="lazy"
+  decoding="async"></p>
 <p>To enable this, I add <a href="https://gohugo.io/templates/term/">another Hugo template</a> to my site as a file at <code>my-hugo-site/layouts/_default/term.html</code>. A <code>term</code> means a key or an item of a certain taxonomy - in the <code>tags</code> taxonomy, it means a tag.</p>
 <p>One issue I notice after setting everything up is the link of each tag in a post is wrong. It should look like <code>{my-website-url}/tags/{the-tag-name}</code>, so that when someone clicks it it takes them to the <code>term</code> page I add above. Instead, it looks like <code>{my-website-url}posts/{this-post}/tags/{the-tag-name}</code>, resulting a <code>page not found (404)</code> error if I click it. The root cause is in the Hugo theme I use. In its post template, it uses <code>tags/{the-tag-name}</code> as the hyperlink instead of <code>/tags/{the-tag-name}</code>: the former is always treated as the postfix to be appended to the <strong>current URL</strong> (the post link), while the latter to the root URL (my website url). Adding the forward slash fixes the issue.</p>
 <p>Although to fix the issue, I have to copy and paste the template in question (<code>my-hugo-site/themes/paper/layouts/_default/single.html</code>) to my template folder (<code>my-hugo-site/layouts/_default/single.html</code>) to modifty it so that the latter overrides the former when Hugo generates the website.</p>

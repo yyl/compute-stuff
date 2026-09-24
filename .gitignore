@@ -2,4 +2,6 @@
 build/
 public/
 node_modules/
+resources/
+.dev.vars
 temp_reactions.js

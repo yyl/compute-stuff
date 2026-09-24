@@ -2,6 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://www.mildlyjournaling.com/</loc>
+    <lastmod>2026-09-13T14:31:45-07:00</lastmod>
+  </url><url>
+    <loc>https://www.mildlyjournaling.com/posts/</loc>
+    <lastmod>2026-09-13T14:31:45-07:00</lastmod>
+  </url><url>
     <loc>https://www.mildlyjournaling.com/tags/08-2026/</loc>
     <lastmod>2026-09-05T14:47:08-07:00</lastmod>
   </url><url>
@@ -29,16 +35,10 @@
     <loc>https://www.mildlyjournaling.com/tags/letterboxd/</loc>
     <lastmod>2026-09-05T14:47:08-07:00</lastmod>
   </url><url>
-    <loc>https://www.mildlyjournaling.com/</loc>
-    <lastmod>2026-09-05T14:47:08-07:00</lastmod>
-  </url><url>
     <loc>https://www.mildlyjournaling.com/tags/monthly/</loc>
     <lastmod>2026-09-05T14:47:08-07:00</lastmod>
   </url><url>
     <loc>https://www.mildlyjournaling.com/tags/overcast/</loc>
-    <lastmod>2026-09-05T14:47:08-07:00</lastmod>
-  </url><url>
-    <loc>https://www.mildlyjournaling.com/posts/</loc>
     <lastmod>2026-09-05T14:47:08-07:00</lastmod>
   </url><url>
     <loc>https://www.mildlyjournaling.com/tags/readwise/</loc>

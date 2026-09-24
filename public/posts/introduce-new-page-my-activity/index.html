@@ -157,7 +157,11 @@ The page contains data about some of my activities: reading (articles, blogs, ne
     <h1 class="my-0! pb-2.5">Introduce New Page - My Activity</h1><div class="text-xs antialiased opacity-60"><time>Feb 15, 2026</time></div></header>
 
   <section><p>I added a new page for this blog called &ldquo;My Activity&rdquo;. You can access it at the top right of the page, and it looks like this:</p>
-<p><img src="/my_activity_page_intro.png" alt="Screenshot of My Activity Page"></p>
+<p><img
+  src="/my_activity_page_intro.png"
+  alt="Screenshot of My Activity Page"
+  loading="lazy"
+  decoding="async"></p>
 <p>The page contains data about some of my activities: reading (articles, blogs, news), movies watched, etc. There are five categories right now. All data come from various web services (e.g. reading data is from Readwise, travel data from Foursquare).</p>
 <p>To get these data, I built a simple program to periodically fetch data from all relevant services and store them into database (<a href="https://github.com/yyl/digital-footprint-dump">codebase here</a>). It is straightforward but not trivial, because it needs to interact with different services, some provide APIs, others don&rsquo;t (so I rely on file export). It is also not technically challenging because all service interfaces are clearly defined, one just needs to understand and follow them. Such program is perfect for AI to write, and indeed AI wrote 100% of the code.</p>
 <p>With data in the database, The program then pushes the data to my blog Github repo in Hugo format. The blog then renders the data into HTML graphs.</p>

@@ -41,9 +41,12 @@ blog/
 │
 ├── functions/         # Cloudflare Pages Functions (serverless API)
 │   └── api/
-│       └── reactions.js  # Like/dislike reaction counts endpoint
+│       ├── reactions.js  # Like/dislike reaction counts endpoint
+│       └── img_upload.js # Token-gated image upload → commits WebP to repo
 │
 ├── static/            # Static assets (copied as-is to /public/)
+│   ├── img_upload/    # Upload form page → /img_upload/
+│   └── staging/       # Upload landing folder → /staging/<image>.webp
 │
 ├── themes/
 │   └── paper/         # Paper theme (git submodule)
@@ -150,6 +153,46 @@ KV key format: `reactions:<slug>` → `{ likes: N, dislikes: N }`
 1. Create a KV namespace named `REACTIONS` in the Cloudflare dashboard
 2. Bind it to the Pages project: Settings → Functions → KV namespace bindings → Variable name `REACTIONS`
 3. For local dev, the namespace ID goes in `wrangler.toml`; run `npx wrangler pages dev ./public`
+
+### Image Upload (phone → blog)
+
+Upload photos from a phone browser; they are converted to WebP and committed to the repo, then published on the next Cloudflare Pages rebuild. Private: the endpoint requires a bearer token.
+
+**Pipeline:**
+
+1. Phone opens `https://www.mildlyjournaling.com/img_upload/` (`static/img_upload/index.html`)
+2. **Browser-side conversion** (mirrors `prepare_images.py` in `utilities/`): HEIC/HEIF → JPEG via `heic2any` (WASM), EXIF orientation applied by `createImageBitmap`, stepwise downscale to ≤ 2400 px longest side, sRGB canvas, `toBlob('image/webp', 0.85)` — no metadata
+3. `POST /api/img_upload` → `functions/api/img_upload.js` validates the token, sanitizes names, and commits via the GitHub Contents API
+4. Commit → Cloudflare Pages rebuild → image is live
+
+**Target rules:**
+
+| Body | Repo path | Served at |
+|------|-----------|-----------|
+| no `post` | `static/staging/<name>.webp` | `/staging/<name>.webp` |
+| `post: "my-slug"` | `content/posts/my-slug/<name>.webp` | `/posts/my-slug/<name>.webp` |
+
+Name collisions auto-rename: `IMG_0790.webp` → `IMG_0790_2.webp`, …
+
+**API:**
+
+| Method | URL | Purpose |
+|--------|-----|---------|
+| `GET`  | `/api/img_upload` | Config/usage check (returns 200 only with valid token) |
+| `POST` | `/api/img_upload` | Upload; body `{ "post": "<slug>"?, "files": [{ "name", "data": "<base64 webp>" }] }`, 1–10 files, 15 MB each max |
+
+Auth: `Authorization: Bearer <UPLOAD_TOKEN>` (or `?token=` fallback).
+
+**Setup (one-time):**
+
+1. Create a fine-grained GitHub PAT: repo `yyl/blog` only, permission *Contents: read & write*
+2. Cloudflare dashboard → Pages project → Settings → Functions → **Variables and secrets** (Session: Production):
+   - `UPLOAD_TOKEN` — any long random string (kept secret)
+   - `GITHUB_TOKEN` — the PAT from step 1
+   - optional: `GITHUB_REPO` (`yyl/blog`), `GITHUB_BRANCH` (`main`)
+3. For local dev (`npx wrangler pages dev`), put the same values in `.dev.vars` (git-ignored)
+
+**Usage:** open `/img_upload/` on the phone, paste the token (remembered in `localStorage`), optionally enter a post slug, pick photos, upload. Staged images can be moved into a post bundle when the post is written (page-bundle images get the responsive srcset treatment from `layouts/_default/_markup/render-image.html`).
 
 ### Hardcover Integration (Currently Reading)
 

@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Image upload</title>
+<style>
+  :root { color-scheme: light dark; }
+  body {
+    font: 16px/1.5 system-ui, -apple-system, sans-serif;
+    max-width: 40rem; margin: 2rem auto; padding: 0 1rem;
+  }
+  h1 { font-size: 1.4rem; }
+  .hint { opacity: .75; font-size: .9rem; }
+  code { font-size: .85em; background: rgba(127,127,127,.15); padding: .1em .3em; border-radius: 3px; }
+  label { display: block; margin: 1rem 0; font-weight: 600; }
+  input { display: block; width: 100%; box-sizing: border-box; margin-top: .25rem;
+          padding: .5rem; font: inherit; border: 1px solid rgba(127,127,127,.4); border-radius: 6px;
+          background: transparent; color: inherit; }
+  button { padding: .6rem 1.2rem; font: inherit; font-weight: 600; border-radius: 6px;
+           border: 1px solid rgba(127,127,127,.4); background: transparent; color: inherit; cursor: pointer; }
+  button:disabled { opacity: .5; cursor: default; }
+  ol { padding-left: 1.2rem; }
+  li { margin: .35rem 0; word-break: break-all; }
+  .ok { } .err { opacity: .8; }
+  .step { opacity: .6; font-size: .85rem; }
+</style>
+</head>
+<body>
+<h1>Image upload</h1>
+<p class="hint">
+  Photos are converted in your browser to WebP (longest side &le; 2400px, quality 85,
+  EXIF orientation applied, metadata stripped) and committed to the blog repo,
+  then published on the next site rebuild. Default location: <code>static/staging/</code>.
+  Fill in a post slug to land in <code>content/posts/&lt;slug&gt;/</code> instead.
+</p>
+<form id="form">
+  <label>Token
+    <input type="password" id="token" autocomplete="off" placeholder="Upload token" required>
+  </label>
+  <label>Post slug (optional)
+    <input type="text" id="post" placeholder="e.g. my-surfing-post" pattern="[a-zA-Z0-9-]{0,100}">
+  </label>
+  <label>Images
+    <input type="file" id="files" multiple accept=".heic,.heif,.jpg,.jpeg,.png,image/*" required>
+  </label>
+  <button type="submit" id="go">Upload</button>
+</form>
+<ol id="status"></ol>
+
+<script>
+'use strict';
+const MAX_SIDE = 2400;
+const QUALITY = 0.85;
+const HEIC2ANY_URL = 'https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.js';
+const TOKEN_KEY = 'img_upload_token';
+
+const tokenInput = document.getElementById('token');
+const postInput = document.getElementById('post');
+const filesInput = document.getElementById('files');
+const form = document.getElementById('form');
+const goButton = document.getElementById('go');
+const statusList = document.getElementById('status');
+
+tokenInput.value = localStorage.getItem(TOKEN_KEY) || '';
+
+let heicLoader = null;
+function loadHeic2any() {
+  if (window.heic2any) return Promise.resolve(window.heic2any);
+  if (heicLoader) return heicLoader;
+  heicLoader = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = HEIC2ANY_URL;
+    s.onload = () => resolve(window.heic2any);
+    s.onerror = () => reject(new Error('could not load heic2any'));
+    document.head.appendChild(s);
+  });
+  return heicLoader;
+}
+
+function isHeic(file) {
+  return /\.(heic|heif)$/i.test(file.name) || /heic|heif/i.test(file.type || '');
+}
+
+async function decodeBlob(file) {
+  let src = file;
+  if (isHeic(file)) {
+    const heic2any = await loadHeic2any();
+    src = await heic2any({ blob: file, toType: 'image/jpeg', quality: 0.95 });
+  }
+  return createImageBitmap(src);
+}
+
+function downscale(bitmap, tw, th) {
+  let cur = bitmap;
+  let cw = bitmap.width, ch = bitmap.height;
+  while (cw / 2 >= tw && ch / 2 >= th) {
+    const nw = Math.max(tw, cw >> 1), nh = Math.max(th, ch >> 1);
+    const c = document.createElement('canvas');
+    c.width = nw; c.height = nh;
+    const x = c.getContext('2d');
+    x.imageSmoothingEnabled = true;
+    x.imageSmoothingQuality = 'high';
+    x.drawImage(cur, 0, 0, nw, nh);
+    cur = c; cw = nw; ch = nh;
+  }
+  const out = document.createElement('canvas');
+  out.width = tw; out.height = th;
+  const ctx = out.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(cur, 0, 0, tw, th);
+  return out;
+}
+
+async function convert(file) {
+  const bitmap = await decodeBlob(file);
+  const w = bitmap.width, h = bitmap.height;
+  const scale = Math.min(1, MAX_SIDE / Math.max(w, h));
+  const tw = Math.round(w * scale), th = Math.round(h * scale);
+  const canvas = downscale(bitmap, tw, th);
+  bitmap.close();
+  return new Promise((resolve, reject) =>
+    canvas.toBlob(resolve, 'image/webp', QUALITY, reject));
+}
+
+function toBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(fr.result.split(',')[1]);
+    fr.onerror = reject;
+    fr.readAsDataURL(blob);
+  });
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const files = Array.from(filesInput.files);
+  if (!files.length) return;
+
+  localStorage.setItem(TOKEN_KEY, tokenInput.value.trim());
+  goButton.disabled = true;
+  statusList.innerHTML = '';
+
+  const rows = new Map();
+  for (const f of files) {
+    const li = document.createElement('li');
+    li.textContent = f.name + ' — ';
+    const step = document.createElement('span');
+    step.className = 'step';
+    step.textContent = 'converting';
+    li.appendChild(step);
+    statusList.appendChild(li);
+    rows.set(f, { li, step });
+  }
+
+  try {
+    const payload = [];
+    for (const f of files) {
+      try {
+        const webp = await convert(f);
+        rows.get(f).step.textContent = 'uploading (' + Math.round(webp.size / 1024) + ' KB)';
+        payload.push({ name: f.name, data: await toBase64(webp) });
+      } catch (err) {
+        rows.get(f).step.textContent = '';
+        rows.get(f).li.append(document.createTextNode('conversion failed: ' + err.message));
+        rows.get(f).li.classList.add('err');
+      }
+    }
+
+    if (!payload.length) { goButton.disabled = false; return; }
+
+    const body = { files: payload };
+    const slug = postInput.value.trim();
+    if (slug) body.post = slug;
+
+    const res = await fetch('/api/img_upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + tokenInput.value.trim(),
+      },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok && !Array.isArray(data.files)) {
+      statusList.appendChild(Object.assign(document.createElement('li'), {
+        textContent: 'upload failed: ' + (data.error || 'HTTP ' + res.status),
+        className: 'err',
+      }));
+      goButton.disabled = false;
+      return;
+    }
+
+    data.files.forEach((r, i) => {
+      const row = rows.get(payload[i]);
+      if (!row) return;
+      if (r.error) {
+        row.step.textContent = '';
+        row.li.append(document.createTextNode(' ' + r.error));
+        row.li.classList.add('err');
+      } else {
+        row.step.textContent = 'done';
+        const a = document.createElement('a');
+        a.href = r.url;
+        a.textContent = r.url;
+        row.li.appendChild(document.createElement('br'));
+        row.li.appendChild(a);
+      }
+    });
+    const note = document.createElement('li');
+    note.className = 'step';
+    note.textContent = 'Committed to ' + data.target + ' — live after the next site rebuild.';
+    statusList.appendChild(note);
+  } catch (err) {
+    statusList.appendChild(Object.assign(document.createElement('li'), {
+      textContent: 'upload failed: ' + err.message,
+      className: 'err',
+    }));
+  } finally {
+    goButton.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
