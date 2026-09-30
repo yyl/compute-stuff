@@ -1,15 +1,9 @@
 # Monthly podcasts activity data
-- month: "2025-08"
-  feeds_added: 0
-  feeds_removed: 0
-  episodes_played: 62
-  minutes_listened: 2848
-
 - month: "2025-09"
   feeds_added: 0
   feeds_removed: 0
-  episodes_played: 58
-  minutes_listened: 2964
+  episodes_played: 57
+  minutes_listened: 2857
 
 - month: "2025-10"
   feeds_added: 1
@@ -42,10 +36,10 @@
   minutes_listened: 3146
 
 - month: "2026-03"
-  feeds_added: 2
+  feeds_added: 3
   feeds_removed: 0
   episodes_played: 47
-  minutes_listened: 2809
+  minutes_listened: 2709
 
 - month: "2026-04"
   feeds_added: 2
@@ -74,6 +68,12 @@
 - month: "2026-08"
   feeds_added: 0
   feeds_removed: 0
-  episodes_played: 59
-  minutes_listened: 3492
+  episodes_played: 60
+  minutes_listened: 3593
+
+- month: "2026-09"
+  feeds_added: 0
+  feeds_removed: 1
+  episodes_played: 75
+  minutes_listened: 4371
 

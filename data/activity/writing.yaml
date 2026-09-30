@@ -1,9 +1,4 @@
 # Monthly writing activity data
-- month: "2025-08"
-  posts: 7
-  total_words: 3145
-  unique_tags: 20
-
 - month: "2025-09"
   posts: 8
   total_words: 3016
@@ -62,5 +57,10 @@
 - month: "2026-08"
   posts: 2
   total_words: 1794
+  unique_tags: 20
+
+- month: "2026-09"
+  posts: 2
+  total_words: 3176
   unique_tags: 20
 
