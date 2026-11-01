@@ -1,53 +1,105 @@
 # Monthly code activity data
-- month: "2025-09"
-  commits: 14
-  repos_touched: 3
-
-- month: "2025-10"
-  commits: 22
-  repos_touched: 2
-
 - month: "2025-11"
   commits: 6
   repos_touched: 2
+  public_commits: 6
+  private_commits: 0
+  public_repos_touched: 2
+  private_repos_touched: 0
 
 - month: "2025-12"
-  commits: 23
-  repos_touched: 5
+  commits: 27
+  repos_touched: 6
+  public_commits: 23
+  private_commits: 4
+  public_repos_touched: 5
+  private_repos_touched: 1
 
 - month: "2026-01"
-  commits: 19
-  repos_touched: 3
+  commits: 20
+  repos_touched: 4
+  public_commits: 19
+  private_commits: 1
+  public_repos_touched: 3
+  private_repos_touched: 1
 
 - month: "2026-02"
-  commits: 83
-  repos_touched: 3
+  commits: 87
+  repos_touched: 4
+  public_commits: 83
+  private_commits: 4
+  public_repos_touched: 3
+  private_repos_touched: 1
 
 - month: "2026-03"
-  commits: 81
-  repos_touched: 6
+  commits: 111
+  repos_touched: 8
+  public_commits: 81
+  private_commits: 30
+  public_repos_touched: 6
+  private_repos_touched: 2
 
 - month: "2026-04"
-  commits: 78
-  repos_touched: 6
+  commits: 88
+  repos_touched: 7
+  public_commits: 78
+  private_commits: 10
+  public_repos_touched: 6
+  private_repos_touched: 1
 
 - month: "2026-05"
-  commits: 16
-  repos_touched: 4
+  commits: 29
+  repos_touched: 6
+  public_commits: 13
+  private_commits: 16
+  public_repos_touched: 3
+  private_repos_touched: 3
 
 - month: "2026-06"
-  commits: 21
-  repos_touched: 3
+  commits: 29
+  repos_touched: 4
+  public_commits: 21
+  private_commits: 8
+  public_repos_touched: 3
+  private_repos_touched: 1
 
 - month: "2026-07"
-  commits: 8
-  repos_touched: 3
+  commits: 20
+  repos_touched: 4
+  public_commits: 8
+  private_commits: 12
+  public_repos_touched: 3
+  private_repos_touched: 1
 
 - month: "2026-08"
-  commits: 12
-  repos_touched: 3
+  commits: 20
+  repos_touched: 5
+  public_commits: 12
+  private_commits: 8
+  public_repos_touched: 3
+  private_repos_touched: 2
 
 - month: "2026-09"
-  commits: 19
-  repos_touched: 4
+  commits: 57
+  repos_touched: 7
+  public_commits: 20
+  private_commits: 37
+  public_repos_touched: 4
+  private_repos_touched: 3
+
+- month: "2026-10"
+  commits: 57
+  repos_touched: 6
+  public_commits: 10
+  private_commits: 47
+  public_repos_touched: 2
+  private_repos_touched: 4
+
+- month: "2026-11"
+  commits: 4
+  repos_touched: 1
+  public_commits: 0
+  private_commits: 4
+  public_repos_touched: 0
+  private_repos_touched: 1
 

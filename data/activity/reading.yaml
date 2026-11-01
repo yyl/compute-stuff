@@ -1,22 +1,4 @@
 # Monthly reading activity data
-- month: "2025-09"
-  articles_archived: 62
-  total_words: 109154
-  time_spent_minutes: 440
-  avg_reading_speed: 248
-  max_words_per_article: 12611
-  median_words_per_article: 1325
-  min_words_per_article: 160
-
-- month: "2025-10"
-  articles_archived: 56
-  total_words: 110313
-  time_spent_minutes: 440
-  avg_reading_speed: 251
-  max_words_per_article: 14724
-  median_words_per_article: 1274
-  min_words_per_article: 25
-
 - month: "2025-11"
   articles_archived: 53
   total_words: 118631
@@ -115,4 +97,22 @@
   max_words_per_article: 8071
   median_words_per_article: 2336
   min_words_per_article: 657
+
+- month: "2026-10"
+  articles_archived: 27
+  total_words: 35038
+  time_spent_minutes: 144
+  avg_reading_speed: 243
+  max_words_per_article: 3771
+  median_words_per_article: 989
+  min_words_per_article: 242
+
+- month: "2026-11"
+  articles_archived: 2
+  total_words: 2374
+  time_spent_minutes: 10
+  avg_reading_speed: 237
+  max_words_per_article: 1691
+  median_words_per_article: 1187
+  min_words_per_article: 683
 
