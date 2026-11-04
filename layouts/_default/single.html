@@ -251,6 +251,8 @@
   <!-- mermaid -->
   {{- partial "mermaid.html" . -}}
 
+  {{- partial "comments.html" . -}}
+
   <!-- giscus comment -->
   {{- if and site.Params.giscus.repo (not (eq .Params.comments false)) -}}
   <div class="giscus mt-24"></div>

@@ -1,0 +1,23 @@
+name = "mildly-journaling-comments-maintenance"
+main = "worker.js"
+compatibility_date = "2026-11-03"
+workers_dev = false
+preview_urls = false
+
+[triggers]
+crons = ["17 * * * *"]
+
+# Fill in deployment IDs; keep secrets in `wrangler secret put`, never this file.
+[vars]
+CF_ACCOUNT_ID = ""
+COMMENTS_DATABASE_ID = ""
+
+[[d1_databases]]
+binding = "COMMENTS_DB"
+database_name = "mildly-journaling-comments"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "../migrations"
+
+[[r2_buckets]]
+binding = "COMMENTS_BACKUPS"
+bucket_name = "mildly-journaling-comments-backups"

@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Moderate comments · Mildly Journaling</title><link rel="stylesheet" href="/admin/comments/admin.css"><script defer src="/admin/comments/admin.js"></script></head>
+<body><main><header><a href="/">← Blog</a><h1>Comments</h1><p id="summary">Loading…</p><p id="maintenance"></p></header>
+<section aria-label="Controls"><button id="pause" disabled>Pause submissions</button> <a href="/api/admin/comments?export=1" download>Export approved comments</a>
+<label>View <select id="filter"><option>pending</option><option>approved</option><option>spam</option><option>rejected</option></select></label>
+<div class="actions"><button data-action="approve">Approve selected</button><button data-action="reject">Reject selected</button><button data-action="spam">Mark selected as spam</button><button data-action="delete">Delete selected permanently</button></div></section>
+<p id="status" role="status" aria-live="polite"></p><div id="queue"></div><button id="more" hidden>Next page</button>
+<details><summary>Post settings and author comments</summary><label>Post <select id="post"></select></label><button id="post-toggle">Close this post</button>
+<form id="owner-form"><label for="owner-body">Author comment</label><textarea id="owner-body" rows="5" maxlength="4000" required></textarea><button>Publish author comment</button></form></details>
+</main></body></html>

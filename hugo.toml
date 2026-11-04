@@ -6,6 +6,7 @@ capitalizeListTitles = false
 
 [params]
   rss = true
+  commentsEnabled = true
 
 [menu]
   [[menu.main]]
@@ -25,7 +26,13 @@ capitalizeListTitles = false
     weight = 20
 
 [outputs]
-  home = ['html']
+  home = ['html', 'comments']
   section = ['html', 'rss', 'json']
   taxonomy = ['html']
   term = ['html']
+
+[outputFormats.comments]
+  mediaType = 'application/json'
+  baseName = 'comments-posts'
+  isPlainText = true
+  notAlternative = true

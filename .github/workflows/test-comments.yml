@@ -1,0 +1,39 @@
+name: Test comments
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Install Hugo extended
+        run: |
+          curl --fail --silent --show-error --location https://github.com/gohugoio/hugo/releases/download/v0.141.0/hugo_extended_0.141.0_linux-amd64.tar.gz --output "$RUNNER_TEMP/hugo.tar.gz"
+          mkdir -p "$RUNNER_TEMP/hugo"
+          tar -xzf "$RUNNER_TEMP/hugo.tar.gz" -C "$RUNNER_TEMP/hugo" hugo
+          echo "$RUNNER_TEMP/hugo" >> "$GITHUB_PATH"
+      - run: npm run build
+      - run: npm test
+      - name: Browser integration
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:browser
+      - name: Existing regressions
+        run: |
+          npm --prefix tests ci
+          npm run test:existing
+      - name: SQL recovery rehearsal
+        run: node test/restore-rehearsal.mjs

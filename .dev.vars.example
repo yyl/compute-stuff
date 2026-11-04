@@ -1,0 +1,11 @@
+# Copy to .dev.vars; never commit the copy. Production values live in Pages settings.
+COMMENTS_ENABLED="false"
+COMMENTS_ORIGIN="http://localhost:8788"
+COMMENTS_HASH_SECRET=""
+COMMENTS_CONTACT=""
+COMMENTS_ADMIN_EMAIL=""
+COMMENTS_OWNER_NAME="Author"
+ACCESS_ISSUER=""
+ACCESS_AUD=""
+TURNSTILE_SITE_KEY=""
+TURNSTILE_SECRET_KEY=""

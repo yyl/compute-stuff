@@ -1,0 +1,28 @@
+{{- if and site.Params.commentsEnabled (eq .Section "posts") (not .Draft) (ne .Params.comments false) -}}
+{{- $id := .Params.comments_id | default .RelPermalink -}}
+<link rel="stylesheet" href="{{ "comments/comments.css" | relURL }}" />
+<section class="blog-comments not-prose" id="comments" data-post="{{ $id }}" aria-labelledby="comments-heading">
+  <h2 id="comments-heading">Comments</h2>
+  <p class="comments-intro">A place to leave a thought. Comments appear after review.</p>
+  <p id="comments-loading" role="status">Loading comments…</p>
+  <ol id="comments-list" class="comments-list"></ol>
+  <button id="comments-more" type="button" hidden>Load more</button>
+  <form id="comments-form" hidden>
+    <h3>Leave a comment</h3>
+    <label for="comment-author">Name <span class="comments-muted">(optional)</span></label>
+    <input id="comment-author" name="author" maxlength="80" autocomplete="nickname" />
+    <label for="comment-body">Your comment</label>
+    <textarea id="comment-body" name="body" rows="5" maxlength="4000" required></textarea>
+    <p class="comments-muted">Your name and comment will be public after approval. No account or email needed.</p>
+    <details class="comments-privacy"><summary>Privacy and removal</summary>
+      <p>Names are unverified. Approved comments stay until removed. Pending comments expire after 90 days; spam and rejected comments after 7 days. Short-lived abuse checks use a keyed network identifier, not a stored IP address. Private backups may retain removed text for 30 days. Off-account recovery copies can retain it for up to 90 days.</p>
+      <p id="comments-contact"></p>
+    </details>
+    <div id="comments-challenge"></div>
+    <button id="comments-submit" type="submit" disabled>Submit for review</button>
+  </form>
+  <p id="comments-status" role="status" aria-live="polite"></p>
+  <noscript>Enable JavaScript to read and leave comments.</noscript>
+</section>
+<script defer src="{{ "comments/comments.js" | relURL }}"></script>
+{{- end -}}

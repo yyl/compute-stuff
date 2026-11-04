@@ -1,6 +1,8 @@
 Hugo site using the [Paper](https://github.com/nanxiaobei/hugo-paper) theme.  
 **URL:** https://www.mildlyjournaling.com/
 
+Custom comments: [deployment and operations](OPERATIONS.md), with [design rationale](COMMENTS-DESIGN.md). Production requires account configuration; submissions default to disabled.
+
 ---
 
 ## Directory Layout

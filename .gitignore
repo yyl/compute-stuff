@@ -5,3 +5,12 @@ node_modules/
 resources/
 .dev.vars
 temp_reactions.js
+.cache/
+.wrangler/
+.dev.vars.*
+!.dev.vars.example
+.env*
+!.env.example
+backups/
+maintenance/.dev.vars
+test-results/

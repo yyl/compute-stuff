@@ -1,0 +1,40 @@
+import { chromium } from 'playwright';
+import { mkdir, access } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+import { startLocalServer } from './local-server.mjs';
+const server = await startLocalServer(); let browser;
+try {
+  let executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE;
+  const macChrome = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+  if (!executablePath) { try { await access(macChrome); executablePath = macChrome; } catch {} }
+  browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
+  const context = await browser.newContext(); const page = await context.newPage();
+  await page.goto(server.base + '/posts/hello-world/');
+  await page.locator('#comments-form').waitFor({ state: 'visible' });
+  await page.locator('#comment-author').fill('Alice <img src=x>');
+  await page.locator('#comment-body').fill('I enjoyed this.\n<script>window.__xss=true</script>');
+  await page.locator('#comments-submit').click();
+  await page.getByText('Thanks—your comment is awaiting review.').waitFor();
+  assert.equal(await page.locator('#comments-list li').count(), 0);
+  const admin = await context.newPage();
+  await admin.goto(server.base + '/admin/comments/');
+  assert.equal((await admin.locator('body').textContent()).includes('Sign in through Cloudflare Access.'), true);
+  await admin.goto(server.base + '/__local/comments-login');
+  await admin.locator('#queue input[type=checkbox]').check();
+  await admin.getByRole('button', { name: 'Approve selected', exact: true }).click();
+  await admin.getByText('Saved.', { exact: true }).waitFor();
+  await page.reload(); await page.getByText('Alice <img src=x>', { exact: true }).waitFor();
+  assert.equal(await page.evaluate(() => window.__xss), undefined);
+  assert.equal(await page.locator('#comments-list script,#comments-list img').count(), 0);
+  await mkdir('test-results', { recursive: true });
+  await page.locator('#comments').screenshot({ path: 'test-results/comments-desktop.png' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.locator('#comments').screenshot({ path: 'test-results/comments-mobile.png' });
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+  await admin.getByRole('button', { name: 'Pause submissions', exact: true }).click();
+  await admin.getByText('Saved.', { exact: true }).waitFor(); await page.reload();
+  await page.getByText('New comments are currently paused.', { exact: true }).waitFor();
+  assert.equal(await page.locator('#comments-list li').count(), 1);
+  assert.ok(await page.locator('#comments-form').isHidden());
+  console.log('Browser checks passed: interactive local demo, guest submission, private pending state, authenticated approval, safe rendering, mobile layout and pause.');
+} finally { await browser?.close(); await server.close(); }

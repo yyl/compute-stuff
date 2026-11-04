@@ -225,8 +225,4 @@ async function onRequestPost(context) {
     );
 }
 
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { onRequestGet, onRequestPost };
-}
-
 export { onRequestGet, onRequestPost };

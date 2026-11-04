@@ -1,0 +1,13 @@
+{{- $posts := slice -}}
+{{- $seen := slice -}}
+{{- range where site.RegularPages "Section" "posts" -}}
+  {{- if and (not .Draft) (ne .Params.comments false) -}}
+    {{- $id := .Params.comments_id | default .RelPermalink -}}
+    {{- if in $seen $id -}}{{- errorf "Duplicate comments_id: %s" $id -}}{{- end -}}
+    {{- $seen = $seen | append $id -}}
+    {{- $aliases := slice -}}
+    {{- range .Aliases -}}{{- $aliases = $aliases | append (. | absURL) -}}{{- end -}}
+    {{- $posts = $posts | append (dict "id" $id "url" .Permalink "title" .Title "aliases" $aliases) -}}
+  {{- end -}}
+{{- end -}}
+{{- dict "version" 1 "posts" $posts | jsonify -}}

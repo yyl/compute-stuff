@@ -1,0 +1,11 @@
+.blog-comments{margin-top:4rem;padding-top:2rem;border-top:1px solid #8884;font-size:1rem;line-height:1.6}
+.blog-comments h2{font-size:1.5rem;font-weight:600;margin:0 0 .5rem}.blog-comments h3{font-size:1.15rem;font-weight:600;margin:1.5rem 0 1rem}
+.comments-intro,.comments-muted,.comments-privacy{font-size:.9rem;opacity:.75}.comments-intro{margin-bottom:1.5rem}
+.comments-list{list-style:none;padding:0;margin:1.5rem 0}.comments-list li{padding:1.25rem 0;border-bottom:1px solid #8883}
+.comment-meta{display:flex;align-items:center;flex-wrap:wrap;gap:.65rem;font-size:.85rem}.comment-meta time{opacity:.65}.comment-owner{font-size:.75rem;border:1px solid #8886;border-radius:1rem;padding:0 .5rem}
+.comment-text{white-space:pre-wrap;overflow-wrap:anywhere;margin:.5rem 0 0}.blog-comments label{display:block;margin:1rem 0 .35rem}
+.blog-comments input,.blog-comments textarea{display:block;width:100%;border:1px solid #8886;border-radius:.4rem;padding:.65rem .75rem;background:transparent;color:inherit;font:inherit;box-sizing:border-box}
+.blog-comments input{max-width:24rem}.blog-comments textarea{resize:vertical}.blog-comments button{border:1px solid #8886;border-radius:.4rem;padding:.55rem 1rem;background:#8881;color:inherit;font:inherit;cursor:pointer}
+.blog-comments button:disabled{opacity:.5;cursor:wait}.blog-comments :focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.comments-privacy{margin:1rem 0}.comments-privacy summary{cursor:pointer}.comments-privacy p{margin:.5rem 0}.comments-privacy a{text-decoration:underline}
+#comments-challenge{margin:1rem 0}#comments-status{margin:1rem 0}[hidden]{display:none!important}
