@@ -46,6 +46,17 @@
   max-height: 200px;
 }
 
+.ytd-plot {
+  position: relative;
+  height: 10rem;
+}
+
+#ytd-axis-note {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .activity-tabs label {

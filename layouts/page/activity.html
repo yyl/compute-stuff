@@ -8,7 +8,8 @@
     <h2>Hours spent (YTD)</h2>
     <div class="charts-grid">
       <div class="chart-container">
-        <canvas id="chart-ytd-hours"></canvas>
+        <div class="ytd-plot"><canvas id="chart-ytd-hours" role="img"></canvas></div>
+        <p id="ytd-axis-note" hidden></p>
       </div>
     </div>
   </section>
@@ -150,40 +151,8 @@
       bar: isDarkMode ? 'rgba(209, 213, 219, 0.8)' : 'rgba(55, 65, 81, 0.8)',
       barHover: isDarkMode ? 'rgba(209, 213, 219, 1)' : 'rgba(55, 65, 81, 1)',
       grid: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-      text: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-      surface: isDarkMode ? 'rgba(17, 24, 39, 1)' : 'rgba(255, 255, 255, 1)',
-      surfaceEdge: isDarkMode ? 'rgba(148, 163, 184, 0.45)' : 'rgba(148, 163, 184, 0.55)'
+      text: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)'
     });
-
-    const parseRgb = (color) => {
-      const match = color.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/);
-      if (!match) return null;
-      return {
-        r: Number(match[1]),
-        g: Number(match[2]),
-        b: Number(match[3]),
-        a: match[4] === undefined ? 1 : Number(match[4])
-      };
-    };
-
-    const flattenColor = (foreground, background) => {
-      if (!foreground) return background || { r: 255, g: 255, b: 255, a: 1 };
-      if (!background || foreground.a >= 1) return foreground;
-      return {
-        r: Math.round(foreground.r * foreground.a + background.r * (1 - foreground.a)),
-        g: Math.round(foreground.g * foreground.a + background.g * (1 - foreground.a)),
-        b: Math.round(foreground.b * foreground.a + background.b * (1 - foreground.a)),
-        a: 1
-      };
-    };
-
-    const getChartSurfaceColor = (canvas) => {
-      const container = canvas.closest('.chart-container');
-      const containerColor = parseRgb(getComputedStyle(container).backgroundColor);
-      const bodyColor = parseRgb(getComputedStyle(document.body).backgroundColor) || { r: 255, g: 255, b: 255, a: 1 };
-      const color = flattenColor(containerColor, bodyColor);
-      return `rgb(${color.r}, ${color.g}, ${color.b})`;
-    };
 
     // Chart defaults
     const createChart = (ctx, labels, data, label) => {
@@ -228,180 +197,108 @@
 
     const createBrokenHorizontalChart = (ctx, items, label) => {
       const colors = getColors();
-      const chartSurface = getChartSurfaceColor(ctx);
-      const sortedItems = [...items].sort((a, b) => b.hours - a.hours);
-      const maxValue = Math.max(...sortedItems.map(item => item.hours), 0);
-      const regularValues = sortedItems.slice(1).map(item => item.hours);
-      const regularMax = Math.max(...regularValues, 0);
-      const niceStep = (value) => {
-        const magnitude = 10 ** Math.floor(Math.log10(Math.max(value, 1)));
-        const normalized = value / magnitude;
-        const fraction = [1, 2, 2.5, 5, 10].find(candidate => candidate >= normalized) || 10;
-        return fraction * magnitude;
-      };
-      const tickStep = niceStep(regularMax / 4);
-      // Only break an empty section of the scale. That keeps the smaller activities
-      // on a normal, directly comparable scale instead of flattening them together.
-      const shouldBreak = regularMax > 0 && maxValue > regularMax * 2.5;
-      const breakStart = shouldBreak ? tickStep * 4 : maxValue;
-      const breakResume = shouldBreak
-        ? Math.max(breakStart + tickStep * 2, Math.floor((maxValue - regularMax * 0.75) / tickStep) * tickStep)
-        : maxValue;
-      const breakGapUnits = Math.max(3, tickStep * 0.4);
-      const compressedTail = Math.max(tickStep, breakStart * 0.35);
-      const tailScale = maxValue > breakResume ? compressedTail / (maxValue - breakResume) : 1;
-      const breakSize = Math.max(0, breakResume - breakStart);
-      const scaleValue = (value) => {
-        if (!shouldBreak || value <= breakStart) return value;
-        if (value <= breakResume) return breakStart + breakGapUnits;
-        return breakStart + breakGapUnits + (value - breakResume) * tailScale;
-      };
-      const regularTicks = Array.from(
-        { length: Math.floor(breakStart / tickStep) + 1 },
-        (_, index) => index * tickStep
-      );
-      const outlierTicks = shouldBreak
-        ? Array.from(
-          { length: Math.floor((maxValue - breakResume) / tickStep) + 1 },
-          (_, index) => breakResume + index * tickStep
-        )
-        : [];
-      const ticks = [...new Set([...regularTicks, ...outlierTicks].filter(v => v <= maxValue))];
-      // The value is already printed on its bar; avoid a near-duplicate final
-      // axis tick crowding the compressed end of the scale.
-      if (!ticks.some(tick => Math.abs(tick - maxValue) < tickStep * 0.5)) ticks.push(maxValue);
-      const scaledTicks = [...new Set(ticks.map(scaleValue))].sort((a, b) => a - b);
-      const breakStartX = scaleValue(breakStart);
-      const breakResumeX = scaleValue(breakResume);
-      const scaledData = sortedItems.map(item => scaleValue(item.hours));
-
-      const breakPlugin = {
-        id: 'brokenAxisMarker',
-        afterDatasetsDraw(chart) {
-          if (!shouldBreak || breakSize <= 0) return;
-          const { ctx: chartCtx, chartArea, scales } = chart;
-          const breakLeft = scales.x.getPixelForValue(breakStartX);
-          const breakRight = scales.x.getPixelForValue(breakResumeX);
-          const breakWidth = breakRight - breakLeft;
-          if (
-            !Number.isFinite(breakLeft) ||
-            !Number.isFinite(breakRight) ||
-            breakWidth <= 0 ||
-            breakLeft <= chartArea.left ||
-            breakRight >= chartArea.right
-          ) return;
-
-          chartCtx.save();
-          chartCtx.lineCap = 'round';
-          chartCtx.lineJoin = 'round';
-
-          const drawCutEdge = (x, centerY, direction = 1, size = 10) => {
-            chartCtx.strokeStyle = colors.surfaceEdge;
-            chartCtx.lineWidth = 1.75;
-            [-2.5, 2.5].forEach(offset => {
-              chartCtx.strokeStyle = chartSurface;
-              chartCtx.lineWidth = 4;
-              chartCtx.beginPath();
-              chartCtx.moveTo(x + direction * -size / 2, centerY + offset + size / 2);
-              chartCtx.lineTo(x + direction * size / 2, centerY + offset - size / 2);
-              chartCtx.stroke();
-
-              chartCtx.strokeStyle = colors.surfaceEdge;
-              chartCtx.lineWidth = 1.75;
-              chartCtx.beginPath();
-              chartCtx.moveTo(x + direction * -size / 2, centerY + offset + size / 2);
-              chartCtx.lineTo(x + direction * size / 2, centerY + offset - size / 2);
-              chartCtx.stroke();
-            });
-          };
-
-          const meta = chart.getDatasetMeta(0);
-          meta.data.forEach((bar, index) => {
-            if (!bar || sortedItems[index].hours <= breakResume) return;
-            chartCtx.fillStyle = chartSurface;
-            const barMaskBleed = 2;
-            chartCtx.fillRect(
-              breakLeft - barMaskBleed,
-              bar.y - bar.height / 2 - barMaskBleed,
-              breakWidth + barMaskBleed * 2,
-              bar.height + barMaskBleed * 2
-            );
-            drawCutEdge(breakLeft, bar.y, -1, 10);
-            drawCutEdge(breakRight, bar.y, 1, 10);
-          });
-
-          chartCtx.fillStyle = chartSurface;
-          chartCtx.fillRect(breakLeft, chartArea.bottom - 2, breakWidth, 4);
-          drawCutEdge(breakLeft, chartArea.bottom, -1, 9);
-          drawCutEdge(breakRight, chartArea.bottom, 1, 9);
-
-          chartCtx.font = '600 12px system-ui, sans-serif';
-          chartCtx.fillStyle = colors.text;
-          chartCtx.textBaseline = 'middle';
-          meta.data.forEach((bar, index) => {
-            const value = `${sortedItems[index].hours}h`;
-            const labelX = bar.x + 8;
-            chartCtx.textAlign = labelX > chartArea.right - 36 ? 'right' : 'left';
-            chartCtx.fillText(value, Math.min(labelX, chartArea.right - 4), bar.y);
-          });
-
-          chartCtx.restore();
-        }
-      };
+      const sorted = [...items].sort((a, b) => b.hours - a.hours);
+      const [largest, runnerUp] = sorted.map(item => item.hours);
+      const targetStep = runnerUp / 4;
+      const magnitude = 10 ** Math.floor(Math.log10(targetStep || 1));
+      const step = magnitude * [1, 2, 2.5, 5, 10].find(n => n * magnitude >= targetStep);
+      const breakStart = 4 * step;
+      const breakEnd = Math.floor((largest - step) / step) * step;
+      const broken = runnerUp > 0 && largest > runnerUp * 2.5 && breakEnd > breakStart;
+      // Remove only the empty interval. One hour has the same width on both sides.
+      const skipped = broken ? breakEnd - breakStart : 0;
+      const plotted = sorted.map(({ hours }) => hours > breakStart ? hours - skipped : hours);
+      const note = document.getElementById('ytd-axis-note');
+      if (broken) {
+        note.textContent = `Axis skips ${breakStart.toLocaleString()}–${breakEnd.toLocaleString()} h.`;
+        note.hidden = false;
+      }
+      ctx.setAttribute('aria-label', sorted.map(item => `${item.label}: ${item.hours} hours`).join(', '));
 
       return new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: sortedItems.map(item => item.label),
+          labels: sorted.map(item => item.label),
           datasets: [{
-            label: label,
-            data: scaledData,
+            label,
+            data: plotted,
             backgroundColor: colors.bar,
             hoverBackgroundColor: colors.barHover,
-            borderRadius: 4,
-            borderSkipped: false
+            borderRadius: 3,
+            borderSkipped: false,
+            maxBarThickness: 18
           }]
         },
-        plugins: [breakPlugin],
+        plugins: [{
+          id: 'ytdLabelsAndBreak',
+          afterDatasetsDraw(chart) {
+            const { ctx: pen, chartArea, scales } = chart;
+            const bars = chart.getDatasetMeta(0).data;
+            pen.save();
+            if (broken) {
+              const x = scales.x.getPixelForValue(breakStart);
+              const bar = bars[0];
+              // Cut through to the actual page background, including in dark mode.
+              pen.save();
+              pen.globalCompositeOperation = 'destination-out';
+              pen.strokeStyle = '#000';
+              pen.lineWidth = 6;
+              pen.beginPath();
+              pen.moveTo(x - 4, bar.y + bar.height / 2 + 1);
+              pen.lineTo(x + 4, bar.y - bar.height / 2 - 1);
+              pen.stroke();
+              const y = chartArea.bottom;
+              pen.clearRect(x - 7, y - 1, 14, 3);
+              pen.restore();
+              pen.strokeStyle = colors.text;
+              pen.lineWidth = 1.25;
+              pen.beginPath();
+              for (const offset of [-2.5, 2.5]) {
+                pen.moveTo(x + offset - 2, y + 3);
+                pen.lineTo(x + offset + 2, y - 3);
+              }
+              pen.stroke();
+            }
+            pen.font = '500 12px system-ui, sans-serif';
+            pen.textAlign = 'left';
+            pen.textBaseline = 'middle';
+            pen.fillStyle = colors.text;
+            bars.forEach((bar, i) => pen.fillText(`${sorted[i].hours} h`, bar.x + 6, bar.y));
+            pen.restore();
+          }
+        }],
         options: {
-          responsive: true,
-          maintainAspectRatio: true,
           indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          layout: { padding: { right: 48 } },
           plugins: {
             legend: { display: false },
             tooltip: {
-              callbacks: {
-                label: (ctx) => `${label}: ${sortedItems[ctx.dataIndex].hours}h`
-              }
+              callbacks: { label: item => `${label}: ${sorted[item.dataIndex].hours} h` }
             }
           },
           scales: {
             x: {
-              beginAtZero: true,
-              max: scaleValue(maxValue),
-              grid: {
-                color: (ctx) => {
-                  if (
-                    Math.abs(ctx.tick.value - breakStartX) < 0.001 ||
-                    Math.abs(ctx.tick.value - breakResumeX) < 0.001
-                  ) return 'transparent';
-                  return colors.grid;
-                }
-              },
+              min: 0,
+              max: plotted[0] || 1,
+              grid: { color: colors.grid, drawTicks: false },
               ticks: {
                 color: colors.text,
-                autoSkip: false,
                 maxRotation: 0,
-                callback: (v) => {
-                  const original = ticks.find(tick => Math.abs(scaleValue(tick) - v) < 0.001);
-                  return original === undefined ? '' : `${original}h`;
-                }
+                maxTicksLimit: 6,
+                padding: 6,
+                callback: value => (value > breakStart ? value + skipped : value).toLocaleString() + 'h'
               },
-              afterBuildTicks: (axis) => {
-                axis.ticks = scaledTicks.map(value => ({ value }));
+              afterBuildTicks(axis) {
+                if (!broken) return;
+                // Leave the splice unlabelled. Its endpoints are named below the chart.
+                axis.ticks = [0, step, 2 * step, 3 * step, breakStart + step].map(value => ({ value }));
               }
             },
             y: {
+              border: { display: false },
               grid: { display: false },
               ticks: { color: colors.text }
             }
