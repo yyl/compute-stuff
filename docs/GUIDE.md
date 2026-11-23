@@ -97,10 +97,11 @@ Each YAML file follows the same pattern:
 | `movies.yaml` | 🎬 Movies | Movies Watched & Rating (bar + line) | Combo (dual y-axis) |
 | `podcasts.yaml` | 🎧 Podcasts | Episodes Played; Feed Changes (added/removed) | Bar; Dual bar |
 | `workouts.yaml` | 🏋️ Workout | Workouts & Minutes (bar + line) | Combo (dual y-axis) |
-| `code.yaml` | 💻 Code | Monthly Commits; Lines Changed | Bar; Dual bar |
+| `code.yaml` | 💻 Coding | Monthly Commits | Bar |
 
 **Chart rendering details (in `activity.html`):**
 
+- Monthly charts and the Hours spent summary use the six most recent completed calendar months.
 - **`fillMonthGaps(data, fields)`** — utility that fills missing months with zeros so charts display a continuous timeline
 - **Combo charts** use Chart.js mixed types (bar + line datasets) with `order` to draw lines in front of bars
 - **Travel chart** uses a transparent bar with a top-border-only style to render Unique Places as disconnected horizontal line markers overlapping the Check-ins bars

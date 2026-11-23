@@ -5,11 +5,11 @@
   </header>
 
   <section class="activity-section">
-    <h2>Hours spent (YTD)</h2>
+    <h2>Hours spent (last 6 months)</h2>
     <div class="charts-grid">
       <div class="chart-container">
-        <div class="ytd-plot"><canvas id="chart-ytd-hours" role="img"></canvas></div>
-        <p id="ytd-axis-note" hidden></p>
+        <div class="activity-hours-plot"><canvas id="chart-activity-hours" role="img"></canvas></div>
+        <p id="activity-hours-axis-note" hidden></p>
       </div>
     </div>
   </section>
@@ -110,18 +110,13 @@
     </div>
   </section>
 
-  <!-- 💻 Code -->
+  <!-- 💻 Coding -->
   <section class="activity-section">
-    <h2>💻 Code</h2>
+    <h2>💻 Coding</h2>
     <div class="charts-grid">
       <div class="chart-container">
         <h3>Monthly Commits</h3>
         <canvas id="chart-monthly-commits"></canvas>
-      </div>
-      <div class="chart-container">
-        <h3>Daily Contributions</h3>
-        <img id="github-contrib-graph" src="https://ghchart.rshah.org/yyl" alt="GitHub contribution graph"
-          style="width: 100%; border-radius: 4px;" />
       </div>
     </div>
   </section>
@@ -208,7 +203,7 @@
       // Remove only the empty interval. One hour has the same width on both sides.
       const skipped = broken ? breakEnd - breakStart : 0;
       const plotted = sorted.map(({ hours }) => hours > breakStart ? hours - skipped : hours);
-      const note = document.getElementById('ytd-axis-note');
+      const note = document.getElementById('activity-hours-axis-note');
       if (broken) {
         note.textContent = `Axis skips ${breakStart.toLocaleString()}–${breakEnd.toLocaleString()} h.`;
         note.hidden = false;
@@ -230,7 +225,7 @@
           }]
         },
         plugins: [{
-          id: 'ytdLabelsAndBreak',
+          id: 'hoursLabelsAndBreak',
           afterDatasetsDraw(chart) {
             const { ctx: pen, chartArea, scales } = chart;
             const bars = chart.getDatasetMeta(0).data;
@@ -335,28 +330,32 @@
       }
     };
 
-    // Exclude current (incomplete) month
+    // Use the six completed calendar months before the current month.
     const now = new Date();
-    const currentYear = String(now.getFullYear());
-    const currentMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    const formatMonth = date => date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+    const currentMonth = formatMonth(now);
+    const firstMonth = formatMonth(new Date(now.getFullYear(), now.getMonth() - 6, 1));
 
-    const sumYtdHours = (data, field) => {
-      if (!Array.isArray(data) || data.length === 0) return 0;
-      const totalMinutes = data
-        .filter(d => d.month && d.month.startsWith(currentYear) && d.month !== currentMonth)
+    const getRecentMonths = (data, gapFields) => {
+      if (!Array.isArray(data)) return [];
+      const completed = data.filter(d => d.month < currentMonth);
+      const gapped = gapFields ? fillMonthGaps(completed, gapFields) : completed;
+      return gapped.filter(d => d.month >= firstMonth);
+    };
+
+    const sumRecentHours = (data, field) => {
+      const totalMinutes = getRecentMonths(data)
         .reduce((sum, d) => sum + (Number(d[field]) || 0), 0);
       return Number((totalMinutes / 60).toFixed(1));
     };
 
     // Safely initialize charts with data validation
     const initCharts = (data, chartConfigs, gapFields) => {
-      if (!data || !Array.isArray(data) || data.length === 0) {
+      const recent = getRecentMonths(data, gapFields);
+      if (recent.length === 0) {
         chartConfigs.forEach(config => showNoData(config.id));
         return;
       }
-      const completed = data.filter(d => d.month !== currentMonth);
-      const gapped = gapFields ? fillMonthGaps(completed, gapFields) : completed;
-      const recent = gapped.slice(-12);
       const labels = formatLabels(recent);
       chartConfigs.forEach(config => {
         const values = recent.map(d => config.transform ? config.transform(d[config.field]) : d[config.field]);
@@ -378,20 +377,19 @@
     // Initialize charts
     document.addEventListener('DOMContentLoaded', () => {
       createBrokenHorizontalChart(
-        document.getElementById('chart-ytd-hours'),
+        document.getElementById('chart-activity-hours'),
         [
-          { label: 'Articles', hours: sumYtdHours(readingData, 'time_spent_minutes') },
-          { label: 'Podcasts', hours: sumYtdHours(podcastsData, 'minutes_listened') },
-          { label: 'Workouts', hours: sumYtdHours(workoutsData, 'total_minutes') },
-          { label: 'Movies', hours: sumYtdHours(moviesData, 'minutes_watched') }
+          { label: 'Articles', hours: sumRecentHours(readingData, 'time_spent_minutes') },
+          { label: 'Podcasts', hours: sumRecentHours(podcastsData, 'minutes_listened') },
+          { label: 'Workouts', hours: sumRecentHours(workoutsData, 'total_minutes') },
+          { label: 'Movies', hours: sumRecentHours(moviesData, 'minutes_watched') }
         ],
         'Hours'
       );
 
       // Reading combo chart (bar: total words, line: avg reading speed)
-      if (readingData && Array.isArray(readingData) && readingData.length > 0) {
-        const completedReading = fillMonthGaps(readingData.filter(d => d.month !== currentMonth), ['total_words', 'time_spent_minutes']);
-        const recentReading = completedReading.slice(-12);
+      const recentReading = getRecentMonths(readingData, ['total_words', 'time_spent_minutes']);
+      if (recentReading.length > 0) {
         const readingLabels = formatLabels(recentReading);
         const colors = getColors();
         new Chart(document.getElementById('chart-total-words'), {
@@ -473,9 +471,8 @@
       }
 
       // Workout combo chart (bar + line with dual y-axes)
-      if (workoutsData && Array.isArray(workoutsData) && workoutsData.length > 0) {
-        const completedWorkouts = fillMonthGaps(workoutsData.filter(d => d.month !== currentMonth), ['workouts', 'total_minutes']);
-        const recentWorkouts = completedWorkouts.slice(-12);
+      const recentWorkouts = getRecentMonths(workoutsData, ['workouts', 'total_minutes']);
+      if (recentWorkouts.length > 0) {
         const workoutLabels = formatLabels(recentWorkouts);
         const colors = getColors();
         new Chart(document.getElementById('chart-workout-combo'), {
@@ -554,8 +551,8 @@
       }
 
       // Travel combo chart (bar + line, single y-axis)
-      if (travelData && Array.isArray(travelData) && travelData.length > 0) {
-        const recentTravel = fillMonthGaps(travelData.filter(d => d.month !== currentMonth), ['checkins', 'unique_places']).slice(-12);
+      const recentTravel = getRecentMonths(travelData, ['checkins', 'unique_places']);
+      if (recentTravel.length > 0) {
         const travelLabels = formatLabels(recentTravel);
         const colors = getColors();
         new Chart(document.getElementById('chart-travel-combo'), {
@@ -668,9 +665,8 @@
       ], ['minutes_listened']);
 
       // Sleep score chart (two dotted lines: median & avg)
-      if (sleepData && Array.isArray(sleepData) && sleepData.length > 0) {
-        const completedSleep = sleepData.filter(d => d.month !== currentMonth);
-        const recentSleep = completedSleep.slice(-12);
+      const recentSleep = getRecentMonths(sleepData);
+      if (recentSleep.length > 0) {
         const sleepLabels = formatLabels(recentSleep);
         const colors = getColors();
         const allScores = recentSleep.flatMap(d => [d.median_sleep_score, d.avg_sleep_score]).filter(Boolean);
@@ -736,9 +732,8 @@
       }
 
       // Writing combo chart (bar: posts, line: total words)
-      if (writingData && Array.isArray(writingData) && writingData.length > 0) {
-        const completedWriting = fillMonthGaps(writingData.filter(d => d.month !== currentMonth), ['posts', 'total_words']);
-        const recentWriting = completedWriting.slice(-12);
+      const recentWriting = getRecentMonths(writingData, ['posts', 'total_words']);
+      if (recentWriting.length > 0) {
         const writingLabels = formatLabels(recentWriting);
         const colors = getColors();
         new Chart(document.getElementById('chart-writing-combo'), {
@@ -816,38 +811,18 @@
         showNoData('chart-writing-combo');
       }
 
-      // Code charts
+      // Coding chart
       initCharts(codeData, [
         { id: 'chart-monthly-commits', field: 'commits', label: 'Commits' }
       ], ['commits', 'repos_touched']);
     });
 
-    // Update GitHub images on dark mode toggle (avoids full page reload)
-    const GH_USER = 'yyl';
-    const updateGithubImages = (dark) => {
-      const contrib = document.getElementById('github-contrib-graph');
-      const stats = document.getElementById('github-stats');
-      if (contrib) {
-        contrib.src = dark
-          ? `https://ghchart.rshah.org/58a6ff/${GH_USER}`
-          : `https://ghchart.rshah.org/${GH_USER}`;
-      }
-      if (stats) {
-        const theme = dark ? 'dark' : 'default';
-        stats.src = `https://github-readme-stats.vercel.app/api?username=${GH_USER}&show_icons=true&count_private=true&hide_border=true&theme=${theme}`;
-      }
-    };
-
-    // Set initial state
-    updateGithubImages(isDarkMode);
-
-    // Watch for dark mode changes (debounced to avoid reload loops)
+    // Reload charts when the color theme changes.
     let lastDarkState = isDarkMode;
     const observer = new MutationObserver(() => {
       const currentDarkState = isDark();
       if (currentDarkState !== lastDarkState) {
         lastDarkState = currentDarkState;
-        updateGithubImages(currentDarkState);
         location.reload();
       }
     });
