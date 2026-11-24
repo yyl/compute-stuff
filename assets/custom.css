@@ -1,5 +1,45 @@
 /* Place custom css here. */
 
+.post-feed-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(4.5rem, 20vw, 7rem);
+  align-items: center;
+  gap: 1rem;
+}
+
+.post-feed-thumbnail {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  margin: 0;
+  border-radius: 0.5rem;
+  background-color: #ebe5db;
+}
+
+.post-feed-fallback {
+  display: grid;
+  place-items: center;
+  color: #85735c;
+}
+
+.post-feed-fallback::before {
+  content: '';
+  width: 27%;
+  aspect-ratio: 4 / 5;
+  border: 1px solid currentColor;
+  border-inline-start-width: 3px;
+  border-radius: 0.2rem;
+  background: repeating-linear-gradient(to bottom, currentColor 0 1px, transparent 1px 5px)
+    center 42% / 45% 11px no-repeat;
+}
+
+.dark .post-feed-thumbnail {
+  background-color: #35302b;
+  color: #afa08c;
+}
+
 /* Section Styling */
 .activity-section {
   margin-bottom: 3rem;

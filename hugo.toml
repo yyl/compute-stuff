@@ -4,6 +4,14 @@ title = 'Mildly Journaling'
 theme = 'paper'
 capitalizeListTitles = false
 
+[module]
+  [[module.mounts]]
+    source = 'assets'
+    target = 'assets'
+  [[module.mounts]]
+    source = 'static'
+    target = 'assets/post-images'
+
 [params]
   rss = true
   commentsEnabled = true

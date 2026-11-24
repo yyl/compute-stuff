@@ -48,22 +48,33 @@ $paginator.Pages -}}<!---->
 
 {{- end -}}
 
-<section class="relative my-10 first-of-type:mt-0 last-of-type:mb-0" data-slug="{{- .RelPermalink | urlize | replaceRE "^/|/$" "" | replaceRE "/" "-" -}}">
-  {{- if gt .Weight 0 -}}
-  <span class="mb-1 inline-block text-xs tracking-wider text-orange-500"
-    >Featured</span
-  >
-  {{- end -}}
-  <h2 class="my-0!">{{- .Title -}}</h2>
-  <div class="flex items-center gap-2 not-prose">
-    <time class="text-xs antialiased opacity-60"
-      >{{- .Date | time.Format ":date_medium" -}}</time
+{{- $isPost := and .IsPage (eq .Section "posts") -}}
+<section class="relative my-10 first-of-type:mt-0 last-of-type:mb-0{{ if $isPost }} post-feed-entry{{ end }}" data-slug="{{- .RelPermalink | urlize | replaceRE "^/|/$" "" | replaceRE "/" "-" -}}">
+  <div>
+    {{- if gt .Weight 0 -}}
+    <span class="mb-1 inline-block text-xs tracking-wider text-orange-500"
+      >Featured</span
     >
-    <span class="reaction-counts text-xs antialiased opacity-60" style="display:none;">
-      <span>↑<span class="rc-likes">0</span></span>
-      <span>↓<span class="rc-dislikes">0</span></span>
-    </span>
+    {{- end -}}
+    <h2 class="my-0!">{{- .Title -}}</h2>
+    <div class="flex items-center gap-2 not-prose">
+      <time class="text-xs antialiased opacity-60"
+        >{{- .Date | time.Format ":date_medium" -}}</time
+      >
+      <span class="reaction-counts text-xs antialiased opacity-60" style="display:none;">
+        <span>↑<span class="rc-likes">0</span></span>
+        <span>↓<span class="rc-dislikes">0</span></span>
+      </span>
+    </div>
   </div>
+  {{- if $isPost -}}
+    {{- $thumbnail := partialCached "post-thumbnail.html" . .RelPermalink -}}
+    {{- with $thumbnail -}}
+      <img class="post-feed-thumbnail not-prose" src="{{ . }}" width="320" height="240" alt="" loading="lazy" decoding="async" />
+    {{- else -}}
+      <span class="post-feed-thumbnail post-feed-fallback" aria-hidden="true"></span>
+    {{- end -}}
+  {{- end -}}
   <a class="absolute inset-0 text-[0px]" href="{{- .Permalink -}}"
     >{{- .Title -}}</a
   >

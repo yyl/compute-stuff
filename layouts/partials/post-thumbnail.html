@@ -1,0 +1,31 @@
+{{- $post := . -}}
+{{- $thumbnail := "" -}}
+{{- $sources := slice -}}
+{{- with $post.Params.preview -}}
+  {{- $sources = $sources | append . -}}
+{{- end -}}
+{{- range findRESubmatch `(?i)<img\b[^>]*?\ssrc="([^"]+)"` $post.Content -}}
+  {{- $sources = $sources | append (index . 1 | htmlUnescape) -}}
+{{- end -}}
+
+{{- range $sources -}}
+  {{- $url := urls.Parse . -}}
+  {{- if and $url.Path (not $url.Host) (not $url.Scheme) -}}
+    {{- $path := strings.TrimPrefix "/" $url.Path -}}
+    {{- $image := or ($post.Resources.Get $path) (resources.Get (printf "post-images/%s" $path)) -}}
+    {{- if $image -}}
+      {{- if in (slice "jpeg" "png" "webp" "gif") $image.MediaType.SubType -}}
+        {{- $thumbnail = ($image.Fill "320x240 webp q78").RelPermalink -}}
+      {{- else if eq $image.ResourceType "image" -}}
+        {{- $thumbnail = $image.RelPermalink -}}
+      {{- end -}}
+    {{- else if hasPrefix $url.Path $post.RelPermalink -}}
+      {{- /* The image render hook already produces WebP for inline bundle images. */ -}}
+      {{- $thumbnail = $url.Path -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if $thumbnail -}}
+    {{- break -}}
+  {{- end -}}
+{{- end -}}
+{{- return $thumbnail -}}
