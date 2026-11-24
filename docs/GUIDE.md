@@ -11,7 +11,7 @@ Custom comments: [deployment and operations](OPERATIONS.md), with [design ration
 blog/
 ├── .github/
 │   └── workflows/
-│       └── sync-hardcover.yml  # Daily sync of currently-reading books
+│       └── sync-activity.yml  # Daily sync of recent Activity entries
 │
 ├── archetypes/        # Templates for new content
 │   └── default.md     # Default front matter for `hugo new`
@@ -39,7 +39,8 @@ blog/
 │       └── footer.html      # Site footer partial
 │
 ├── scripts/           # Automation scripts
-│   └── fetch-hardcover.js  # Fetch currently-reading books from Hardcover API
+│   ├── fetch-hardcover.js       # Fetch the most recently updated current book
+│   └── fetch-latest-activity.py # Fetch the latest archived article or played episode
 │
 ├── functions/         # Cloudflare Pages Functions (serverless API)
 │   └── api/
@@ -76,9 +77,9 @@ The `activity.md` page uses `layout: activity` in its front matter, which tells 
 
 ### Data Files
 
-Files in `data/activity/` are YAML arrays of monthly records. They are loaded into templates via `{{ .Site.Data.activity.<name> }}` and rendered as Chart.js charts on the Activity page.
+The Activity page loads monthly chart data and its latest activity snapshots from `data/activity/` via `{{ .Site.Data.activity.<name> }}`.
 
-Each YAML file follows the same pattern:
+Monthly chart data uses this YAML format:
 
 ```yaml
 - month: "2025-01"
@@ -90,7 +91,6 @@ Each YAML file follows the same pattern:
 
 | YAML file | Section | Chart(s) | Type |
 |-----------|---------|----------|------|
-| `currently_reading.yaml` | 📚 Reading | Currently Reading book cards | Card list (auto-generated) |
 | `reading.yaml` | 📚 Reading | Articles Read (words bar + minutes line) | Combo (dual y-axis) |
 | `books.yaml` | 📚 Reading | Books Finished | Bar |
 | `travel.yaml` | 🗺️ Travel | Check-ins & Unique Places (bars + line markers) | Combo (single y-axis) |
@@ -197,45 +197,29 @@ Auth: `Authorization: Bearer <UPLOAD_TOKEN>` (or `?token=` fallback).
 
 **Usage:** open `/img_upload/` on the phone, paste the token (remembered in `localStorage`), optionally enter a post slug, pick photos, upload. Staged images can be moved into a post bundle when the post is written (page-bundle images get the responsive srcset treatment from `layouts/_default/_markup/render-image.html`).
 
-### Hardcover Integration (Currently Reading)
+### What’s going on right now
 
-The Activity page shows currently-reading books pulled from [Hardcover](https://hardcover.app) via their GraphQL API, displayed as a compact list inside the Reading section.
+The Activity page shows four entries:
 
-**Pipeline:**
+- **Currently reading** shows the Hardcover book with the newest update among books marked Currently Reading. The sync compares the library entry's update timestamp and its latest reading progress or start event. The original book list uses the newest start date until the first daily run.
+- **Latest article read** shows the Reader archive item in the `article` category with the newest `last_moved_at`. The sync checks all result pages and links to the article's source when available.
+- **Latest post published** comes from Hugo's `posts` section at build time and uses the post's publish date.
+- **Latest podcast listened to** shows the Overcast episode marked played with the newest `userUpdatedDate`. Overcast's export reports the episode's last user update as a proxy for when it was played.
 
-1. `.github/workflows/sync-hardcover.yml` runs daily at 8 AM UTC (also manually triggerable)
-2. Calls `scripts/fetch-hardcover.js` which queries `status_id: 2` (currently reading) from Hardcover's GraphQL endpoint
-3. Writes results to `data/activity/currently_reading.yaml`
-4. Commits & pushes if data changed → triggers Cloudflare Pages rebuild
+`.github/workflows/sync-activity.yml` fetches the three external sources daily at 08:00 UTC and can also run manually. It commits changed snapshots in `data/activity/` to trigger the Cloudflare Pages rebuild. Each failed fetch leaves its existing snapshot in place while the other sources can still update. The monthly D3 pipeline continues to supply chart data on its own schedule.
 
-**Data format** (`currently_reading.yaml`):
+Configure these GitHub Actions repository secrets for `yyl/blog`:
 
-```yaml
-- title: "Book Title"
-  author: "Author Name"
-  hardcover_url: "https://hardcover.app/books/slug"
-  started_at: "2026-01-15"        # from first_started_reading_date or date_added
-  last_updated: "2026-03-07"      # only on first entry, displayed as footer
-```
+- `HARDCOVER_API_KEY` is the [Hardcover API key](https://hardcover.app/account/api) from the existing integration.
+- `READWISE_ACCESS_TOKEN` is the [Readwise access token](https://readwise.io/access_token).
+- `OVERCAST_COOKIE` is the value of the `o` session cookie from an [authenticated Overcast session](https://overcast.fm/account). Replace it when the session expires.
 
-**Rendering** (in `activity.html`):
-
-- Sorted alphabetically by title using Hugo's `{{ range sort . "title" }}`
-- "started Xd ago" computed at build time: `{{ div (sub now.Unix (time .).Unix) 86400 }}`
-- Wrapped in a `chart-container` for visual consistency with charts
-- "Last updated" date shown at the bottom, read from the first entry's `last_updated` field
-
-**GraphQL fields used:** `user_books.first_started_reading_date`, `date_added`, `book.title`, `book.slug`, `book.cached_contributors`
-
-**Setup:**
-
-1. Get API key from [hardcover.app/account/api](https://hardcover.app/account/api)
-2. Add as GitHub repo secret: `HARDCOVER_API_KEY`
-
-**Local testing:**
+With the corresponding secret exported in your shell, run a source locally:
 
 ```bash
-HARDCOVER_API_KEY=your_key node scripts/fetch-hardcover.js
+node scripts/fetch-hardcover.js
+python3 scripts/fetch-latest-activity.py readwise
+python3 scripts/fetch-latest-activity.py overcast
 ```
 
 ### Theme

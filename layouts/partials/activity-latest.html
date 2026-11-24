@@ -1,0 +1,40 @@
+{{- $activity := .Site.Data.activity -}}
+{{- $book := dict -}}
+{{- with $activity.currently_reading -}}
+  {{- /* The legacy snapshot only has start dates. Daily snapshots contain one book. */ -}}
+  {{- $entry := index (sort . "started_at" "desc") 0 -}}
+  {{- $book = dict "title" $entry.title "url" $entry.hardcover_url "detail" $entry.author "date" ($entry.updated_at | default $entry.started_at) -}}
+{{- end -}}
+{{- $post := dict -}}
+{{- $posts := where .Site.RegularPages "Section" "posts" -}}
+{{- $posts = where (where $posts "Draft" false) "PublishDate" "le" now -}}
+{{- range first 1 $posts.ByPublishDate.Reverse -}}
+  {{- $post = dict "title" .Title "url" .RelPermalink "date" .PublishDate -}}
+{{- end -}}
+{{- $cards := slice
+  (dict "label" "Currently reading" "item" $book "empty" "No current book.")
+  (dict "label" "Latest article read" "item" $activity.latest_article "empty" "No archived article available.")
+  (dict "label" "Latest post published" "item" $post "empty" "No published post.")
+  (dict "label" "Latest podcast listened to" "item" $activity.latest_podcast "empty" "No played episode available.")
+-}}
+<section class="activity-section" aria-labelledby="activity-latest-heading">
+  <h2 id="activity-latest-heading">What’s going on right now</h2>
+  <div class="activity-latest">
+    {{ range $cards }}
+    <div class="chart-container">
+      <h3>{{ .label }}</h3>
+      {{ with .item }}
+      <p class="activity-latest-title">{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end }}</p>
+      {{ if or .detail .date }}
+      <p class="activity-latest-detail">
+        {{ .detail }}{{ if and .detail .date }} · {{ end }}
+        {{ with .date }}<time datetime="{{ time.Format "2006-01-02" . }}">{{ time.Format ":date_medium" . }}</time>{{ end }}
+      </p>
+      {{ end }}
+      {{ else }}
+      <p class="activity-latest-detail">{{ .empty }}</p>
+      {{ end }}
+    </div>
+    {{ end }}
+  </div>
+</section>

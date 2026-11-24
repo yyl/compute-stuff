@@ -109,39 +109,38 @@
   }
 }
 
-/* Currently Reading List */
-.books-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.activity-latest {
+  display: grid;
+  gap: 0.75rem;
 }
 
-.books-list li {
-  padding: 0.35rem 0;
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-.books-list a {
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.books-list .book-author {
-  opacity: 0.5;
+.activity-latest h3 {
+  margin-bottom: 0.45rem;
   font-size: 0.85rem;
 }
 
-.books-list .book-started {
-  font-size: 0.8rem;
-  opacity: 0.4;
+.activity-latest-title {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
-.books-updated {
-  margin: 0.75rem 0 0 0;
-  font-size: 0.75rem;
-  opacity: 0.4;
-  font-style: italic;
+.activity-latest-title a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.activity-latest-detail {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+@media (min-width: 640px) {
+  .activity-latest {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* ─── Apps I Built ─── */

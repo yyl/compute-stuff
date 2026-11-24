@@ -4,6 +4,8 @@
     <h1 class="my-0! pb-2.5">{{- .Title -}}</h1>
   </header>
 
+  {{ partial "activity-latest.html" . }}
+
   <section class="activity-section">
     <h2>Hours spent (last 6 months)</h2>
     <div class="charts-grid">
@@ -29,34 +31,6 @@
   <!-- 📚 Reading -->
   <section class="activity-section">
     <h2>&#128218; Reading</h2>
-
-    <!-- Currently Reading -->
-    {{ with .Site.Data.activity.currently_reading }}
-    <div class="chart-container" style="margin-bottom: 2rem;">
-      <h3>Currently Reading</h3>
-      <ul class="books-list">
-        {{ range sort . "title" }}
-        <li>
-          <a href="{{ .hardcover_url }}" target="_blank" rel="noopener">{{ .title }}</a>
-          {{ with .started_at }}
-          {{- $days := div (sub now.Unix (time .).Unix) 86400 -}}
-          <span class="book-started">· started
-            {{- if ge $days 365 -}}
-              {{ print " " (div $days 365) "y" }}
-            {{- else if ge $days 30 -}}
-              {{ print " " (div $days 30) "mo" }}
-            {{- else if ge $days 7 -}}
-              {{ print " " (div $days 7) "wk" }}
-            {{- else -}}
-              {{ print " " $days "d" }}
-            {{- end }} ago</span>{{ end }}
-          <br><span class="book-author">{{ .author }}</span>
-        </li>
-        {{ end }}
-      </ul>
-      {{ with index . 0 }}{{ with .last_updated }}<p class="books-updated">Last updated {{ . }}</p>{{ end }}{{ end }}
-    </div>
-    {{ end }}
 
     <div class="charts-grid">
       <div class="chart-container">
