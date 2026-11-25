@@ -71,6 +71,36 @@
     </div>
   </section>
 
+  <section class="activity-section">
+    <h2>🏄 Surfing</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h3>Sessions &amp; Waves</h3>
+        <canvas id="chart-surfing" role="img" aria-label="Monthly surf sessions and waves caught"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="activity-section">
+    <h2>🧗 Bouldering</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h3>Sends by Grade</h3>
+        <canvas id="chart-bouldering" role="img" aria-label="Monthly bouldering sends stacked by grade"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="activity-section">
+    <h2>🏋️ Weightlifting</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h3>Monthly Workouts</h3>
+        <canvas id="chart-weightlifting" role="img" aria-label="Monthly weightlifting workouts"></canvas>
+      </div>
+    </div>
+  </section>
+
   <!-- 😴 Sleep -->
   <section class="activity-section">
     <h2>😴 Sleep</h2>
@@ -108,15 +138,23 @@
     const codeData = {{ .Site.Data.activity.code | jsonify | safeJS }};
     const writingData = {{ .Site.Data.activity.writing | jsonify | safeJS }};
     const sleepData = {{ .Site.Data.activity.sleep | jsonify | safeJS }};
+    const surfingData = {{ .Site.Data.activity.surfing | jsonify | safeJS }};
+    const boulderingData = {{ .Site.Data.activity.bouldering | jsonify | safeJS }};
+    const weightliftingData = {{ .Site.Data.activity.weightlifting | jsonify | safeJS }};
 
     // Detect dark mode
     const isDark = () => document.documentElement.classList.contains('dark');
     const isDarkMode = isDark();
 
     // Theme colors
+    const barRgb = isDarkMode ? [209, 213, 219] : [55, 65, 81];
+    const accentRgb = isDarkMode ? [251, 191, 36] : [217, 119, 6];
     const getColors = () => ({
-      bar: isDarkMode ? 'rgba(209, 213, 219, 0.8)' : 'rgba(55, 65, 81, 0.8)',
-      barHover: isDarkMode ? 'rgba(209, 213, 219, 1)' : 'rgba(55, 65, 81, 1)',
+      accentStroke: `rgba(${accentRgb.join(', ')}, 0.9)`,
+      accentFill: `rgba(${accentRgb.join(', ')}, 0.2)`,
+      accentPoint: `rgba(${accentRgb.join(', ')}, 1)`,
+      bar: `rgba(${barRgb.join(', ')}, 0.8)`,
+      barHover: `rgba(${barRgb.join(', ')}, 1)`,
       grid: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
       text: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)'
     });
@@ -384,11 +422,11 @@
                 type: 'line',
                 label: 'Hours Read',
                 data: recentReading.map(d => Number(((d.time_spent_minutes || 0) / 60).toFixed(1))),
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
-                backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
+                borderColor: colors.accentStroke,
+                backgroundColor: colors.accentFill,
                 borderWidth: 3,
                 pointRadius: 4,
-                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                pointBackgroundColor: colors.accentPoint,
                 tension: 0.3,
                 fill: false,
                 yAxisID: 'y1',
@@ -430,10 +468,10 @@
                 position: 'right',
                 grid: { drawOnChartArea: false },
                 ticks: {
-                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  color: colors.accentStroke,
                   callback: (v) => `${v}h`
                 },
-                title: { display: true, text: 'Hours', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+                title: { display: true, text: 'Hours', color: colors.accentStroke }
               }
             }
           }
@@ -467,11 +505,11 @@
                 type: 'line',
                 label: 'Hours',
                 data: recentWorkouts.map(d => Number(((d.total_minutes || 0) / 60).toFixed(1))),
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
-                backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
+                borderColor: colors.accentStroke,
+                backgroundColor: colors.accentFill,
                 borderWidth: 3,
                 pointRadius: 4,
-                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                pointBackgroundColor: colors.accentPoint,
                 tension: 0.3,
                 fill: false,
                 yAxisID: 'y1',
@@ -510,10 +548,10 @@
                 position: 'right',
                 grid: { drawOnChartArea: false },
                 ticks: {
-                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  color: colors.accentStroke,
                   callback: (v) => `${v}h`
                 },
-                title: { display: true, text: 'Hours', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+                title: { display: true, text: 'Hours', color: colors.accentStroke }
               }
             }
           }
@@ -521,6 +559,119 @@
       } else {
         showNoData('chart-workout-combo');
       }
+
+      const recentSurfing = getRecentMonths(surfingData, ['sessions', 'waves']);
+      if (recentSurfing.length > 0) {
+        const colors = getColors();
+        new Chart(document.getElementById('chart-surfing'), {
+          type: 'bar',
+          data: {
+            labels: formatLabels(recentSurfing),
+            datasets: [
+              {
+                label: 'Sessions',
+                data: recentSurfing.map(d => d.sessions),
+                backgroundColor: colors.bar,
+                hoverBackgroundColor: colors.barHover,
+                maxBarThickness: 44,
+                borderRadius: 4,
+                borderSkipped: false,
+                yAxisID: 'y',
+                order: 1
+              },
+              {
+                type: 'line',
+                label: 'Waves',
+                data: recentSurfing.map(d => d.waves),
+                borderColor: colors.accentStroke,
+                backgroundColor: colors.accentFill,
+                pointRadius: 4,
+                pointBackgroundColor: colors.accentPoint,
+                yAxisID: 'y1',
+                order: 0
+              }
+            ]
+          },
+          options: {
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { labels: { color: colors.text } } },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
+              },
+              y: {
+                beginAtZero: true,
+                position: 'left',
+                grid: { color: colors.grid },
+                ticks: { color: colors.text, precision: 0 },
+                title: { display: true, text: 'Sessions', color: colors.text }
+              },
+              y1: {
+                beginAtZero: true,
+                position: 'right',
+                grid: { drawOnChartArea: false },
+                ticks: { color: colors.accentStroke, precision: 0 },
+                title: { display: true, text: 'Waves', color: colors.accentStroke }
+              }
+            }
+          }
+        });
+      } else {
+        showNoData('chart-surfing');
+      }
+
+      const recentBouldering = getRecentMonths(boulderingData, ['sends']);
+      const gradeCounts = recentBouldering.map(d => d.grade_counts ?? (d.sends === 0 ? {} : null));
+      if (gradeCounts.some(Boolean)) {
+        const colors = getColors();
+        const grades = [...new Set(gradeCounts.flatMap(counts => Object.keys(counts ?? {})))];
+        grades.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+        const firstShade = isDarkMode ? 238 : 17;
+        const lastShade = isDarkMode ? 85 : 170;
+        const shadeSteps = Math.max(grades.length - 1, 1);
+        const gradeColor = index => {
+          const gray = Math.round(firstShade + (lastShade - firstShade) * index / shadeSteps);
+          return `rgb(${gray}, ${gray}, ${gray})`;
+        };
+        new Chart(document.getElementById('chart-bouldering'), {
+          type: 'bar',
+          data: {
+            labels: formatLabels(recentBouldering),
+            datasets: grades.map((grade, index) => ({
+              label: grade || 'Ungraded',
+              data: gradeCounts.map(counts => counts ? (counts[grade] ?? 0) : null),
+              backgroundColor: gradeColor(index)
+            }))
+          },
+          options: {
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: grades.length > 0, labels: { color: colors.text } },
+              tooltip: { filter: item => item.raw > 0 }
+            },
+            scales: {
+              x: {
+                stacked: true,
+                grid: { display: false },
+                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
+              },
+              y: {
+                stacked: true,
+                beginAtZero: true,
+                grid: { color: colors.grid },
+                ticks: { color: colors.text, precision: 0 }
+              }
+            }
+          }
+        });
+      } else {
+        showNoData('chart-bouldering');
+      }
+
+      initCharts(weightliftingData, [
+        { id: 'chart-weightlifting', field: 'workouts', label: 'Workouts' }
+      ], ['workouts']);
 
       // Travel combo chart (bar + line, single y-axis)
       const recentTravel = getRecentMonths(travelData, ['checkins', 'unique_places']);
@@ -537,7 +688,7 @@
                 label: 'Unique Places',
                 data: recentTravel.map(d => d.unique_places),
                 backgroundColor: 'transparent',
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                borderColor: colors.accentPoint,
                 borderWidth: { top: 3, right: 0, bottom: 0, left: 0 },
                 borderSkipped: false,
                 xAxisID: 'x2',
@@ -565,7 +716,7 @@
                 labels: {
                   color: colors.text,
                   generateLabels: (chart) => {
-                    const lineColor = isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)';
+                    const lineColor = colors.accentPoint;
                     return [
                       {
                         text: 'Unique Places',
@@ -663,11 +814,11 @@
               {
                 label: 'Average',
                 data: recentSleep.map(d => Number((d.avg_sleep_score || 0).toFixed(1))),
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                borderColor: colors.accentStroke,
                 backgroundColor: 'transparent',
                 borderWidth: 2.5,
                 pointRadius: 4,
-                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                pointBackgroundColor: colors.accentPoint,
                 tension: 0.3,
                 fill: false
               }
@@ -728,11 +879,11 @@
                 type: 'line',
                 label: 'Words',
                 data: recentWriting.map(d => d.total_words),
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
-                backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
+                borderColor: colors.accentStroke,
+                backgroundColor: colors.accentFill,
                 borderWidth: 3,
                 pointRadius: 4,
-                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                pointBackgroundColor: colors.accentPoint,
                 tension: 0.3,
                 fill: false,
                 yAxisID: 'y1',
@@ -771,10 +922,10 @@
                 position: 'right',
                 grid: { drawOnChartArea: false },
                 ticks: {
-                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  color: colors.accentStroke,
                   callback: (v) => v >= 1000 ? (v / 1000) + 'k' : v
                 },
-                title: { display: true, text: 'Words', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+                title: { display: true, text: 'Words', color: colors.accentStroke }
               }
             }
           }

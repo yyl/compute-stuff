@@ -97,6 +97,9 @@ Monthly chart data uses this YAML format:
 | `movies.yaml` | 🎬 Movies | Movies Watched & Rating (bar + line) | Combo (dual y-axis) |
 | `podcasts.yaml` | 🎧 Podcasts | Episodes Played; Feed Changes (added/removed) | Bar; Dual bar |
 | `workouts.yaml` | 🏋️ Workout | Workouts & Minutes (bar + line) | Combo (dual y-axis) |
+| `surfing.yaml` | 🏄 Surfing | Surfilog sessions (left) and waves (right) | Combo (dual y-axis) |
+| `bouldering.yaml` | 🧗 Bouldering | Kaya sends by grade | Stacked bar |
+| `weightlifting.yaml` | 🏋️ Weightlifting | Strong workouts | Bar |
 | `code.yaml` | 💻 Coding | Monthly Commits | Bar |
 
 **Chart rendering details (in `activity.html`):**

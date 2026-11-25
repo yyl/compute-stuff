@@ -1,0 +1,65 @@
+# Monthly bouldering activity data
+- month: "2026-02"
+  climbing_days: 1
+  sends: 1
+  flashes: 0
+  onsights: 0
+  hardest_v_grade: 3
+  grade_counts: {"V3": 1}
+
+- month: "2026-03"
+  climbing_days: 2
+  sends: 7
+  flashes: 1
+  onsights: 3
+  hardest_v_grade: 3
+  grade_counts: {"V1": 1, "V2": 2, "V3": 4}
+
+- month: "2026-04"
+  climbing_days: 2
+  sends: 6
+  flashes: 0
+  onsights: 4
+  hardest_v_grade: 4
+  grade_counts: {"V1": 2, "V2": 1, "V3": 2, "V4": 1}
+
+- month: "2026-05"
+  climbing_days: 1
+  sends: 5
+  flashes: 2
+  onsights: 1
+  hardest_v_grade: 3
+  grade_counts: {"V3": 5}
+
+- month: "2026-06"
+  climbing_days: 2
+  sends: 7
+  flashes: 0
+  onsights: 3
+  hardest_v_grade: 3
+  grade_counts: {"V1": 1, "V2": 5, "V3": 1}
+
+- month: "2026-07"
+  climbing_days: 2
+  sends: 8
+  flashes: 0
+  onsights: 5
+  hardest_v_grade: 3
+  grade_counts: {"V0": 1, "V2": 3, "V3": 4}
+
+- month: "2026-09"
+  climbing_days: 1
+  sends: 6
+  flashes: 1
+  onsights: 4
+  hardest_v_grade: 3
+  grade_counts: {"V2": 1, "V3": 5}
+
+- month: "2026-11"
+  climbing_days: 2
+  sends: 7
+  flashes: 0
+  onsights: 1
+  hardest_v_grade: 4
+  grade_counts: {"V3": 6, "V4": 1}
+
