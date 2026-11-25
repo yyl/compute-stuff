@@ -16,7 +16,7 @@ npm --prefix tests ci
 npm run test:existing
 ```
 
-`npm run build` generates ignored `build/`, with a workspace-local Hugo cache. Do not edit or commit generated files under the repository's legacy tracked `public/` folder. Do not use a plain `hugo` invocation for local verification, because it writes that folder.
+`npm run build` generates ignored `build/`, with a workspace-local Hugo cache. Plain `hugo` also writes to `build/`, matching the Pages output directory. Do not edit or commit generated files under the repository's legacy tracked `public/` folder. The production and preview build variables in `wrangler.toml` select Hugo 0.141.0 and Node 24.
 
 The integration tests use real local D1 through Miniflare, with injected challenge responses and signed test Access tokens. They exercise concurrent admission, publication/privacy, authentication/CSRF, retention, backups and export conversion. These test substitutes are not runtime authentication bypasses.
 
@@ -76,7 +76,7 @@ npx wrangler d1 create mildly-journaling-comments
 npx wrangler d1 create mildly-journaling-comments-preview
 ```
 
-Copy the production ID into the root `wrangler.toml` D1 binding, `maintenance/wrangler.toml` D1 binding, and its `COMMENTS_DATABASE_ID` variable. Set `CF_ACCOUNT_ID` in the maintenance configuration. Put the preview ID in the root `[env.preview]` binding. Create a separate KV namespace for preview reactions (`wrangler kv namespace create REACTIONS_PREVIEW`) and put that ID in the preview KV binding. Preview uses a different database, no production Access audience, and submissions disabled by default. Never bind preview code to production D1 or R2.
+The root `wrangler.toml` omits comments databases and preview reactions until their resources exist. Add `[[d1_databases]]` and `[[env.preview.d1_databases]]` entries with binding `COMMENTS_DB`, the corresponding database name and ID, and `migrations_dir = "migrations"`. Copy the production ID into the `maintenance/wrangler.toml` D1 binding and its `COMMENTS_DATABASE_ID` variable. Set `CF_ACCOUNT_ID` in the maintenance configuration. Create a separate KV namespace for preview reactions (`wrangler kv namespace create REACTIONS_PREVIEW`) and add it as `[[env.preview.kv_namespaces]]` with binding `REACTIONS` and its ID. Preview uses a different database, no production Access audience, and submissions disabled by default. Never bind preview code to production D1 or R2.
 
 Apply migrations before the application begins using the database:
 
