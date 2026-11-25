@@ -1,3 +1,43 @@
+name = "mildly-journaling"
+pages_build_output_dir = "./build"
+compatibility_date = "2026-11-03"
+
+[vars]
+COMMENTS_ENABLED = "false"
+COMMENTS_ORIGIN = "https://www.mildlyjournaling.com"
+COMMENTS_OWNER_NAME = "Author"
+COMMENTS_CONTACT = ""
+COMMENTS_ADMIN_EMAIL = ""
+ACCESS_ISSUER = ""
+ACCESS_AUD = ""
+TURNSTILE_SITE_KEY = ""
+
+[[d1_databases]]
+binding = "COMMENTS_DB"
+database_name = "mildly-journaling-comments"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
 [[kv_namespaces]]
 binding = "REACTIONS"
 id = "76633664d2e54ece8757cd96dc704f72"
+
+[env.preview.vars]
+COMMENTS_ENABLED = "false"
+COMMENTS_ORIGIN = "https://www.mildlyjournaling.com"
+COMMENTS_OWNER_NAME = "Author"
+COMMENTS_CONTACT = ""
+COMMENTS_ADMIN_EMAIL = ""
+ACCESS_ISSUER = ""
+ACCESS_AUD = ""
+TURNSTILE_SITE_KEY = ""
+
+[[env.preview.d1_databases]]
+binding = "COMMENTS_DB"
+database_name = "mildly-journaling-comments-preview"
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
+
+[[env.preview.kv_namespaces]]
+binding = "REACTIONS"
+id = "00000000000000000000000000000000"

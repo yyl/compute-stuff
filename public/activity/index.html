@@ -26,7 +26,7 @@
   <meta name="theme-color" />
 
   <meta name="description" content="" />
-  <meta name="author" content="Mildly Journaling" /><link rel="preload stylesheet" as="style" href="https://www.mildlyjournaling.com/main.min.css" />
+  <meta name="author" content="Mildly Journaling" /><link rel="preload stylesheet" as="style" href="https://www.mildlyjournaling.com/main.min.c0ac0f705b21a4fc43ff1fdedcd673c22846b0b12d1285d27d76b12562eee86d.css" />
 
   
   <link rel="preload" as="image" href="https://www.mildlyjournaling.com/theme.png" />
@@ -51,19 +51,19 @@
     href="https://www.mildlyjournaling.com/apple-touch-icon.png"
   />
 
-  <meta name="generator" content="Hugo 0.169.0">
-	<meta itemprop="name" content="My Activity">
-	<meta itemprop="datePublished" content="2025-01-01T00:00:00+00:00">
-	<meta itemprop="dateModified" content="2025-01-01T00:00:00+00:00"><meta property="og:url" content="https://www.mildlyjournaling.com/activity/">
-	<meta property="og:site_name" content="Mildly Journaling">
-	<meta property="og:title" content="My Activity">
-	<meta property="og:locale" content="en_us">
-	<meta property="og:type" content="article">
-		<meta property="article:published_time" content="2025-01-01T00:00:00+00:00">
-		<meta property="article:modified_time" content="2025-01-01T00:00:00+00:00">
+  <meta name="generator" content="Hugo 0.141.0">
+  <meta itemprop="name" content="My Activity">
+  <meta itemprop="datePublished" content="2025-01-01T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2025-01-01T00:00:00+00:00"><meta property="og:url" content="https://www.mildlyjournaling.com/activity/">
+  <meta property="og:site_name" content="Mildly Journaling">
+  <meta property="og:title" content="My Activity">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:published_time" content="2025-01-01T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-01-01T00:00:00+00:00">
 
-	<meta name="twitter:card" content="summary">
-	<meta name="twitter:title" content="My Activity">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="My Activity">
 
   <link rel="canonical" href="https://www.mildlyjournaling.com/activity/" />
 </head>
@@ -141,10 +141,11 @@
   </header>
 
   <section class="activity-section">
-    <h2>Hours spent (YTD)</h2>
+    <h2>Hours spent (last 6 months)</h2>
     <div class="charts-grid">
       <div class="chart-container">
-        <canvas id="chart-ytd-hours"></canvas>
+        <div class="activity-hours-plot"><canvas id="chart-activity-hours" role="img"></canvas></div>
+        <p id="activity-hours-axis-note" hidden></p>
       </div>
     </div>
   </section>
@@ -164,35 +165,6 @@
   
   <section class="activity-section">
     <h2>&#128218; Reading</h2>
-
-    
-    
-    <div class="chart-container" style="margin-bottom: 2rem;">
-      <h3>Currently Reading</h3>
-      <ul class="books-list">
-        
-        <li>
-          <a href="https://hardcover.app/books/adult-piano-adventures-classics-book-1" target="_blank" rel="noopener">Adult Piano Adventures - Classics, Book 1</a>
-          <span class="book-started">· started 8mo ago</span>
-          <br><span class="book-author">Nancy Faber</span>
-        </li>
-        
-        <li>
-          <a href="https://hardcover.app/books/apple-in-china" target="_blank" rel="noopener">Apple in China: The Capture of the World&#39;s Greatest Company</a>
-          <span class="book-started">· started 1y ago</span>
-          <br><span class="book-author">Patrick  McGee</span>
-        </li>
-        
-        <li>
-          <a href="https://hardcover.app/books/zen-and-the-art-of-motorcycle-maintenance" target="_blank" rel="noopener">Zen and the Art of Motorcycle Maintenance: An Inquiry into Values</a>
-          <span class="book-started">· started 9mo ago</span>
-          <br><span class="book-author">Robert M. Pirsig</span>
-        </li>
-        
-      </ul>
-      <p class="books-updated">Last updated 2026-11-08</p>
-    </div>
-    
 
     <div class="charts-grid">
       <div class="chart-container">
@@ -235,6 +207,36 @@
     </div>
   </section>
 
+  <section class="activity-section">
+    <h2>🏄 Surfing</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h3>Sessions &amp; Waves</h3>
+        <canvas id="chart-surfing" role="img" aria-label="Monthly surf sessions and waves caught"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="activity-section">
+    <h2>🧗 Bouldering</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h3>Sends by Grade</h3>
+        <canvas id="chart-bouldering" role="img" aria-label="Monthly bouldering sends stacked by grade"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="activity-section">
+    <h2>🏋️ Weightlifting</h2>
+    <div class="charts-grid">
+      <div class="chart-container">
+        <h3>Monthly Workouts</h3>
+        <canvas id="chart-weightlifting" role="img" aria-label="Monthly weightlifting workouts"></canvas>
+      </div>
+    </div>
+  </section>
+
   
   <section class="activity-section">
     <h2>😴 Sleep</h2>
@@ -248,16 +250,11 @@
 
   
   <section class="activity-section">
-    <h2>💻 Code</h2>
+    <h2>💻 Coding</h2>
     <div class="charts-grid">
       <div class="chart-container">
         <h3>Monthly Commits</h3>
         <canvas id="chart-monthly-commits"></canvas>
-      </div>
-      <div class="chart-container">
-        <h3>Daily Contributions</h3>
-        <img id="github-contrib-graph" src="https://ghchart.rshah.org/yyl" alt="GitHub contribution graph"
-          style="width: 100%; border-radius: 4px;" />
       </div>
     </div>
   </section>
@@ -275,50 +272,26 @@
     const codeData = [{"commits":6,"month":"2025-11","private_commits":0,"private_repos_touched":0,"public_commits":6,"public_repos_touched":2,"repos_touched":2},{"commits":27,"month":"2025-12","private_commits":4,"private_repos_touched":1,"public_commits":23,"public_repos_touched":5,"repos_touched":6},{"commits":20,"month":"2026-01","private_commits":1,"private_repos_touched":1,"public_commits":19,"public_repos_touched":3,"repos_touched":4},{"commits":87,"month":"2026-02","private_commits":4,"private_repos_touched":1,"public_commits":83,"public_repos_touched":3,"repos_touched":4},{"commits":111,"month":"2026-03","private_commits":30,"private_repos_touched":2,"public_commits":81,"public_repos_touched":6,"repos_touched":8},{"commits":88,"month":"2026-04","private_commits":10,"private_repos_touched":1,"public_commits":78,"public_repos_touched":6,"repos_touched":7},{"commits":29,"month":"2026-05","private_commits":16,"private_repos_touched":3,"public_commits":13,"public_repos_touched":3,"repos_touched":6},{"commits":29,"month":"2026-06","private_commits":8,"private_repos_touched":1,"public_commits":21,"public_repos_touched":3,"repos_touched":4},{"commits":20,"month":"2026-07","private_commits":12,"private_repos_touched":1,"public_commits":8,"public_repos_touched":3,"repos_touched":4},{"commits":20,"month":"2026-08","private_commits":8,"private_repos_touched":2,"public_commits":12,"public_repos_touched":3,"repos_touched":5},{"commits":57,"month":"2026-09","private_commits":37,"private_repos_touched":3,"public_commits":20,"public_repos_touched":4,"repos_touched":7},{"commits":57,"month":"2026-10","private_commits":47,"private_repos_touched":4,"public_commits":10,"public_repos_touched":2,"repos_touched":6},{"commits":4,"month":"2026-11","private_commits":4,"private_repos_touched":1,"public_commits":0,"public_repos_touched":0,"repos_touched":1}];
     const writingData = [{"month":"2025-11","posts":5,"total_words":1579,"unique_tags":4},{"month":"2025-12","posts":5,"total_words":1990,"unique_tags":11},{"month":"2026-01","posts":5,"total_words":1660,"unique_tags":10},{"month":"2026-02","posts":2,"total_words":309,"unique_tags":15},{"month":"2026-03","posts":3,"total_words":986,"unique_tags":20},{"month":"2026-04","posts":3,"total_words":5006,"unique_tags":25},{"month":"2026-05","posts":1,"total_words":1003,"unique_tags":12},{"month":"2026-06","posts":1,"total_words":398,"unique_tags":12},{"month":"2026-07","posts":1,"total_words":1021,"unique_tags":14},{"month":"2026-08","posts":2,"total_words":1794,"unique_tags":20},{"month":"2026-09","posts":2,"total_words":3176,"unique_tags":20},{"month":"2026-10","posts":2,"total_words":2070,"unique_tags":19}];
     const sleepData = [{"avg_readiness_score":76.27,"avg_sleep_score":77.46,"median_readiness_score":76,"median_sleep_score":78,"month":"2025-11"},{"avg_readiness_score":73.45,"avg_sleep_score":76.1,"median_readiness_score":75,"median_sleep_score":77,"month":"2025-12"},{"avg_readiness_score":81.59,"avg_sleep_score":78.65,"median_readiness_score":82,"median_sleep_score":79,"month":"2026-01"},{"avg_readiness_score":82.17,"avg_sleep_score":79.04,"median_readiness_score":82,"median_sleep_score":79,"month":"2026-02"},{"avg_readiness_score":76.77,"avg_sleep_score":76.9,"median_readiness_score":77,"median_sleep_score":78,"month":"2026-03"},{"avg_readiness_score":80.93,"avg_sleep_score":78.24,"median_readiness_score":81,"median_sleep_score":78,"month":"2026-04"},{"avg_readiness_score":80.13,"avg_sleep_score":76.87,"median_readiness_score":81,"median_sleep_score":78,"month":"2026-05"},{"avg_readiness_score":80.5,"avg_sleep_score":77.73,"median_readiness_score":80.5,"median_sleep_score":78.5,"month":"2026-06"},{"avg_readiness_score":79.94,"avg_sleep_score":77.48,"median_readiness_score":80,"median_sleep_score":78,"month":"2026-07"},{"avg_readiness_score":80.87,"avg_sleep_score":77.13,"median_readiness_score":82,"median_sleep_score":77,"month":"2026-08"},{"avg_readiness_score":78.86,"avg_sleep_score":75.97,"median_readiness_score":78,"median_sleep_score":77,"month":"2026-09"},{"avg_readiness_score":78.37,"avg_sleep_score":73.83,"median_readiness_score":78.5,"median_sleep_score":74.5,"month":"2026-10"},{"avg_readiness_score":80,"avg_sleep_score":72,"median_readiness_score":80,"median_sleep_score":72,"month":"2026-11"}];
+    const surfingData = [{"longest_wave_m":68.7,"max_speed_kmh":20.9,"max_wave_seconds":15,"month":"2026-10","paddling_distance_m":3018,"sessions":1,"surf_distance_m":313.1,"surf_time_seconds":79,"total_duration_seconds":6985,"waves":8}];
+    const boulderingData = [{"climbing_days":1,"flashes":0,"grade_counts":{"V3":1},"hardest_v_grade":3,"month":"2026-02","onsights":0,"sends":1},{"climbing_days":2,"flashes":1,"grade_counts":{"V1":1,"V2":2,"V3":4},"hardest_v_grade":3,"month":"2026-03","onsights":3,"sends":7},{"climbing_days":2,"flashes":0,"grade_counts":{"V1":2,"V2":1,"V3":2,"V4":1},"hardest_v_grade":4,"month":"2026-04","onsights":4,"sends":6},{"climbing_days":1,"flashes":2,"grade_counts":{"V3":5},"hardest_v_grade":3,"month":"2026-05","onsights":1,"sends":5},{"climbing_days":2,"flashes":0,"grade_counts":{"V1":1,"V2":5,"V3":1},"hardest_v_grade":3,"month":"2026-06","onsights":3,"sends":7},{"climbing_days":2,"flashes":0,"grade_counts":{"V0":1,"V2":3,"V3":4},"hardest_v_grade":3,"month":"2026-07","onsights":5,"sends":8},{"climbing_days":1,"flashes":1,"grade_counts":{"V2":1,"V3":5},"hardest_v_grade":3,"month":"2026-09","onsights":4,"sends":6},{"climbing_days":2,"flashes":0,"grade_counts":{"V3":6,"V4":1},"hardest_v_grade":4,"month":"2026-11","onsights":1,"sends":7}];
+    const weightliftingData = [{"month":"2025-11","workouts":4},{"month":"2025-12","workouts":4},{"month":"2026-01","workouts":2},{"month":"2026-02","workouts":5},{"month":"2026-03","workouts":3},{"month":"2026-04","workouts":4},{"month":"2026-05","workouts":5},{"month":"2026-06","workouts":4},{"month":"2026-07","workouts":1},{"month":"2026-08","workouts":2},{"month":"2026-09","workouts":3},{"month":"2026-10","workouts":4},{"month":"2026-11","workouts":1}];
 
     
     const isDark = () => document.documentElement.classList.contains('dark');
     const isDarkMode = isDark();
 
     
+    const barRgb = isDarkMode ? [209, 213, 219] : [55, 65, 81];
+    const accentRgb = isDarkMode ? [251, 191, 36] : [217, 119, 6];
     const getColors = () => ({
-      bar: isDarkMode ? 'rgba(209, 213, 219, 0.8)' : 'rgba(55, 65, 81, 0.8)',
-      barHover: isDarkMode ? 'rgba(209, 213, 219, 1)' : 'rgba(55, 65, 81, 1)',
+      accentStroke: `rgba(${accentRgb.join(', ')}, 0.9)`,
+      accentFill: `rgba(${accentRgb.join(', ')}, 0.2)`,
+      accentPoint: `rgba(${accentRgb.join(', ')}, 1)`,
+      bar: `rgba(${barRgb.join(', ')}, 0.8)`,
+      barHover: `rgba(${barRgb.join(', ')}, 1)`,
       grid: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)',
-      text: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)',
-      surface: isDarkMode ? 'rgba(17, 24, 39, 1)' : 'rgba(255, 255, 255, 1)',
-      surfaceEdge: isDarkMode ? 'rgba(148, 163, 184, 0.45)' : 'rgba(148, 163, 184, 0.55)'
+      text: isDarkMode ? 'rgba(255, 255, 255, 0.7)' : 'rgba(0, 0, 0, 0.7)'
     });
-
-    const parseRgb = (color) => {
-      const match = color.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?\)/);
-      if (!match) return null;
-      return {
-        r: Number(match[1]),
-        g: Number(match[2]),
-        b: Number(match[3]),
-        a: match[4] === undefined ? 1 : Number(match[4])
-      };
-    };
-
-    const flattenColor = (foreground, background) => {
-      if (!foreground) return background || { r: 255, g: 255, b: 255, a: 1 };
-      if (!background || foreground.a >= 1) return foreground;
-      return {
-        r: Math.round(foreground.r * foreground.a + background.r * (1 - foreground.a)),
-        g: Math.round(foreground.g * foreground.a + background.g * (1 - foreground.a)),
-        b: Math.round(foreground.b * foreground.a + background.b * (1 - foreground.a)),
-        a: 1
-      };
-    };
-
-    const getChartSurfaceColor = (canvas) => {
-      const container = canvas.closest('.chart-container');
-      const containerColor = parseRgb(getComputedStyle(container).backgroundColor);
-      const bodyColor = parseRgb(getComputedStyle(document.body).backgroundColor) || { r: 255, g: 255, b: 255, a: 1 };
-      const color = flattenColor(containerColor, bodyColor);
-      return `rgb(${color.r}, ${color.g}, ${color.b})`;
-    };
 
     
     const createChart = (ctx, labels, data, label) => {
@@ -363,180 +336,108 @@
 
     const createBrokenHorizontalChart = (ctx, items, label) => {
       const colors = getColors();
-      const chartSurface = getChartSurfaceColor(ctx);
-      const sortedItems = [...items].sort((a, b) => b.hours - a.hours);
-      const maxValue = Math.max(...sortedItems.map(item => item.hours), 0);
-      const regularValues = sortedItems.slice(1).map(item => item.hours);
-      const regularMax = Math.max(...regularValues, 0);
-      const niceStep = (value) => {
-        const magnitude = 10 ** Math.floor(Math.log10(Math.max(value, 1)));
-        const normalized = value / magnitude;
-        const fraction = [1, 2, 2.5, 5, 10].find(candidate => candidate >= normalized) || 10;
-        return fraction * magnitude;
-      };
-      const tickStep = niceStep(regularMax / 4);
+      const sorted = [...items].sort((a, b) => b.hours - a.hours);
+      const [largest, runnerUp] = sorted.map(item => item.hours);
+      const targetStep = runnerUp / 4;
+      const magnitude = 10 ** Math.floor(Math.log10(targetStep || 1));
+      const step = magnitude * [1, 2, 2.5, 5, 10].find(n => n * magnitude >= targetStep);
+      const breakStart = 4 * step;
+      const breakEnd = Math.floor((largest - step) / step) * step;
+      const broken = runnerUp > 0 && largest > runnerUp * 2.5 && breakEnd > breakStart;
       
-      
-      const shouldBreak = regularMax > 0 && maxValue > regularMax * 2.5;
-      const breakStart = shouldBreak ? tickStep * 4 : maxValue;
-      const breakResume = shouldBreak
-        ? Math.max(breakStart + tickStep * 2, Math.floor((maxValue - regularMax * 0.75) / tickStep) * tickStep)
-        : maxValue;
-      const breakGapUnits = Math.max(3, tickStep * 0.4);
-      const compressedTail = Math.max(tickStep, breakStart * 0.35);
-      const tailScale = maxValue > breakResume ? compressedTail / (maxValue - breakResume) : 1;
-      const breakSize = Math.max(0, breakResume - breakStart);
-      const scaleValue = (value) => {
-        if (!shouldBreak || value <= breakStart) return value;
-        if (value <= breakResume) return breakStart + breakGapUnits;
-        return breakStart + breakGapUnits + (value - breakResume) * tailScale;
-      };
-      const regularTicks = Array.from(
-        { length: Math.floor(breakStart / tickStep) + 1 },
-        (_, index) => index * tickStep
-      );
-      const outlierTicks = shouldBreak
-        ? Array.from(
-          { length: Math.floor((maxValue - breakResume) / tickStep) + 1 },
-          (_, index) => breakResume + index * tickStep
-        )
-        : [];
-      const ticks = [...new Set([...regularTicks, ...outlierTicks].filter(v => v <= maxValue))];
-      
-      
-      if (!ticks.some(tick => Math.abs(tick - maxValue) < tickStep * 0.5)) ticks.push(maxValue);
-      const scaledTicks = [...new Set(ticks.map(scaleValue))].sort((a, b) => a - b);
-      const breakStartX = scaleValue(breakStart);
-      const breakResumeX = scaleValue(breakResume);
-      const scaledData = sortedItems.map(item => scaleValue(item.hours));
-
-      const breakPlugin = {
-        id: 'brokenAxisMarker',
-        afterDatasetsDraw(chart) {
-          if (!shouldBreak || breakSize <= 0) return;
-          const { ctx: chartCtx, chartArea, scales } = chart;
-          const breakLeft = scales.x.getPixelForValue(breakStartX);
-          const breakRight = scales.x.getPixelForValue(breakResumeX);
-          const breakWidth = breakRight - breakLeft;
-          if (
-            !Number.isFinite(breakLeft) ||
-            !Number.isFinite(breakRight) ||
-            breakWidth <= 0 ||
-            breakLeft <= chartArea.left ||
-            breakRight >= chartArea.right
-          ) return;
-
-          chartCtx.save();
-          chartCtx.lineCap = 'round';
-          chartCtx.lineJoin = 'round';
-
-          const drawCutEdge = (x, centerY, direction = 1, size = 10) => {
-            chartCtx.strokeStyle = colors.surfaceEdge;
-            chartCtx.lineWidth = 1.75;
-            [-2.5, 2.5].forEach(offset => {
-              chartCtx.strokeStyle = chartSurface;
-              chartCtx.lineWidth = 4;
-              chartCtx.beginPath();
-              chartCtx.moveTo(x + direction * -size / 2, centerY + offset + size / 2);
-              chartCtx.lineTo(x + direction * size / 2, centerY + offset - size / 2);
-              chartCtx.stroke();
-
-              chartCtx.strokeStyle = colors.surfaceEdge;
-              chartCtx.lineWidth = 1.75;
-              chartCtx.beginPath();
-              chartCtx.moveTo(x + direction * -size / 2, centerY + offset + size / 2);
-              chartCtx.lineTo(x + direction * size / 2, centerY + offset - size / 2);
-              chartCtx.stroke();
-            });
-          };
-
-          const meta = chart.getDatasetMeta(0);
-          meta.data.forEach((bar, index) => {
-            if (!bar || sortedItems[index].hours <= breakResume) return;
-            chartCtx.fillStyle = chartSurface;
-            const barMaskBleed = 2;
-            chartCtx.fillRect(
-              breakLeft - barMaskBleed,
-              bar.y - bar.height / 2 - barMaskBleed,
-              breakWidth + barMaskBleed * 2,
-              bar.height + barMaskBleed * 2
-            );
-            drawCutEdge(breakLeft, bar.y, -1, 10);
-            drawCutEdge(breakRight, bar.y, 1, 10);
-          });
-
-          chartCtx.fillStyle = chartSurface;
-          chartCtx.fillRect(breakLeft, chartArea.bottom - 2, breakWidth, 4);
-          drawCutEdge(breakLeft, chartArea.bottom, -1, 9);
-          drawCutEdge(breakRight, chartArea.bottom, 1, 9);
-
-          chartCtx.font = '600 12px system-ui, sans-serif';
-          chartCtx.fillStyle = colors.text;
-          chartCtx.textBaseline = 'middle';
-          meta.data.forEach((bar, index) => {
-            const value = `${sortedItems[index].hours}h`;
-            const labelX = bar.x + 8;
-            chartCtx.textAlign = labelX > chartArea.right - 36 ? 'right' : 'left';
-            chartCtx.fillText(value, Math.min(labelX, chartArea.right - 4), bar.y);
-          });
-
-          chartCtx.restore();
-        }
-      };
+      const skipped = broken ? breakEnd - breakStart : 0;
+      const plotted = sorted.map(({ hours }) => hours > breakStart ? hours - skipped : hours);
+      const note = document.getElementById('activity-hours-axis-note');
+      if (broken) {
+        note.textContent = `Axis skips ${breakStart.toLocaleString()}–${breakEnd.toLocaleString()} h.`;
+        note.hidden = false;
+      }
+      ctx.setAttribute('aria-label', sorted.map(item => `${item.label}: ${item.hours} hours`).join(', '));
 
       return new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: sortedItems.map(item => item.label),
+          labels: sorted.map(item => item.label),
           datasets: [{
-            label: label,
-            data: scaledData,
+            label,
+            data: plotted,
             backgroundColor: colors.bar,
             hoverBackgroundColor: colors.barHover,
-            borderRadius: 4,
-            borderSkipped: false
+            borderRadius: 3,
+            borderSkipped: false,
+            maxBarThickness: 18
           }]
         },
-        plugins: [breakPlugin],
+        plugins: [{
+          id: 'hoursLabelsAndBreak',
+          afterDatasetsDraw(chart) {
+            const { ctx: pen, chartArea, scales } = chart;
+            const bars = chart.getDatasetMeta(0).data;
+            pen.save();
+            if (broken) {
+              const x = scales.x.getPixelForValue(breakStart);
+              const bar = bars[0];
+              
+              pen.save();
+              pen.globalCompositeOperation = 'destination-out';
+              pen.strokeStyle = '#000';
+              pen.lineWidth = 6;
+              pen.beginPath();
+              pen.moveTo(x - 4, bar.y + bar.height / 2 + 1);
+              pen.lineTo(x + 4, bar.y - bar.height / 2 - 1);
+              pen.stroke();
+              const y = chartArea.bottom;
+              pen.clearRect(x - 7, y - 1, 14, 3);
+              pen.restore();
+              pen.strokeStyle = colors.text;
+              pen.lineWidth = 1.25;
+              pen.beginPath();
+              for (const offset of [-2.5, 2.5]) {
+                pen.moveTo(x + offset - 2, y + 3);
+                pen.lineTo(x + offset + 2, y - 3);
+              }
+              pen.stroke();
+            }
+            pen.font = '500 12px system-ui, sans-serif';
+            pen.textAlign = 'left';
+            pen.textBaseline = 'middle';
+            pen.fillStyle = colors.text;
+            bars.forEach((bar, i) => pen.fillText(`${sorted[i].hours} h`, bar.x + 6, bar.y));
+            pen.restore();
+          }
+        }],
         options: {
-          responsive: true,
-          maintainAspectRatio: true,
           indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          layout: { padding: { right: 48 } },
           plugins: {
             legend: { display: false },
             tooltip: {
-              callbacks: {
-                label: (ctx) => `${label}: ${sortedItems[ctx.dataIndex].hours}h`
-              }
+              callbacks: { label: item => `${label}: ${sorted[item.dataIndex].hours} h` }
             }
           },
           scales: {
             x: {
-              beginAtZero: true,
-              max: scaleValue(maxValue),
-              grid: {
-                color: (ctx) => {
-                  if (
-                    Math.abs(ctx.tick.value - breakStartX) < 0.001 ||
-                    Math.abs(ctx.tick.value - breakResumeX) < 0.001
-                  ) return 'transparent';
-                  return colors.grid;
-                }
-              },
+              min: 0,
+              max: plotted[0] || 1,
+              grid: { color: colors.grid, drawTicks: false },
               ticks: {
                 color: colors.text,
-                autoSkip: false,
                 maxRotation: 0,
-                callback: (v) => {
-                  const original = ticks.find(tick => Math.abs(scaleValue(tick) - v) < 0.001);
-                  return original === undefined ? '' : `${original}h`;
-                }
+                maxTicksLimit: 6,
+                padding: 6,
+                callback: value => (value > breakStart ? value + skipped : value).toLocaleString() + 'h'
               },
-              afterBuildTicks: (axis) => {
-                axis.ticks = scaledTicks.map(value => ({ value }));
+              afterBuildTicks(axis) {
+                if (!broken) return;
+                
+                axis.ticks = [0, step, 2 * step, 3 * step, breakStart + step].map(value => ({ value }));
               }
             },
             y: {
+              border: { display: false },
               grid: { display: false },
               ticks: { color: colors.text }
             }
@@ -575,26 +476,30 @@
 
     
     const now = new Date();
-    const currentYear = String(now.getFullYear());
-    const currentMonth = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    const formatMonth = date => date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0');
+    const currentMonth = formatMonth(now);
+    const firstMonth = formatMonth(new Date(now.getFullYear(), now.getMonth() - 6, 1));
 
-    const sumYtdHours = (data, field) => {
-      if (!Array.isArray(data) || data.length === 0) return 0;
-      const totalMinutes = data
-        .filter(d => d.month && d.month.startsWith(currentYear) && d.month !== currentMonth)
+    const getRecentMonths = (data, gapFields) => {
+      if (!Array.isArray(data)) return [];
+      const completed = data.filter(d => d.month < currentMonth);
+      const gapped = gapFields ? fillMonthGaps(completed, gapFields) : completed;
+      return gapped.filter(d => d.month >= firstMonth);
+    };
+
+    const sumRecentHours = (data, field) => {
+      const totalMinutes = getRecentMonths(data)
         .reduce((sum, d) => sum + (Number(d[field]) || 0), 0);
       return Number((totalMinutes / 60).toFixed(1));
     };
 
     
     const initCharts = (data, chartConfigs, gapFields) => {
-      if (!data || !Array.isArray(data) || data.length === 0) {
+      const recent = getRecentMonths(data, gapFields);
+      if (recent.length === 0) {
         chartConfigs.forEach(config => showNoData(config.id));
         return;
       }
-      const completed = data.filter(d => d.month !== currentMonth);
-      const gapped = gapFields ? fillMonthGaps(completed, gapFields) : completed;
-      const recent = gapped.slice(-12);
       const labels = formatLabels(recent);
       chartConfigs.forEach(config => {
         const values = recent.map(d => config.transform ? config.transform(d[config.field]) : d[config.field]);
@@ -616,20 +521,19 @@
     
     document.addEventListener('DOMContentLoaded', () => {
       createBrokenHorizontalChart(
-        document.getElementById('chart-ytd-hours'),
+        document.getElementById('chart-activity-hours'),
         [
-          { label: 'Articles', hours: sumYtdHours(readingData, 'time_spent_minutes') },
-          { label: 'Podcasts', hours: sumYtdHours(podcastsData, 'minutes_listened') },
-          { label: 'Workouts', hours: sumYtdHours(workoutsData, 'total_minutes') },
-          { label: 'Movies', hours: sumYtdHours(moviesData, 'minutes_watched') }
+          { label: 'Articles', hours: sumRecentHours(readingData, 'time_spent_minutes') },
+          { label: 'Podcasts', hours: sumRecentHours(podcastsData, 'minutes_listened') },
+          { label: 'Workouts', hours: sumRecentHours(workoutsData, 'total_minutes') },
+          { label: 'Movies', hours: sumRecentHours(moviesData, 'minutes_watched') }
         ],
         'Hours'
       );
 
       
-      if (readingData && Array.isArray(readingData) && readingData.length > 0) {
-        const completedReading = fillMonthGaps(readingData.filter(d => d.month !== currentMonth), ['total_words', 'time_spent_minutes']);
-        const recentReading = completedReading.slice(-12);
+      const recentReading = getRecentMonths(readingData, ['total_words', 'time_spent_minutes']);
+      if (recentReading.length > 0) {
         const readingLabels = formatLabels(recentReading);
         const colors = getColors();
         new Chart(document.getElementById('chart-total-words'), {
@@ -652,11 +556,11 @@
                 type: 'line',
                 label: 'Hours Read',
                 data: recentReading.map(d => Number(((d.time_spent_minutes || 0) / 60).toFixed(1))),
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
-                backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
+                borderColor: colors.accentStroke,
+                backgroundColor: colors.accentFill,
                 borderWidth: 3,
                 pointRadius: 4,
-                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                pointBackgroundColor: colors.accentPoint,
                 tension: 0.3,
                 fill: false,
                 yAxisID: 'y1',
@@ -698,10 +602,10 @@
                 position: 'right',
                 grid: { drawOnChartArea: false },
                 ticks: {
-                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  color: colors.accentStroke,
                   callback: (v) => `${v}h`
                 },
-                title: { display: true, text: 'Hours', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+                title: { display: true, text: 'Hours', color: colors.accentStroke }
               }
             }
           }
@@ -711,9 +615,8 @@
       }
 
       
-      if (workoutsData && Array.isArray(workoutsData) && workoutsData.length > 0) {
-        const completedWorkouts = fillMonthGaps(workoutsData.filter(d => d.month !== currentMonth), ['workouts', 'total_minutes']);
-        const recentWorkouts = completedWorkouts.slice(-12);
+      const recentWorkouts = getRecentMonths(workoutsData, ['workouts', 'total_minutes']);
+      if (recentWorkouts.length > 0) {
         const workoutLabels = formatLabels(recentWorkouts);
         const colors = getColors();
         new Chart(document.getElementById('chart-workout-combo'), {
@@ -736,11 +639,11 @@
                 type: 'line',
                 label: 'Hours',
                 data: recentWorkouts.map(d => Number(((d.total_minutes || 0) / 60).toFixed(1))),
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
-                backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
+                borderColor: colors.accentStroke,
+                backgroundColor: colors.accentFill,
                 borderWidth: 3,
                 pointRadius: 4,
-                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                pointBackgroundColor: colors.accentPoint,
                 tension: 0.3,
                 fill: false,
                 yAxisID: 'y1',
@@ -779,10 +682,10 @@
                 position: 'right',
                 grid: { drawOnChartArea: false },
                 ticks: {
-                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  color: colors.accentStroke,
                   callback: (v) => `${v}h`
                 },
-                title: { display: true, text: 'Hours', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+                title: { display: true, text: 'Hours', color: colors.accentStroke }
               }
             }
           }
@@ -791,9 +694,122 @@
         showNoData('chart-workout-combo');
       }
 
+      const recentSurfing = getRecentMonths(surfingData, ['sessions', 'waves']);
+      if (recentSurfing.length > 0) {
+        const colors = getColors();
+        new Chart(document.getElementById('chart-surfing'), {
+          type: 'bar',
+          data: {
+            labels: formatLabels(recentSurfing),
+            datasets: [
+              {
+                label: 'Sessions',
+                data: recentSurfing.map(d => d.sessions),
+                backgroundColor: colors.bar,
+                hoverBackgroundColor: colors.barHover,
+                maxBarThickness: 44,
+                borderRadius: 4,
+                borderSkipped: false,
+                yAxisID: 'y',
+                order: 1
+              },
+              {
+                type: 'line',
+                label: 'Waves',
+                data: recentSurfing.map(d => d.waves),
+                borderColor: colors.accentStroke,
+                backgroundColor: colors.accentFill,
+                pointRadius: 4,
+                pointBackgroundColor: colors.accentPoint,
+                yAxisID: 'y1',
+                order: 0
+              }
+            ]
+          },
+          options: {
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { labels: { color: colors.text } } },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
+              },
+              y: {
+                beginAtZero: true,
+                position: 'left',
+                grid: { color: colors.grid },
+                ticks: { color: colors.text, precision: 0 },
+                title: { display: true, text: 'Sessions', color: colors.text }
+              },
+              y1: {
+                beginAtZero: true,
+                position: 'right',
+                grid: { drawOnChartArea: false },
+                ticks: { color: colors.accentStroke, precision: 0 },
+                title: { display: true, text: 'Waves', color: colors.accentStroke }
+              }
+            }
+          }
+        });
+      } else {
+        showNoData('chart-surfing');
+      }
+
+      const recentBouldering = getRecentMonths(boulderingData, ['sends']);
+      const gradeCounts = recentBouldering.map(d => d.grade_counts ?? (d.sends === 0 ? {} : null));
+      if (gradeCounts.some(Boolean)) {
+        const colors = getColors();
+        const grades = [...new Set(gradeCounts.flatMap(counts => Object.keys(counts ?? {})))];
+        grades.sort((a, b) => a.localeCompare(b, 'en', { numeric: true }));
+        const firstShade = isDarkMode ? 238 : 17;
+        const lastShade = isDarkMode ? 85 : 170;
+        const shadeSteps = Math.max(grades.length - 1, 1);
+        const gradeColor = index => {
+          const gray = Math.round(firstShade + (lastShade - firstShade) * index / shadeSteps);
+          return `rgb(${gray}, ${gray}, ${gray})`;
+        };
+        new Chart(document.getElementById('chart-bouldering'), {
+          type: 'bar',
+          data: {
+            labels: formatLabels(recentBouldering),
+            datasets: grades.map((grade, index) => ({
+              label: grade || 'Ungraded',
+              data: gradeCounts.map(counts => counts ? (counts[grade] ?? 0) : null),
+              backgroundColor: gradeColor(index)
+            }))
+          },
+          options: {
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: { display: grades.length > 0, labels: { color: colors.text } },
+              tooltip: { filter: item => item.raw > 0 }
+            },
+            scales: {
+              x: {
+                stacked: true,
+                grid: { display: false },
+                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
+              },
+              y: {
+                stacked: true,
+                beginAtZero: true,
+                grid: { color: colors.grid },
+                ticks: { color: colors.text, precision: 0 }
+              }
+            }
+          }
+        });
+      } else {
+        showNoData('chart-bouldering');
+      }
+
+      initCharts(weightliftingData, [
+        { id: 'chart-weightlifting', field: 'workouts', label: 'Workouts' }
+      ], ['workouts']);
+
       
-      if (travelData && Array.isArray(travelData) && travelData.length > 0) {
-        const recentTravel = fillMonthGaps(travelData.filter(d => d.month !== currentMonth), ['checkins', 'unique_places']).slice(-12);
+      const recentTravel = getRecentMonths(travelData, ['checkins', 'unique_places']);
+      if (recentTravel.length > 0) {
         const travelLabels = formatLabels(recentTravel);
         const colors = getColors();
         new Chart(document.getElementById('chart-travel-combo'), {
@@ -806,7 +822,7 @@
                 label: 'Unique Places',
                 data: recentTravel.map(d => d.unique_places),
                 backgroundColor: 'transparent',
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                borderColor: colors.accentPoint,
                 borderWidth: { top: 3, right: 0, bottom: 0, left: 0 },
                 borderSkipped: false,
                 xAxisID: 'x2',
@@ -834,7 +850,7 @@
                 labels: {
                   color: colors.text,
                   generateLabels: (chart) => {
-                    const lineColor = isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)';
+                    const lineColor = colors.accentPoint;
                     return [
                       {
                         text: 'Unique Places',
@@ -906,9 +922,8 @@
       ], ['minutes_listened']);
 
       
-      if (sleepData && Array.isArray(sleepData) && sleepData.length > 0) {
-        const completedSleep = sleepData.filter(d => d.month !== currentMonth);
-        const recentSleep = completedSleep.slice(-12);
+      const recentSleep = getRecentMonths(sleepData);
+      if (recentSleep.length > 0) {
         const sleepLabels = formatLabels(recentSleep);
         const colors = getColors();
         const allScores = recentSleep.flatMap(d => [d.median_sleep_score, d.avg_sleep_score]).filter(Boolean);
@@ -933,11 +948,11 @@
               {
                 label: 'Average',
                 data: recentSleep.map(d => Number((d.avg_sleep_score || 0).toFixed(1))),
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                borderColor: colors.accentStroke,
                 backgroundColor: 'transparent',
                 borderWidth: 2.5,
                 pointRadius: 4,
-                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                pointBackgroundColor: colors.accentPoint,
                 tension: 0.3,
                 fill: false
               }
@@ -974,9 +989,8 @@
       }
 
       
-      if (writingData && Array.isArray(writingData) && writingData.length > 0) {
-        const completedWriting = fillMonthGaps(writingData.filter(d => d.month !== currentMonth), ['posts', 'total_words']);
-        const recentWriting = completedWriting.slice(-12);
+      const recentWriting = getRecentMonths(writingData, ['posts', 'total_words']);
+      if (recentWriting.length > 0) {
         const writingLabels = formatLabels(recentWriting);
         const colors = getColors();
         new Chart(document.getElementById('chart-writing-combo'), {
@@ -999,11 +1013,11 @@
                 type: 'line',
                 label: 'Words',
                 data: recentWriting.map(d => d.total_words),
-                borderColor: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
-                backgroundColor: isDarkMode ? 'rgba(251, 191, 36, 0.2)' : 'rgba(217, 119, 6, 0.2)',
+                borderColor: colors.accentStroke,
+                backgroundColor: colors.accentFill,
                 borderWidth: 3,
                 pointRadius: 4,
-                pointBackgroundColor: isDarkMode ? 'rgba(251, 191, 36, 1)' : 'rgba(217, 119, 6, 1)',
+                pointBackgroundColor: colors.accentPoint,
                 tension: 0.3,
                 fill: false,
                 yAxisID: 'y1',
@@ -1042,10 +1056,10 @@
                 position: 'right',
                 grid: { drawOnChartArea: false },
                 ticks: {
-                  color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)',
+                  color: colors.accentStroke,
                   callback: (v) => v >= 1000 ? (v / 1000) + 'k' : v
                 },
-                title: { display: true, text: 'Words', color: isDarkMode ? 'rgba(251, 191, 36, 0.9)' : 'rgba(217, 119, 6, 0.9)' }
+                title: { display: true, text: 'Words', color: colors.accentStroke }
               }
             }
           }
@@ -1061,31 +1075,11 @@
     });
 
     
-    const GH_USER = 'yyl';
-    const updateGithubImages = (dark) => {
-      const contrib = document.getElementById('github-contrib-graph');
-      const stats = document.getElementById('github-stats');
-      if (contrib) {
-        contrib.src = dark
-          ? `https://ghchart.rshah.org/58a6ff/${GH_USER}`
-          : `https://ghchart.rshah.org/${GH_USER}`;
-      }
-      if (stats) {
-        const theme = dark ? 'dark' : 'default';
-        stats.src = `https://github-readme-stats.vercel.app/api?username=${GH_USER}&show_icons=true&count_private=true&hide_border=true&theme=${theme}`;
-      }
-    };
-
-    
-    updateGithubImages(isDarkMode);
-
-    
     let lastDarkState = isDarkMode;
     const observer = new MutationObserver(() => {
       const currentDarkState = isDark();
       if (currentDarkState !== lastDarkState) {
         lastDarkState = currentDarkState;
-        updateGithubImages(currentDarkState);
         location.reload();
       }
     });
