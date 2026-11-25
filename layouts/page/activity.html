@@ -117,8 +117,8 @@
     <h2>💻 Coding</h2>
     <div class="charts-grid">
       <div class="chart-container">
-        <h3>Monthly Commits</h3>
-        <canvas id="chart-monthly-commits"></canvas>
+        <h3>Monthly Commits &amp; Lines Changed</h3>
+        <canvas id="chart-monthly-commits" role="img" aria-label="Monthly GitHub commits and lines changed"></canvas>
       </div>
     </div>
   </section>
@@ -934,10 +934,71 @@
         showNoData('chart-writing-combo');
       }
 
-      // Coding chart
-      initCharts(codeData, [
-        { id: 'chart-monthly-commits', field: 'commits', label: 'Commits' }
-      ], ['commits', 'repos_touched']);
+      const recentCode = getRecentMonths(codeData, ['commits']);
+      if (recentCode.length > 0) {
+        const colors = getColors();
+        const lineChanges = recentCode.map(d => {
+          const counts = [d.public_additions, d.private_additions, d.public_deletions, d.private_deletions];
+          return counts.every(Number.isFinite) ? counts.reduce((total, count) => total + count, 0) : null;
+        });
+        const hasLineChanges = lineChanges.some(count => count !== null);
+        const compactNumber = new Intl.NumberFormat(undefined, { notation: 'compact' });
+        const datasets = [{
+          label: 'Commits',
+          data: recentCode.map(d => d.commits),
+          backgroundColor: colors.bar,
+          hoverBackgroundColor: colors.barHover,
+          borderRadius: 4,
+          borderSkipped: false,
+          yAxisID: 'y',
+          order: 1
+        }];
+        if (hasLineChanges) {
+          datasets.push({
+            type: 'line',
+            label: 'Lines Changed',
+            data: lineChanges,
+            borderColor: colors.accentStroke,
+            backgroundColor: colors.accentFill,
+            pointBackgroundColor: colors.accentPoint,
+            pointRadius: 4,
+            spanGaps: false,
+            yAxisID: 'y1',
+            order: 0
+          });
+        }
+        new Chart(document.getElementById('chart-monthly-commits'), {
+          type: 'bar',
+          data: { labels: formatLabels(recentCode), datasets },
+          options: {
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { display: hasLineChanges, labels: { color: colors.text } } },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: { color: colors.text, autoSkip: false, maxRotation: 0 }
+              },
+              y: {
+                beginAtZero: true,
+                position: 'left',
+                grid: { color: colors.grid },
+                ticks: { color: colors.text, precision: 0 },
+                title: { display: true, text: 'Commits', color: colors.text }
+              },
+              y1: {
+                display: 'auto',
+                beginAtZero: true,
+                position: 'right',
+                grid: { drawOnChartArea: false },
+                ticks: { color: colors.accentStroke, precision: 0, callback: value => compactNumber.format(value) },
+                title: { display: true, text: 'Lines Changed', color: colors.accentStroke }
+              }
+            }
+          }
+        });
+      } else {
+        showNoData('chart-monthly-commits');
+      }
     });
 
     // Reload charts when the color theme changes.

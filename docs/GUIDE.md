@@ -100,7 +100,12 @@ Monthly chart data uses this YAML format:
 | `surfing.yaml` | 🏄 Surfing | Surfilog sessions (left) and waves (right) | Combo (dual y-axis) |
 | `bouldering.yaml` | 🧗 Bouldering | Kaya sends by grade | Stacked bar |
 | `weightlifting.yaml` | 🏋️ Weightlifting | Strong workouts | Bar |
-| `code.yaml` | 💻 Coding | Monthly Commits | Bar |
+| `code.yaml` | 💻 Coding | Monthly Commits (left) & Lines Changed (right) | Combo (dual y-axis) |
+
+The Lines Changed series sums GitHub's additions and deletions across public and private
+commits, including changes to non-code files. Months with incomplete line counts
+appear as gaps in the line. The right axis appears when at least one visible
+month has a complete total.
 
 **Chart rendering details (in `activity.html`):**
 
