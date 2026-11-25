@@ -202,14 +202,15 @@ Auth: `Authorization: Bearer <UPLOAD_TOKEN>` (or `?token=` fallback).
 
 ### What’s going on right now
 
-The homepage shows four entries above the post feed. **See more activities** opens the Activity page for the monthly charts.
+The homepage shows five entries above the post feed. **See more activities** opens the Activity page for the monthly charts. Entry dates are shown relative to today in UTC and switch to months at 30 days. Hover over a date to see the exact day.
 
 - **latest book** shows the Hardcover book with the newest update among books marked Currently Reading. The sync compares the library entry's update timestamp and its latest reading progress or start event. The original book list uses the newest start date until the first daily run.
 - **latest reading** shows the Reader archive item in the `article` category with the newest `last_moved_at`. The sync checks all result pages and links to the article's source when available.
 - **latest writing** comes from Hugo's `posts` section at build time and uses the post's publish date.
 - **latest podcast** shows the Overcast episode marked played with the newest `userUpdatedDate`. Overcast's export reports the episode's last user update as a proxy for when it was played.
+- **latest workout** shows the latest Apple Health workout other than a walk, with its activity type, duration, and UTC start date.
 
-`.github/workflows/sync-activity.yml` fetches Hardcover and Readwise daily at 08:00 UTC and can also run manually. D3's [Overcast workflow](https://github.com/yyl/digital-data-dump/actions/workflows/overcast-activity.yml) refreshes `data/activity/latest_podcast.json` on a separate daily schedule using the existing D3 Overcast settings and saved vault data. Changed snapshots trigger a Cloudflare Pages rebuild. A failed fetch leaves its existing snapshot in place. The monthly D3 pipeline continues to supply chart data.
+`.github/workflows/sync-activity.yml` fetches Hardcover and Readwise daily at 08:00 UTC and can also run manually. D3's [Overcast workflow](https://github.com/yyl/digital-data-dump/actions/workflows/overcast-activity.yml) refreshes `data/activity/latest_podcast.json` on a separate daily schedule using the existing D3 Overcast settings and saved vault data. D3's [Apple Health workflow](https://github.com/yyl/digital-data-dump/actions/workflows/apple-health-activity.yml) imports uploaded workouts from the vault daily at 08:45 UTC and refreshes `data/activity/latest_workout.json`. Changed snapshots trigger a Cloudflare Pages rebuild. A failed fetch leaves its existing snapshot in place. The monthly D3 pipeline continues to supply chart data.
 
 Configure the GitHub Actions repository secrets in `yyl/compute-stuff`.
 

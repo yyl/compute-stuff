@@ -16,6 +16,7 @@
   (dict "emoji" "📰" "label" "latest reading" "item" $activity.latest_article "empty" "No archived article available.")
   (dict "emoji" "✍️" "label" "latest writing" "item" $post "empty" "No published post.")
   (dict "emoji" "🎧" "label" "latest podcast" "item" $activity.latest_podcast "empty" "No played episode available.")
+  (dict "emoji" "💪" "label" "latest workout" "item" $activity.latest_workout "empty" "No workout available.")
 -}}
 <section class="activity-section activity-latest-section" aria-labelledby="activity-latest-heading">
   <h2 id="activity-latest-heading">What’s going on right now</h2>
@@ -28,7 +29,7 @@
       {{ if or .detail .date }}
       <p class="activity-latest-detail">
         {{ .detail }}{{ if and .detail .date }} · {{ end }}
-        {{ with .date }}<time datetime="{{ time.Format "2006-01-02" . }}">{{ time.Format ":date_medium" . }}</time>{{ end }}
+        {{ with .date }}<time datetime="{{ time.Format "2006-01-02" . }}" title="{{ time.Format ":date_medium" . }}">{{ time.Format ":date_medium" . }}</time>{{ end }}
       </p>
       {{ end }}
       {{ else }}
@@ -41,3 +42,21 @@
   <p><a href="{{ .RelPermalink }}">See more activities</a></p>
   {{ end }}
 </section>
+<script>
+(function () {
+  const millisecondsPerDay = 86_400_000;
+  const today = Math.floor(Date.now() / millisecondsPerDay) * millisecondsPerDay;
+  const relativeTime = new Intl.RelativeTimeFormat('en');
+
+  document.querySelectorAll('.activity-latest time').forEach(function (time) {
+    const days = (Date.parse(time.dateTime) - today) / millisecondsPerDay;
+    if (days === 0) {
+      time.textContent = 'today';
+    } else if (Math.abs(days) < 30) {
+      time.textContent = relativeTime.format(days, 'day');
+    } else {
+      time.textContent = relativeTime.format(Math.trunc(days / 30), 'month');
+    }
+  });
+})();
+</script>
