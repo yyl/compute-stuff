@@ -40,7 +40,7 @@ blog/
 │
 ├── scripts/           # Automation scripts
 │   ├── fetch-hardcover.js       # Fetch the most recently updated current book
-│   └── fetch-latest-activity.py # Fetch the latest archived article or played episode
+│   └── fetch-latest-activity.py # Fetch the latest archived Readwise article
 │
 ├── functions/         # Cloudflare Pages Functions (serverless API)
 │   └── api/
@@ -77,7 +77,7 @@ The `activity.md` page uses `layout: activity` in its front matter, which tells 
 
 ### Data Files
 
-The Activity page loads monthly chart data and its latest activity snapshots from `data/activity/` via `{{ .Site.Data.activity.<name> }}`.
+The Activity page loads monthly chart data from `data/activity/`. The homepage uses the same directory for its latest activity snapshots.
 
 Monthly chart data uses this YAML format:
 
@@ -199,27 +199,25 @@ Auth: `Authorization: Bearer <UPLOAD_TOKEN>` (or `?token=` fallback).
 
 ### What’s going on right now
 
-The Activity page shows four entries:
+The homepage shows four entries above the post feed. **See more activities** opens the Activity page for the monthly charts.
 
-- **Currently reading** shows the Hardcover book with the newest update among books marked Currently Reading. The sync compares the library entry's update timestamp and its latest reading progress or start event. The original book list uses the newest start date until the first daily run.
-- **Latest article read** shows the Reader archive item in the `article` category with the newest `last_moved_at`. The sync checks all result pages and links to the article's source when available.
-- **Latest post published** comes from Hugo's `posts` section at build time and uses the post's publish date.
-- **Latest podcast listened to** shows the Overcast episode marked played with the newest `userUpdatedDate`. Overcast's export reports the episode's last user update as a proxy for when it was played.
+- **latest book** shows the Hardcover book with the newest update among books marked Currently Reading. The sync compares the library entry's update timestamp and its latest reading progress or start event. The original book list uses the newest start date until the first daily run.
+- **latest reading** shows the Reader archive item in the `article` category with the newest `last_moved_at`. The sync checks all result pages and links to the article's source when available.
+- **latest writing** comes from Hugo's `posts` section at build time and uses the post's publish date.
+- **latest podcast** shows the Overcast episode marked played with the newest `userUpdatedDate`. Overcast's export reports the episode's last user update as a proxy for when it was played.
 
-`.github/workflows/sync-activity.yml` fetches the three external sources daily at 08:00 UTC and can also run manually. It commits changed snapshots in `data/activity/` to trigger the Cloudflare Pages rebuild. Each failed fetch leaves its existing snapshot in place while the other sources can still update. The monthly D3 pipeline continues to supply chart data on its own schedule.
+`.github/workflows/sync-activity.yml` fetches Hardcover and Readwise daily at 08:00 UTC and can also run manually. D3's [Overcast workflow](https://github.com/yyl/digital-data-dump/actions/workflows/overcast-activity.yml) refreshes `data/activity/latest_podcast.json` on a separate daily schedule using the existing D3 Overcast settings and saved vault data. Changed snapshots trigger a Cloudflare Pages rebuild. A failed fetch leaves its existing snapshot in place. The monthly D3 pipeline continues to supply chart data.
 
-Configure these GitHub Actions repository secrets for `yyl/blog`:
+Configure the GitHub Actions repository secrets in `yyl/compute-stuff`.
 
 - `HARDCOVER_API_KEY` is the [Hardcover API key](https://hardcover.app/account/api) from the existing integration.
 - `READWISE_ACCESS_TOKEN` is the [Readwise access token](https://readwise.io/access_token).
-- `OVERCAST_COOKIE` is the value of the `o` session cookie from an [authenticated Overcast session](https://overcast.fm/account). Replace it when the session expires.
 
 With the corresponding secret exported in your shell, run a source locally:
 
 ```bash
 node scripts/fetch-hardcover.js
 python3 scripts/fetch-latest-activity.py readwise
-python3 scripts/fetch-latest-activity.py overcast
 ```
 
 ### Theme

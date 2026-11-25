@@ -34,18 +34,12 @@ jobs:
           READWISE_ACCESS_TOKEN: ${{ secrets.READWISE_ACCESS_TOKEN }}
         run: python3 scripts/fetch-latest-activity.py readwise
 
-      - name: Fetch the latest played podcast
-        if: ${{ !cancelled() }}
-        env:
-          OVERCAST_COOKIE: ${{ secrets.OVERCAST_COOKIE }}
-        run: python3 scripts/fetch-latest-activity.py overcast
-
       - name: Commit and push if changed
         if: ${{ !cancelled() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/activity/currently_reading.yaml data/activity/latest_article.json data/activity/latest_podcast.json
+          git add data/activity/currently_reading.yaml data/activity/latest_article.json
           if ! git diff --cached --quiet; then
             git commit -m "chore: sync latest activity"
             git push || (git pull --rebase && git push)

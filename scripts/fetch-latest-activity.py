@@ -1,16 +1,14 @@
-"""Write one display record from Readwise Reader or Overcast."""
+"""Write the latest archived article from Readwise Reader."""
 
 import argparse
 from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
-import re
 import time
 from urllib.error import HTTPError
 from urllib.parse import urlencode, urlsplit
 from urllib.request import Request, urlopen
-from xml.etree import ElementTree
 
 
 def fetch(url, header, credential):
@@ -46,22 +44,6 @@ def readwise_articles(token):
         params["pageCursor"] = cursor
 
 
-def overcast_episodes(export):
-    root = ElementTree.fromstring(export)
-    feeds = root.find("./body/outline[@text='feeds']")
-    if root.tag != "opml" or feeds is None:
-        raise ValueError("Overcast did not return an extended OPML export. Check OVERCAST_COOKIE.")
-    for feed in feeds.findall("./outline[@type='rss']"):
-        for episode in feed.findall("./outline[@type='podcast-episode'][@played='1']"):
-            title, updated_at = episode.get("title"), episode.get("userUpdatedDate")
-            if not title or not updated_at:
-                continue
-            url = episode.get("overcastUrl", "")
-            if not re.fullmatch(r"https://overcast\.fm/\+[A-Za-z0-9_-]+", url):
-                url = ""
-            yield updated_at, {"title": title, "url": url, "detail": feed.get("title")}
-
-
 def latest(records):
     dated = ((datetime.fromisoformat(date), record) for date, record in records)
     result = max(dated, key=lambda entry: (entry[0], entry[1]["title"], entry[1]["url"]), default=None)
@@ -73,23 +55,13 @@ def latest(records):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("source", choices=("readwise", "overcast"))
-    args = parser.parse_args()
-    if args.source == "readwise":
-        token = os.getenv("READWISE_ACCESS_TOKEN")
-        if not token:
-            parser.error("READWISE_ACCESS_TOKEN is required")
-        snapshot = latest(readwise_articles(token))
-        filename = "latest_article.json"
-    else:
-        cookie = os.getenv("OVERCAST_COOKIE")
-        if not cookie:
-            parser.error("OVERCAST_COOKIE is required")
-        export = fetch("https://overcast.fm/account/export_opml/extended", "Cookie", f"o={cookie}; qr=-")
-        snapshot = latest(overcast_episodes(export))
-        filename = "latest_podcast.json"
-
-    output = Path(__file__).resolve().parents[1] / "data" / "activity" / filename
+    parser.add_argument("source", choices=("readwise",))
+    parser.parse_args()
+    token = os.getenv("READWISE_ACCESS_TOKEN")
+    if not token:
+        parser.error("READWISE_ACCESS_TOKEN is required")
+    snapshot = latest(readwise_articles(token))
+    output = Path(__file__).resolve().parents[1] / "data" / "activity" / "latest_article.json"
     output.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 

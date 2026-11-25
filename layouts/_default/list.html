@@ -11,12 +11,11 @@
 {{- $pages = where site.RegularPages "Type" "in" site.Params.mainSections -}}<!---->
 {{- end -}}
 
-<!-- Articles -->
-{{- $paginator := .Paginate $pages -}} {{- range $index, $page :=
-$paginator.Pages -}}<!---->
+{{- $paginator := .Paginate $pages -}}
+{{- $firstHomePage := and .IsHome (eq $paginator.PageNumber 1) -}}
 
 <!-- avatar -->
-{{- if and $.IsHome (eq $paginator.PageNumber 1) (eq $index 0) -}}<!---->
+{{- if $firstHomePage -}}<!---->
 
 {{- $avatar_url := $.Scratch.Get "avatar_url" -}}<!---->
 {{- if or $avatar_url site.Params.name -}}
@@ -46,8 +45,14 @@ $paginator.Pages -}}<!---->
 </div>
 {{- end -}}<!---->
 
+{{- partial "activity-latest.html" . -}}
 {{- end -}}
 
+<!-- Articles -->
+{{- if $firstHomePage -}}
+<h2 class="post-feed-heading">Posts</h2>
+{{- end -}}
+{{- range $paginator.Pages -}}<!---->
 {{- $isPost := and .IsPage (eq .Section "posts") -}}
 <section class="relative my-10 first-of-type:mt-0 last-of-type:mb-0{{ if $isPost }} post-feed-entry{{ end }}" data-slug="{{- .RelPermalink | urlize | replaceRE "^/|/$" "" | replaceRE "/" "-" -}}">
   <div>
@@ -56,7 +61,11 @@ $paginator.Pages -}}<!---->
       >Featured</span
     >
     {{- end -}}
+    {{- if $firstHomePage -}}
+    <h3 class="my-0! post-feed-title">{{- .Title -}}</h3>
+    {{- else -}}
     <h2 class="my-0!">{{- .Title -}}</h2>
+    {{- end -}}
     <div class="flex items-center gap-2 not-prose">
       <time class="text-xs antialiased opacity-60"
         >{{- .Date | time.Format ":date_medium" -}}</time

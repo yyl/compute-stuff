@@ -12,17 +12,17 @@
   {{- $post = dict "title" .Title "url" .RelPermalink "date" .PublishDate -}}
 {{- end -}}
 {{- $cards := slice
-  (dict "label" "Currently reading" "item" $book "empty" "No current book.")
-  (dict "label" "Latest article read" "item" $activity.latest_article "empty" "No archived article available.")
-  (dict "label" "Latest post published" "item" $post "empty" "No published post.")
-  (dict "label" "Latest podcast listened to" "item" $activity.latest_podcast "empty" "No played episode available.")
+  (dict "emoji" "📕" "label" "latest book" "item" $book "empty" "No current book.")
+  (dict "emoji" "📰" "label" "latest reading" "item" $activity.latest_article "empty" "No archived article available.")
+  (dict "emoji" "✍️" "label" "latest writing" "item" $post "empty" "No published post.")
+  (dict "emoji" "🎧" "label" "latest podcast" "item" $activity.latest_podcast "empty" "No played episode available.")
 -}}
-<section class="activity-section" aria-labelledby="activity-latest-heading">
+<section class="activity-section activity-latest-section" aria-labelledby="activity-latest-heading">
   <h2 id="activity-latest-heading">What’s going on right now</h2>
   <div class="activity-latest">
     {{ range $cards }}
     <div class="chart-container">
-      <h3>{{ .label }}</h3>
+      <h3><span aria-hidden="true">{{ .emoji }}</span> {{ .label }}</h3>
       {{ with .item }}
       <p class="activity-latest-title">{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end }}</p>
       {{ if or .detail .date }}
@@ -37,4 +37,7 @@
     </div>
     {{ end }}
   </div>
+  {{ with .Site.GetPage "/activity" }}
+  <p><a href="{{ .RelPermalink }}">See more activities</a></p>
+  {{ end }}
 </section>
