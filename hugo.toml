@@ -16,6 +16,7 @@ publishDir = 'build'
 [params]
   rss = true
   commentsEnabled = true
+  buttondownUsername = "mildlyjournaling"
 
 [menu]
   [[menu.main]]

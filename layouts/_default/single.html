@@ -21,6 +21,21 @@
 
   <section>{{- .Content -}}</section>
 
+  {{ if eq .Section "posts" }}
+    {{ with site.Params.buttondownUsername }}
+    <form class="mt-12" method="post"
+      action="https://buttondown.com/api/emails/embed-subscribe/{{ . }}">
+      <label class="block font-semibold" for="newsletter-email">Get my monthly wrap-up by email</label>
+      <div class="mt-2 flex flex-wrap gap-2">
+        <input class="rounded border px-3 py-2" id="newsletter-email" type="email"
+          name="email" autocomplete="email" placeholder="you@example.com" required>
+        <input type="hidden" name="embed" value="1">
+        <button class="rounded border px-3 py-2" type="submit">Subscribe</button>
+      </div>
+    </form>
+    {{ end }}
+  {{ end }}
+
   <!-- Post Tags -->
   {{- if .Params.tags -}}
   <footer class="mt-12 flex flex-wrap">
