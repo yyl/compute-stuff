@@ -1,5 +1,5 @@
 baseURL = "https://www.mildlyjournaling.com/"
-locale = 'en-us'
+languageCode = 'en-us'
 title = 'Mildly Journaling'
 theme = 'paper'
 capitalizeListTitles = false
