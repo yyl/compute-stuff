@@ -132,26 +132,26 @@
   private_deletions: 1702
 
 - month: "2026-10"
-  commits: 59
+  commits: 62
   repos_touched: 6
   public_commits: 10
-  private_commits: 49
+  private_commits: 52
   public_repos_touched: 2
   private_repos_touched: 4
   public_additions: 4745
-  private_additions: 77587
+  private_additions: 77703
   public_deletions: 1148
   private_deletions: 5533
 
 - month: "2026-11"
-  commits: 80
+  commits: 116
   repos_touched: 9
-  public_commits: 41
-  private_commits: 39
+  public_commits: 53
+  private_commits: 63
   public_repos_touched: 4
   private_repos_touched: 5
-  public_additions: 38064
-  private_additions: 25580
-  public_deletions: 35952
-  private_deletions: 1117
+  public_additions: 43244
+  private_additions: 31788
+  public_deletions: 36051
+  private_deletions: 4293
 

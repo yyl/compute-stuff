@@ -1,12 +1,34 @@
 # Monthly surfing activity data
-- month: "2026-10"
-  sessions: 1
-  waves: 8
-  total_duration_seconds: 6985.00
-  surf_time_seconds: 79.00
-  surf_distance_m: 313.10
-  paddling_distance_m: 3018.00
-  max_speed_kmh: 20.90
-  longest_wave_m: 68.70
+- month: "2026-09"
+  sessions: 2
+  waves: 19
+  total_duration_seconds: 15138.00
+  surf_time_seconds: 205.00
+  surf_distance_m: 823.20
+  paddling_distance_m: 6065.00
+  max_speed_kmh: 27.60
+  longest_wave_m: 65.60
   max_wave_seconds: 15.00
+
+- month: "2026-10"
+  sessions: 2
+  waves: 26
+  total_duration_seconds: 16192.00
+  surf_time_seconds: 300.00
+  surf_distance_m: 1159.70
+  paddling_distance_m: 7002.00
+  max_speed_kmh: 22.10
+  longest_wave_m: 89.80
+  max_wave_seconds: 21.00
+
+- month: "2026-11"
+  sessions: 1
+  waves: 14
+  total_duration_seconds: 6480.00
+  surf_time_seconds: 130.00
+  surf_distance_m: 520.40
+  paddling_distance_m: 4045.00
+  max_speed_kmh: 23.20
+  longest_wave_m: 74.80
+  max_wave_seconds: 17.00
 

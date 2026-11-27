@@ -1,46 +1,51 @@
 # Monthly movies activity data
 - month: "2025-11"
   movies_watched: 3.00
-  minutes_watched: 0
+  minutes_watched: 350
   avg_rating: 2.67
 
 - month: "2025-12"
   movies_watched: 5.00
-  minutes_watched: 0
+  minutes_watched: 426
   avg_rating: 3.50
 
 - month: "2026-01"
   movies_watched: 1.00
-  minutes_watched: 0
+  minutes_watched: 149
   avg_rating: 4.50
 
 - month: "2026-02"
   movies_watched: 2.00
-  minutes_watched: 0
+  minutes_watched: 268
   avg_rating: 2.75
 
 - month: "2026-03"
   movies_watched: 2.00
-  minutes_watched: 0
+  minutes_watched: 252
   avg_rating: 2.00
 
 - month: "2026-05"
   movies_watched: 1.00
-  minutes_watched: 0
+  minutes_watched: 162
   avg_rating: 3.00
 
 - month: "2026-06"
   movies_watched: 2.00
-  minutes_watched: 0
+  minutes_watched: 203
   avg_rating: 2.50
 
 - month: "2026-07"
   movies_watched: 1.00
-  minutes_watched: 0
+  minutes_watched: 140
   avg_rating: 4.50
 
 - month: "2026-08"
   movies_watched: 2.00
-  minutes_watched: 0
+  minutes_watched: 247
   avg_rating: 3.25
+
+- month: "2026-11"
+  movies_watched: 3.00
+  minutes_watched: 364
+  avg_rating: 2.67
 
